@@ -9,11 +9,21 @@ namespace NewGraph {
 
     [CreateAssetMenu(fileName = nameof(GraphSettings), menuName = nameof(GraphSettings), order = 1)]
     public class GraphSettings : ScriptableObject {
-        private const string assetGUID = "015778251503b3c44a2b9dfc3a36ad10";
+        public const string assetGUID = "015778251503b3c44a2b9dfc3a36ad10";
         public const string menuItemBase = "Tools/";
-        public const string basePathToSettingsFile = "Project/Tools/";
         public const string debugDefine = "TOOLS_DEBUG";
         public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedGraphEditorPrefsKey);
+
+        private static string pathPartialToCategory = null;
+        public static string PathPartialToCategory {
+            get {
+                if (pathPartialToCategory == null) {
+                    pathPartialToCategory = Path.Combine(Instance.basePathToSettingsFile, Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(Instance)));
+                    pathPartialToCategory = pathPartialToCategory.Replace("\\", "/");
+                }
+                return pathPartialToCategory;
+            }
+        }
 
         public static GraphModel LastOpenedGraphModel {
             get {
@@ -36,6 +46,7 @@ namespace NewGraph {
             }
         }
 
+        public string basePathToSettingsFile = "Project/Tools";
         public string searchWindowCommandHeader = "Commands";
         public string searchWindowRootHeader = "Create Nodes";
         public string openGraphButtonText = "Open Graph";
@@ -141,7 +152,33 @@ namespace NewGraph {
         public static GraphSettings Instance {
             get {
                 if (_instance == null) {
-                    _instance = AssetDatabase.LoadAssetAtPath<GraphSettings>(AssetDatabase.GUIDToAssetPath(assetGUID));
+
+                    string blueprintSettingsPath = AssetDatabase.GUIDToAssetPath(assetGUID);
+                    GraphSettings blueprintSettings = AssetDatabase.LoadAssetAtPath<GraphSettings>(blueprintSettingsPath);
+#if !TOOLS_KEEP_SETTINGS
+                    string targetPath = Path.Combine("Assets", blueprintSettings.basePathToSettingsFile, Path.GetFileName(blueprintSettingsPath));
+                    string fullTargetPath = Path.GetFullPath(targetPath);
+
+                    if (!File.Exists(fullTargetPath)) {
+                        string directories = Path.GetDirectoryName(targetPath);
+                        if (!Directory.Exists(directories)) {
+                            Directory.CreateDirectory(directories);
+                        }
+                        bool copied = AssetDatabase.CopyAsset(blueprintSettingsPath, targetPath);
+                        if (!copied) {
+                            Logger.LogAlways($"Unable to copy settings to directory: {fullTargetPath}. Falling back to original file! Please make sure this file can be copied.");
+                            _instance = blueprintSettings;
+                        }
+                        AssetDatabase.Refresh();
+                    }
+                    _instance = AssetDatabase.LoadAssetAtPath<GraphSettings>(targetPath);
+                    if (_instance == null) {
+                        Logger.LogAlways($"There was an error loading the settings file at path: {fullTargetPath}. Falling back to original file! Please fix any errors.");
+                        _instance = blueprintSettings;
+                    }
+#else
+                    _instance = blueprintSettings;
+#endif
                 }
                 return _instance;
             }

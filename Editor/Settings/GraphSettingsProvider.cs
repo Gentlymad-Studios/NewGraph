@@ -1,21 +1,18 @@
 using System;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace NewGraph {
 
     public class GraphSettingsProvider : SettingsProviderBase {
 
-        private const string path = GraphSettings.basePathToSettingsFile + nameof(GraphSettings);
         private static readonly string[] tags = new string[] { nameof(GraphSettings), nameof(NewGraph) };
 
-        public GraphSettingsProvider(SettingsScope scope = SettingsScope.Project)
-            : base(path, scope) {
+        public GraphSettingsProvider(SettingsScope scope = SettingsScope.Project) : base(GraphSettings.PathPartialToCategory, scope) {
             keywords = tags;
         }
-
+         
         protected override EventCallback<SerializedPropertyChangeEvent> GetValueChangedCallback() {
             return ValueChanged;
         }
