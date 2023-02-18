@@ -8,9 +8,8 @@ using System.Collections.Generic;
 
 namespace NewGraph {
     /// <summary>
-    /// Runtime valid part of our NodeModel.
-    /// This is narrowed down to the minimum needed to work in runtime situations.
-    /// See NodeModelEditorSpecifics.cs for all editor specific parts of this class.
+    /// Our data model for Nodes split into ar minimalistic runtime part and editor specific extensions.
+    /// See #if UNITY_EDITOR sections for all editor specific parts of this class.
     /// </summary>
     [Serializable]
     public class NodeModel {

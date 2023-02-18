@@ -8,9 +8,8 @@ using System;
 
 namespace NewGraph {
     /// <summary>
-    /// Runtime valid part of our GraphModel.
-    /// This is narrowed down to the minimum needed to work with a scriptable object of this type even in runtime situations.
-    /// See GraphModelEditorSpecifics.cs for all editor specific parts of this class.
+    /// Our graph data model split into ar minimalistic runtime part and editor specific extensions.
+    /// See everything under #if UNITY_EDITOR for all editor specific parts of this class.
     /// </summary>
     [CreateAssetMenu(fileName =nameof(GraphModel), menuName = "Tools/"+ nameof(GraphModel), order = 1)]
     public class GraphModel : ScriptableObject {
