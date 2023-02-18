@@ -35,7 +35,8 @@ namespace NewGraph {
 
             settingsRoot.Add(title);
 
-            UIElementsHelper.CreateGenericUI(serializedObject, GetType(), settingsRoot, GetValueChangedCallback());
+
+            UIElementsHelper.CreateGenericUI(serializedObject, GetDataType(), settingsRoot, GetValueChangedCallback());
 
             rootElement.Add(settingsRoot);
             settingsRoot.Bind(serializedObject);
