@@ -1,0 +1,260 @@
+GridBackground {
+    --grid-background-color: var(--newGraph-colors-grid-light-grey);
+    --line-color: var(--newGraph-colors-grid-transparent);
+    --thick-line-color: var(--newGraph-colors-grid-opaque);
+    --spacing: var(--newGraph-colors-grid-space);
+}
+
+.EditableLabelElement {
+    flex-direction: row;
+    padding-right: 3px;
+    flex-grow: 1;
+}
+
+.EditableLabelElement TextField {
+    flex-grow: 1;
+    flex-basis: 50%;
+}
+
+.EditableLabelElement Label {
+    display: none;
+}
+
+.EditableLabelElement Image {
+    max-width: 15px;
+    max-height: 15px;
+    opacity: 0.5;
+    align-self: center;
+}
+
+.EditableLabelElement Image:hover {
+    opacity: 1;
+}
+
+.EditableLabelElement TextInput {
+    min-width: 30px;
+    padding-left: 3px;
+}
+
+.EditableLabelElement TextInput:disabled {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border-color: rgba(0, 0, 0, 0);
+}
+
+.EditableLabelElement TextElement {
+    -unity-font-style: bold;
+}
+
+.GroupInfo .unity-toggle__text {
+    -unity-font-style: bold;
+}
+
+.GroupInfo:checked {
+    padding-bottom: 3px;
+}
+
+.GroupInfo {
+    padding-right: 3px;
+    background-color: rgba(25, 25, 25, 0.2);
+    border-radius: 3px;
+    border-width: 1px 1px 1px 1px;
+    border-color: rgba(0, 0, 0, 0.3);
+}
+
+.unity-base-field__label {
+    min-width: 80px;
+}
+
+.unity-composite-field__input Label {
+    min-width: 0;
+}
+
+.unity-property-field__input {
+    justify-content: flex-end;
+}
+
+.unity-composite-field__field-spacer {
+    display: none;
+}
+
+.unity-collection-view__item BasePort {
+    justify-content: center;
+    flex-grow: 0;
+    min-width: 15px;
+}
+
+.unity-collection-view__item BasePort Label {
+    display: none;
+}
+
+.unity-collection-view__item BasePort .port-connector-box {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.unity-collection-view__item PropertyField {
+    padding-left: 0;
+}
+
+#inspectorContainer {
+    padding-left: 5px;
+    background-color: rgb(65, 65, 65);
+    border-radius: 3px;
+    border-width: 1px;
+    border-color:rgb(26, 26, 26);
+}
+
+PortListView {
+    margin-bottom: 5px;
+}
+
+PortListView .fieldLabel {
+    -unity-text-align: middle-left;
+    margin-left: 2px;
+}
+
+PortListView Port {
+    margin-right: 2px;
+}
+
+PortListView .staticHeader {
+    background-color: rgb(45, 45, 45);
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    min-height: 18px;
+    padding-left: 5px;
+    border-width: 1px 1px 0 1px;
+    border-radius: 3px 3px 0 0;
+    border-color: rgb(26, 26, 26);
+}
+
+PortListView > ScrollView {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+#inspectorHeader, #commandPanel, #inspectorContainer{
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-bottom: 3px;
+}
+
+#inspectorHeader {
+    height: 25px; 
+    justify-content: center;
+}
+
+#inspectorHeader, #commandPanel {
+    margin-top:5px;
+}
+
+#commandPanel {
+    position: absolute;
+    flex-direction: row;
+    justify-content: flex-end;
+    width: 220px;
+    height: 25px;
+    margin-left:-225px;
+    padding-top: 2px;
+}
+
+#commandPanel Button, .baseGraphEditor Button {
+    flex-grow: 1;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    margin-left: 1px;
+    margin-right: 1px;
+    -unity-font-style: bold;
+    border-radius: 0px;
+    -unity-text-align: middle-left;
+}
+
+.baseGraphEditor Button {
+    border-radius: 3px;
+}
+
+.baseGraphEditor {
+    margin-top: 15px;
+}
+
+.baseGraphEditor ListView{
+    margin-top: 15px;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 200px;
+}
+
+.baseGraphEditor ListView .unity-collection-view__item{
+    padding-left: 5px;
+}
+
+.baseGraphEditor Button {
+    width: 110px;
+    align-self: center;
+}
+
+#commandPanel Button Image, .baseGraphEditor Button Image{
+    width: 20px;
+    height: 20px;
+    align-self:flex-end;
+}
+
+#commandPanel Button#saveButton Image{
+    width: 18px;
+}
+
+#commandPanel Button#homeButton {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-right: 0px;
+    max-width: 23px;
+}
+
+#commandPanel Button#createButton {
+    padding-right: 0px;
+    max-width: 67px;
+}
+
+#commandPanel Button#saveButton {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-right: 2px;
+    max-width: 61px;
+}
+
+#commandPanel Button#loadButton {
+    max-width: 60px;
+    padding-right: 0px;
+}
+
+#multipleNodesSelected {
+    white-space: normal;
+    margin-top: 5px;
+}
+
+NodeView.CommentNode VisualElement.node-io{
+    display: none;
+}
+
+NodeView.CommentNode {
+    border-width: 1px;
+    border-color: rgba(0,0,0,0); 
+    background-color: rgba(0,0,0,50) !important;
+    font-size: 18px;
+}
+
+NodeView.CommentNode.node-selected{
+    border-color: rgba(68, 192, 255, 1);
+}
+
+.startLabel{
+    -unity-font-style: bold;
+    margin-left: 8px;
+    margin-top: 3px;
+}

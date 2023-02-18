@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="unity-list-view__reorderable-handle" class="unity-list-view__reorderable-handle" style="cursor: pan;">
+        <ui:VisualElement name="unity-list-view__reorderable-handle-bar" class="unity-list-view__reorderable-handle-bar" style="cursor: pan;"/>
+        <ui:VisualElement name="unity-list-view__reorderable-handle-bar" class="unity-list-view__reorderable-handle-bar" style="cursor: pan;"/>
+    </ui:VisualElement>
+</ui:UXML>
