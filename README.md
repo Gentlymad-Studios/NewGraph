@@ -8,4 +8,5 @@ Add INode and relevant attributes to your data class...
 ![image](https://user-images.githubusercontent.com/530629/219878624-4eb1f569-f0f8-45d0-b9a0-9915c7109de8.png)
 
 ...and your data class will automagically show up in the graph!
+
 ![image](https://user-images.githubusercontent.com/530629/219878644-5a1d0cba-7c56-477b-9bdd-afa7207478ce.png)
