@@ -9,3 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.1] - 2023-02-18
 ### Added
 - Initial commit
+
+## [0.0.2] - 2023-02-18
+### Added
+- Added GraphSettings copying procedure
+- Refactored SettingsPRovider code to be more generic
