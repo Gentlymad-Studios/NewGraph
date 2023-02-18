@@ -7,6 +7,7 @@ namespace NewGraph {
     /// This is narrowed down to the minimum needed to work with a scriptable object of this type even in runtime situations.
     /// See GraphModelEditorSpecifics.cs for all editor specific parts of this class.
     /// </summary>
+    [CreateAssetMenu(fileName =nameof(GraphModel), menuName = "Tools/"+ nameof(GraphModel), order = 1)]
     public partial class GraphModel : ScriptableObject {
         /// <summary>
         /// List of all the nodes we want to work on.
