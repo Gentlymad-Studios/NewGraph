@@ -16,7 +16,7 @@ namespace NewGraph {
             nodeView.AddToClassList(nameof(CommentNode));
 
             // comment node is a very special snowflake... :D
-            // So: We completely remove all the default ui
+            // So: We completly remove all the default ui
             nodeView.ExtensionContainer.RemoveFromHierarchy();
             nodeView.InputContainer.RemoveFromHierarchy();
             nodeView.OutputContainer.RemoveFromHierarchy();
