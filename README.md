@@ -29,7 +29,7 @@ This project requires:
 2. Click on the "Create" button to create your first graph.
 
 ## Creating new Nodes
-Creating new Nodes is done by adding certain Attributes (```[Node]```,```[Output]```,```[GraphDisplay]```) and implement the ```INode``` interface in a serializable class.
+Creating new Nodes is done by adding certain Attributes (```[Node]```,```[Output]```,```[GraphDisplay]```,```[PortList]```) and implement the ```INode``` interface in a serializable class.
 
 Here is a simple example:
 ```c#
@@ -41,6 +41,10 @@ public class AnotherTestNode : INode { // Make sure to implement the INode inter
     // it is important to also add the SerializeReference attribute, so that unity serializes this field as a reference.
     [Output, SerializeReference]
     public TestNode output = null;
+    
+    // With the PortList attribute you can instruct the graph view to visualize a dynamic list of ports. 
+    [PortList, SerializeReference]
+    public List<TestNode> dataList;
 
     [Serializable]
     public class SpecialData {
