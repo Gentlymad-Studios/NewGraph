@@ -9,13 +9,13 @@ namespace NewGraph {
     /// <summary>
     /// Based on: https://github.com/Unity-Technologies/UnityCsReference/blob/2022.2/Modules/GraphViewEditor/NodeSearch/SearchWindow.cs
     /// Converted to our own class so this works even if unity decides to change the API.
-    /// This is part of the infamous UnityEditor.Experimental.GraphView namespace that is considered dprecated.
+    /// This is part of the infamous UnityEditor.Experimental.GraphView namespace that is considered deprecated.
     /// However there is no substitution on the horizon for a neat search window like this one.
     /// ///
     /// BE AWARE AS WE ARE USING SOME DARK MAGIC TO CALL AN INTERNAL METHOD HERE.
     /// ///
     /// For documentation on how to use this: Oficially there is none.
-    /// Inoficially: I found this video that goes through it in detail: https://www.youtube.com/watch?v=S9NgPKJpJkU
+    /// Inofficially: I found this video that goes through it in detail: https://www.youtube.com/watch?v=S9NgPKJpJkU
     /// </summary>
     [InitializeOnLoad]
     public class SearchWindow : EditorWindow {
@@ -25,7 +25,7 @@ namespace NewGraph {
         private static readonly System.Reflection.MethodInfo SearchField = null;
         // binding flags to successfully capture the SearchField method
         private const System.Reflection.BindingFlags methodRetrievalFlags = System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static;
-        // cached version of the searchfield parameters to avoid some garbe as the method is called very often (OnGUI)
+        // cached version of the searchfield parameters to avoid some garbage as the method is called very often (OnGUI loop)
         private object[] SearchFieldParameters = new object[2];
 
         /// <summary>
