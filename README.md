@@ -58,7 +58,7 @@ public class AnotherTestNode : INode { // Make sure to implement the INode inter
     public SpecialData specialData;
 }
 ```
-After adding the required attributes and implementing the interface you node should be immidiatley available in the GraphView.
+After adding the required attributes and implementing the interface your node should be immidiatley available in the GraphView.
 
 ## Notes
 1. You can also create editor only utility nodes. See the source code for the CommentNode (https://github.com/Gentlymad-Studios/NewGraph/blob/main/Editor/Views/Nodes/CommentNode.cs) to learn more about it. 
