@@ -27,7 +27,7 @@ This project requires:  https://github.com/Gentlymad-Studios/GraphViewBase and O
 2. Click on the "Create" button to create your first graph.
 
 # Creating new Nodes
-Creating new Nodes is done by adding certain Attributes (```[Node]```,```[Output]```,```[GraphDisplay]```) and implement the ```INode```interface in a serializable class.
+Creating new Nodes is done by adding certain Attributes (```[Node]```,```[Output]```,```[GraphDisplay]```) and implement the ```INode``` interface in a serializable class.
 
 Here is a simple example:
 ```c#
@@ -52,3 +52,9 @@ public class AnotherTestNode : INode { // Make sure to implement the INode inter
     public SpecialData specialData;
 }
 ```
+After adding the required attributes and implementing the interface you node should be immidiatley available in the GraphView.
+
+# Notes
+1. You can also create editor only utility nodes. See the source code for the CommentNode (https://github.com/Gentlymad-Studios/NewGraph/blob/main/Editor/Views/Nodes/CommentNode.cs) to learn more about it. 
+2. Graph assets are simple Scriptable Objects and everything will be fully serialized. In our pipeline we will still convert this representations to the specific use case. In theory you could use a graph asset directly on runtime.
+3. The Graph Editor is intended for editor usage ONLY. We are operating with Unity's serialization system under the hood.
