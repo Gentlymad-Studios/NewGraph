@@ -6,7 +6,6 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static GraphViewBase.GraphView;
 
 namespace NewGraph {
     public class GraphController {
@@ -294,12 +293,6 @@ namespace NewGraph {
         }
 
         /// <summary>
-        /// Called when the position of a node changed...
-        /// </summary>
-        /// <param name="data">the node</param>
-        private void OnNodeMoved(object data = null) {}
-
-        /// <summary>
         /// Called to reload the complete graph...
         /// </summary>
         private void Reload() {
@@ -319,11 +312,6 @@ namespace NewGraph {
             if (internalActions.ContainsKey(actionType)) {
                 internalActions[actionType](data);
             }
-        }
-
-        public class NodeCreationEntry {
-            public string fullpath;
-            public Action<object> action;
         }
 
         private void BuildSearchableMenu() {
