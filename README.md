@@ -1,6 +1,6 @@
 # NewGraph
 ![image](https://user-images.githubusercontent.com/530629/219878506-2a12f872-cf5b-468e-8982-066c742bb8e7.png)
-A general node graph solution for Unity powered by UIToolkit (UIElements). This is based on the idea to visualize complex data structures as graph networks without having to modify already established data classes, except adding [Node], [Port] and [SerializeReference] attributes to all classes that should show in the Graph View. 
+A general node graph solution for Unity powered by UIToolkit (UIElements). This is based on the idea to visualize complex data structures as graph networks without having to modify already established data classes, except adding [Node], [Output], [PortList] and [SerializeReference] attributes to all classes that should show in the Graph View. 
 
 This project requires:
 1. https://github.com/Gentlymad-Studios/GraphViewBase
@@ -64,5 +64,5 @@ After adding the required attributes and implementing the interface your node sh
 1. You can also create editor only utility nodes. See the source code for the CommentNode (https://github.com/Gentlymad-Studios/NewGraph/blob/main/Editor/Views/Nodes/CommentNode.cs) to learn more about it. 
 2. Graph assets are simple Scriptable Objects and everything will be fully serialized. In our pipeline we will still convert these representations to the specific use case but in theory you could use a graph asset directly on runtime.
 3. The Graph Editor is intended for editor usage ONLY. We are operating with Unity's serialization system under the hood.
-4. We make heavy use if Unity's ability to serialize managed references. With this we don't need child/sub scriptable objects and can serialize everything (that implements INode) into one object.
+4. We make heavy use of Unity's ability to serialize managed references. With this we don't need child/sub scriptable objects and can serialize everything (that implements INode) into one object.
 
