@@ -4,9 +4,9 @@ Our general node graph solution. This is based on the idea to visualize complex 
 
 This project requires:  https://github.com/Gentlymad-Studios/GraphViewBase and OdinSerializer (not inspector) https://github.com/Gentlymad-Studios/OdinSerializer to work. (Original OdinSerializer repository: https://github.com/TeamSirenix/odin-serializer)
 
-# Installation
+## Installation
 
-# Option 1: Using our Package Manager Tools (and automatically resolve git dependencies)
+### Option 1: Using our Package Manager Tools (and automatically resolve git dependencies)
 1. Open your Package Manager window in Unity
 2. Click on the '+' icon and select 'Add package from git URL...'
 3. Add https://github.com/Gentlymad-Studios/PackageManagerTools.git to install our PackageManagerTools
@@ -14,7 +14,7 @@ This project requires:  https://github.com/Gentlymad-Studios/GraphViewBase and O
 5. Wait a few moments until PackageManagerTools picked up all dependencies.
 6. You are ready to go.
 
-# Option 2: Manual installation
+### Option 2: Manual installation
 1. Open your Package Manager window in Unity
 2. Click on the '+' icon and select 'Add package from git URL...'
 3. Add https://github.com/Gentlymad-Studios/OdinSerializer.git package.
@@ -22,11 +22,11 @@ This project requires:  https://github.com/Gentlymad-Studios/GraphViewBase and O
 5. Add https://github.com/Gentlymad-Studios/NewGraph.git package.
 6. You are ready to go.
 
-# Usage
+## Usage
 1. Go to Tools/GraphWindow to Open the graph window. This is your hub where all graphs are created.
 2. Click on the "Create" button to create your first graph.
 
-# Creating new Nodes
+## Creating new Nodes
 Creating new Nodes is done by adding certain Attributes (```[Node]```,```[Output]```,```[GraphDisplay]```) and implement the ```INode``` interface in a serializable class.
 
 Here is a simple example:
@@ -54,7 +54,7 @@ public class AnotherTestNode : INode { // Make sure to implement the INode inter
 ```
 After adding the required attributes and implementing the interface you node should be immidiatley available in the GraphView.
 
-# Notes
+## Notes
 1. You can also create editor only utility nodes. See the source code for the CommentNode (https://github.com/Gentlymad-Studios/NewGraph/blob/main/Editor/Views/Nodes/CommentNode.cs) to learn more about it. 
 2. Graph assets are simple Scriptable Objects and everything will be fully serialized. In our pipeline we will still convert this representations to the specific use case. In theory you could use a graph asset directly on runtime.
 3. The Graph Editor is intended for editor usage ONLY. We are operating with Unity's serialization system under the hood.
