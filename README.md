@@ -34,7 +34,7 @@ Creating new Nodes is done by adding certain Attributes (```[Node]```,```[Output
 Here is a simple example:
 ```c#
 // Make sure your class is serializable
-// And add the Node attribute. Here you can define a spcial color for your node as well as organize it with subcategories.
+// And add the Node attribute. Here you can define a special color for your node as well as organize it with subcategories.
 [Serializable, Node("#007F00FF", "Special")]
 public class AnotherTestNode : INode { // Make sure to implement the INode interface so the graph can serialize this easily.
     // with the output attribute you can create visual connectable ports in the graph view to connect to other nodes.
