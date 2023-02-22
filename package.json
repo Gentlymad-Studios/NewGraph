@@ -8,8 +8,8 @@
   "changelogUrl": "https://github.com/Gentlymad-Studios/NewGraph/blob/master/CHANGELOG.md",
   "licensesUrl": "https://github.com/Gentlymad-Studios/NewGraph/blob/master/LICENSE.md",
   "custom_gitDependencies": {
-    "com.gentlymadstudios.odinserializer": "https://github.com/Gentlymad-Studios/OdinSerializer.git",
-    "com.gentlymadstudios.graphviewbase": "https://github.com/Gentlymad-Studios/GraphViewBase.git"
+    "com.gentlymad.odinserializer": "https://github.com/Gentlymad-Studios/OdinSerializer.git",
+    "com.gentlymad.graphviewbase": "https://github.com/Gentlymad-Studios/GraphViewBase.git"
  },
  "keywords": [
     "node",
