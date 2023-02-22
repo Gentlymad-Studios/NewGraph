@@ -27,8 +27,6 @@ namespace NewGraph {
         private string currentRelativePropertyPath;
         private object currentAttribute;
         private GraphDisplayAttribute currentGraphDisplayAttribute = null;
-        private int currentSpacesCount = 0;
-        private List<HeaderAttribute> currentHeaderAttributes = new List<HeaderAttribute>();
         private SerializedProperty currentProperty;
         #endregion
 
@@ -50,8 +48,6 @@ namespace NewGraph {
                 {typeof(PortAttribute), GetPortAttribute },
                 {typeof(OutputAttribute), GetPortAttribute },
                 {typeof(GraphDisplayAttribute), GetGraphDisplayAttribute },
-                {typeof(HeaderAttribute), GetHeaderAttribute },
-                {typeof(SpaceAttribute), GetSpaceAttribute },
                 {typeof(PortListAttribute), GetPortListAttribute },
             };
 
@@ -107,18 +103,6 @@ namespace NewGraph {
                         currentGraphDisplayAttribute = attrib;
                     }
                 }
-                return -1;
-            }
-
-            //[Header]
-            int GetHeaderAttribute() {
-                currentHeaderAttributes.Add((HeaderAttribute)currentAttribute);
-                return -1;
-            }
-
-            //[Space]
-            int GetSpaceAttribute() {
-                currentSpacesCount++;
                 return -1;
             }
         }
@@ -184,9 +168,7 @@ namespace NewGraph {
         private int RetrieveCurrentAttributes() {
 
             int ignoreFurtherDepth = -1;
-            currentHeaderAttributes.Clear();
             currentGraphDisplayAttribute = null;
-            currentSpacesCount = 0;
 
             // retrieve all attributes
             attributeBag.GetAttributes(nodeType, currentRelativePropertyPath, true);
@@ -208,7 +190,7 @@ namespace NewGraph {
 
             // avoid further iteration of this property as it has already been processed or should be ignored...
             if (ignoreFurtherDepth < 0) {
-                GraphPropertyInfo graphProperty = new GraphPropertyInfo(currentRelativePropertyPath, currentHeaderAttributes, currentSpacesCount, currentGraphDisplayAttribute);
+                GraphPropertyInfo graphProperty = new GraphPropertyInfo(currentRelativePropertyPath, currentGraphDisplayAttribute);
                 // only add to list if this should not be hidden (this takes care of the edge case where the default display type was set to Hide)
                 if (graphProperty.graphDisplay.displayType != DisplayType.Hide) {
                     // check if we have a generic object, that is not an array.

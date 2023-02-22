@@ -92,15 +92,17 @@ namespace NewGraph {
 
         private void CreatePropertyUI(VisualElement[] groupParents, GraphPropertyInfo propertyInfo, SerializedProperty property) {
             void Create(VisualElement groupParent, Editability edtability) {
+                /*
                 foreach (HeaderAttribute headerInfo in propertyInfo.headers) {
                     Label header = new Label { text = headerInfo.header };
                     header.style.unityFontStyleAndWeight = FontStyle.Bold;
                     groupParent.Add(header);
-                }
+                }*/
 
+                /*
                 for (int i = 0; i < propertyInfo.spacesCount; i++) {
                     groupParent.Add(new Label { text = " " });
-                }
+                }*/
 
                 PropertyField propertyField = CreatePropertyField(property);
                 SetupPropertyField(propertyField, propertyInfo, edtability);
