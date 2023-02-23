@@ -6,7 +6,8 @@ namespace NewGraph {
     /// external in this case means outside of the captured selection.
     /// </summary>
     public class NodeDataInfo {
-        public List<ExternalReference> externalReferences = new List<ExternalReference>();
+        public List<NodeReference> externalReferences = new List<NodeReference>();
+        public List<NodeReference> internalReferences = new List<NodeReference>();
         public NodeModel baseNodeItem;
     }
 }

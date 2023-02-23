@@ -33,7 +33,7 @@ namespace NewGraph {
         private PropertyBag(NodeAttribute nodeAttribute, Type nodeType, SerializedProperty nodeProperty) {
             this.nodeType = nodeType;
 
-            inputPort = new PortInfo(nodeProperty.propertyPath, nodeType, new PortAttribute(nodeAttribute.inputPortCapacity, PortDirection.Input), GraphSettings.Instance.defaultInputName);
+            inputPort = new PortInfo(nodeProperty.propertyPath, nodeType, new PortBaseAttribute(nodeAttribute.inputPortCapacity, PortDirection.Input), GraphSettings.Instance.defaultInputName);
             InitializeAttributebehaviors();
             RetrieveAll(nodeProperty);
         }
@@ -45,8 +45,8 @@ namespace NewGraph {
         private void InitializeAttributebehaviors() {
             attributebehaviors = new Dictionary<Type, Func<int>>() {
                 {typeof(HideInInspector), GetHideInInspectorAttribute },
+                {typeof(PortBaseAttribute), GetPortAttribute },
                 {typeof(PortAttribute), GetPortAttribute },
-                {typeof(OutputAttribute), GetPortAttribute },
                 {typeof(GraphDisplayAttribute), GetGraphDisplayAttribute },
                 {typeof(PortListAttribute), GetPortListAttribute },
             };
@@ -56,7 +56,7 @@ namespace NewGraph {
                 foreach (object attribute in attributeBag.attributes) {
                     Type attributeType = attribute.GetType();
                     if (attributeType == typeof(SerializeReference)) {
-                        portInfosList.Add(new PortInfo(currentRelativePropertyPath, type, (PortAttribute)currentAttribute, portName));
+                        portInfosList.Add(new PortInfo(currentRelativePropertyPath, type, (PortBaseAttribute)currentAttribute, portName));
                         return currentProperty.depth;
                     }
                 }
