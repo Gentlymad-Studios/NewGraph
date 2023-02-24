@@ -5,7 +5,7 @@ A data oriented node graph solution for **Unity** powered by **UIToolkit (UIElem
 ### Features:
 * `WYSIWYG.` A port connecting to a node in the graph is a `real reference` to the object in your `graph .asset`
 * Good performance even with many nodes as this is built upon  the new retained `UIToolkit` UI system.
-* build visual data oriented networks based on your custom `[Serializable]` data classes simply by `adding attributes`.
+* create visual data oriented networks based on your custom `[Serializable]` data classes simply by `adding attributes`.
 * `Fully serialized dynamic lists` of ports with the [`[PortList]`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#portlist) attribute.
 * Customize data visualization with [`[GraphDisplay]`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#graphdisplay): Display a field directly inside the graph? The side inspector? In both views?
 * Full support of Unity's native `Undo/Redo` stack.
