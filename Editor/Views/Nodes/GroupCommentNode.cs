@@ -19,7 +19,10 @@ namespace NewGraph {
         /// </summary>
         [SerializeField, HideInInspector]
         private float height = 300;
-
+        
+        /// <summary>
+        /// The group color of our node. We expose this as a serialized value so users can change the color for organizational purposes.
+        /// </summary>
         [SerializeField]
         private Color groupColor = new Color(30f / 255f, 30f / 255f, 30f / 255f, 0.5f);
 
