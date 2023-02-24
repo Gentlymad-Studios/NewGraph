@@ -9,13 +9,13 @@ namespace NewGraph {
     public class GroupCommentNode : INode, IUtilityNode {
 
         /// <summary>
-        /// Our nodes usually don't need to serilaize their width but in this case, since it needs to be adjustable we need to serialize it.
+        /// Our nodes usually don't need to serialize their width but in this case, since it needs to be adjustable we need to serialize it.
         /// </summary>
         [SerializeField, HideInInspector]
         private float width = 300;
         
         /// <summary>
-        /// Our nodes usually don't need to serilaize their height but in this case, since it needs to be adjustable we need to serialize it.
+        /// Our nodes usually don't need to serialize their height but in this case, since it needs to be adjustable we need to serialize it.
         /// </summary>
         [SerializeField, HideInInspector]
         private float height = 300;
@@ -125,7 +125,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="obj"></param>
         private void OnPositionChange(PositionData obj) {
-            // calculate move data based on our last start position
+            // calculate move delta based on our last start position
             nodeMoveDelta = -1*(nodeStartPosition - obj.position);
 
             // set the position of all nodes that are contained
@@ -133,7 +133,7 @@ namespace NewGraph {
                 Vector2 nodePos = nodeView.GetPosition();
                 nodeView.SetPosition(new(nodePos.x+nodeMoveDelta.x, nodePos.y+nodeMoveDelta.y));
             }
-            // reset move delta immediatly, since we don't want to keep track of the start position ov every node.
+            // reset move delta immediatly, since we don't want to keep track of the start position of every node.
             nodeStartPosition = nodeView.GetPosition();
         }
 
@@ -142,6 +142,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="evt"></param>
         private void OnMouseDown(MouseDownEvent evt) {
+            // make sure we have a left click
             if (evt.button == 0) {
                 expansionStartPosition = GetViewScaleAdjustedPosition(evt.mousePosition);
                 expansionMoveDelta = Vector2.zero;
