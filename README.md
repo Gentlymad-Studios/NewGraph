@@ -24,4 +24,4 @@ _This is planned to receive long term support as it is an integral part of our i
 ### Wiki
 See the [Wiki](https://github.com/Gentlymad-Studios/NewGraph/wiki) for installation & usage instructions.
 
-~ Use at you own risk. ~
+~ Use at your own risk. ~
