@@ -21,4 +21,7 @@ This is planned to receive long term support as it is an integral part of our in
 * `No reliance` on the now deprecated `Experimental.GraphView`. Everything was written from scratch or is based on maintainable code.
 * `Keyboard shortcuts`, a `searchable context menu`, default UtilityNodes like [`CommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#groupcommentnode), [`GroupCommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#groupcommentnode), a extensively commented code base and more...
 
+### Wiki
 See the [Wiki](https://github.com/Gentlymad-Studios/NewGraph/wiki) for installation & usage instructions.
+
+~ Use at you own risk. ~
