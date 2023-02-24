@@ -26,7 +26,9 @@ namespace NewGraph {
         [SerializeField]
         private Color groupColor = new Color(30f / 255f, 30f / 255f, 30f / 255f, 0.5f);
 
+        // reference to the actual view
         private NodeView nodeView;
+        // reference to the poweful node controller to adjust node logic and behavior
         private NodeController nodeController;
         private VisualElement dragElement;
         private VisualElement container;
@@ -61,17 +63,26 @@ namespace NewGraph {
             }
         }
 
+        /// <summary>
+        /// This method is called when our node view is being created.
+        /// Think of it as the constructor of this class.
+        /// </summary>
+        /// <param name="nodeController">The nodeController has all the important information to adjust our node node logic and UI.</param>
         public void Initialize(NodeController nodeController) {
             this.nodeController = nodeController;
             nodeView = nodeController.nodeView;
             // we want our node view to be "behind" all nodes so we give it its own layer
             nodeView.Layer = -20;
+            // set width and height to the serialized values
             nodeView.style.width = width;
             nodeView.style.height = height;
+            // cloak ourselves as a "CommentNode" to receive its .uss values!
             nodeView.AddToClassList(nameof(CommentNode));
+            // remove some default UI that is not needed for our special case
             nodeView.ExtensionContainer.RemoveFromHierarchy();
             nodeView.InputContainer.RemoveFromHierarchy();
             nodeView.OutputContainer.RemoveFromHierarchy();
+            // listen on mouse down and mouse up events
             nodeView.RegisterCallback<MouseDownEvent>(OnNodeViewMouseDown);
             nodeView.RegisterCallback<MouseUpEvent>(OnMouseUp);
 
@@ -92,8 +103,13 @@ namespace NewGraph {
             dragElement.RegisterCallback<MouseDownEvent>(OnMouseDown);
             container.Add(dragElement);
         }
-
+        
+        /// <summary>
+        /// If the color of our groupColor variable changed, we want to adjust the color of our node accordingly.
+        /// </summary>
+        /// <param name="evt"></param>
         private void OnColorChanged(SerializedPropertyChangeEvent evt) {
+            // since we are the class owner we know that the retrieved property is 100% a color value so we can use it directly.
             container.style.backgroundColor = evt.changedProperty.colorValue;
         }
 
