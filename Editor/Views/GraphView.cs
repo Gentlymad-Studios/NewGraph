@@ -32,6 +32,10 @@ namespace NewGraph {
             return new Vector2((localMousePosition.x - ContentContainer.transform.position.x) / ContentContainer.transform.scale.x, (localMousePosition.y - ContentContainer.transform.position.y) / ContentContainer.transform.scale.y);
         }
 
+        public Vector2 GetCurrentScale() {
+            return ContentContainer.transform.scale;
+        }
+
         public Vector2 GetCurrentMouseViewPosition() {
             return LocalToViewTransformPosition(this.WorldToLocal(mousePosition));
         }
@@ -59,6 +63,8 @@ namespace NewGraph {
                 edge.RemoveFromHierarchy();
             }
         }
+
+
 
         public BaseNode GetFirstSelectedNode() {
             return ContentContainer.NodesSelected.First();

@@ -9,10 +9,10 @@ namespace NewGraph {
 
     public class NodeView : BaseNode {
 
-        private VisualElement inspectorContent;
+        public VisualElement inspectorContent;
         private ReactiveSettings reactiveSettings;
         private List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
-        private Color nodeColor;
+        public Color nodeColor;
         private bool hasNodeViewProperty = false;
         private bool hasInspectorProperty = false;
         
@@ -26,12 +26,15 @@ namespace NewGraph {
             this.nodeColor = nodeColor;
         }
 
-        public void InitializeView() {
+        private void ColorizeBackground() {
             if (nodeColor != default) {
                 style.backgroundColor = nodeColor;
             } else {
                 style.backgroundColor = GraphSettings.Instance.defaultNodeColor;
             }
+        }
+
+        public void InitializeView() {
 
             editableLabels.Clear();
 
@@ -42,6 +45,8 @@ namespace NewGraph {
             SetPosition(position);
 
             if (!controller.nodeItem.isUtilityNode) {
+                ColorizeBackground();
+
                 inspectorContent = new VisualElement();
                 controller.DoForNameProperty(CreateLabelUI);
                 controller.DoForEachPortProperty(CreateOuputPortUI);
@@ -58,12 +63,19 @@ namespace NewGraph {
                 }
             } else {
                 IUtilityNode utilityNode = controller.nodeItem.nodeData as IUtilityNode;
-                if (utilityNode.CreateInspectorUI()) {
-                    inspectorContent = new VisualElement();
+                if (utilityNode.ShouldColorizeBackground()) {
+                    ColorizeBackground();
                 }
+
                 if (utilityNode.CreateNameUI()) {
                     controller.DoForNameProperty(CreateLabelUI);
                 }
+
+                if (utilityNode.CreateInspectorUI()) {
+                    inspectorContent = new VisualElement();
+                    controller.DoForEachPropertyOrGroup(new[] { ExtensionContainer, inspectorContent }, CreateGroupUI, CreatePropertyUI);
+                }
+
                 (controller.nodeItem.nodeData as IUtilityNode).Initialize(controller);
             }
 
@@ -109,14 +121,14 @@ namespace NewGraph {
                 groupParent.Add(propertyField);
             }
 
-            if (propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.NodeView)) {
+            if (!controller.nodeItem.isUtilityNode && propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.NodeView)) {
                 hasNodeViewProperty = true;
                 Create(groupParents[0], Editability.NodeView);
             }
 
             if (propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.Inspector)) {
                 hasInspectorProperty= true;
-                Create(groupParents[1], Editability.Inspector);
+                Create(groupParents[groupParents.Length-1], Editability.Inspector);
             }
         }
 

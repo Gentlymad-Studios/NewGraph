@@ -21,5 +21,9 @@ namespace NewGraph {
             nodeView.InputContainer.RemoveFromHierarchy();
             nodeView.OutputContainer.RemoveFromHierarchy();
         }
+
+        public bool ShouldColorizeBackground() {
+            return true;
+        }
     }
 }

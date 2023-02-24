@@ -21,6 +21,13 @@ namespace NewGraph {
         private bool isLoading = false;
         private Dictionary<object, NodeView> dataToViewLookup = new Dictionary<object, NodeView>();
 
+        public Vector2 GetViewScale() {
+            return graphView.GetCurrentScale();
+        }
+
+        public void ForEachNode(Action<BaseNode> callback) {
+            graphView.ForEachNodeDo(callback);
+        }
         public GraphController(VisualElement uxmlRoot) {
             graphView = new GraphView(uxmlRoot, OnGraphAction);
             graphView.OnViewTransformChanged -= OnViewportChanged;
@@ -436,6 +443,9 @@ namespace NewGraph {
             isLoading = true;
 
             // clear everything up since we have changed contexts....
+            graphView.ForEachNodeDo((node) => {
+                (node as NodeView).controller.Dispose();
+            });
             inspector.Clear();
             graphView.ClearView();
             dataToViewLookup.Clear();

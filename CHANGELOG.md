@@ -33,3 +33,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - renamed [Output] to [Port] attribute to avoid misleading naming.
 -renamed former [Port] attribute to [PortBase]
+
+## [0.0.6] - 2023-02-24
+### Added
+- added a GroupCommentNode that allows to frame/group a section of nodes that can also be moved together
+- made some API changes to give utility nodes even more flexibility
+- added ShouldColorizeBackground method to IUtilityNode interface

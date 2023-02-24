@@ -258,3 +258,24 @@ NodeView.CommentNode.node-selected{
     margin-left: 8px;
     margin-top: 3px;
 }
+
+NodeView.CommentNode VisualElement.GroupCommentNodeContainer{
+    flex-grow: 1;
+    justify-content: flex-end;
+    border-width: 1px;
+    border-color: rgb(30,30,30); 
+}
+
+NodeView.CommentNode{
+    background-color: rgba(0,0,0,0) !important;
+}
+
+NodeView.CommentNode VisualElement.GroupCommentNodeContainer {
+    border-radius: 6px;
+}
+
+NodeView.CommentNode VisualElement.GroupCommentNodeContainer *{
+    align-self: flex-end;
+    opacity: 0.5;
+    cursor: pan;
+}

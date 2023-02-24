@@ -1,3 +1,4 @@
+using GraphViewBase;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -15,6 +16,18 @@ namespace NewGraph {
         private PropertyBag propertyBag;
         private SerializedObject serializedObject;
         private SerializedProperty nodeDataProperty;
+
+        public Vector2 GetViewScale() {
+            return graphController.GetViewScale();
+        }
+
+        public void ForEachNode(Action<BaseNode> callback) {
+            graphController.ForEachNode(callback);
+        }
+
+        public void Dispose() {
+
+        }
 
         public NodeController(NodeModel nodeItem, GraphController graphController) {
             this.graphController = graphController;
