@@ -39,3 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - added a GroupCommentNode that allows to frame/group a section of nodes that can also be moved together
 - made some API changes to give utility nodes even more flexibility
 - added ShouldColorizeBackground method to IUtilityNode interface
+
+## [0.0.7] - 2023-02-27
+### Added
+- added Undo capabilities when changing node dimensions for the GroupCommentNode

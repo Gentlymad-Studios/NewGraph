@@ -1,5 +1,6 @@
 using GraphViewBase;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -9,26 +10,21 @@ namespace NewGraph {
     public class GroupCommentNode : INode, IUtilityNode {
 
         /// <summary>
-        /// Our nodes usually don't need to serialize their width but in this case, since it needs to be adjustable we need to serialize it.
+        /// Our nodes usually don't need to serilaize their width but in this case, since it needs to be adjustable we need to serialize it.
         /// </summary>
         [SerializeField, HideInInspector]
         private float width = 300;
         
         /// <summary>
-        /// Our nodes usually don't need to serialize their height but in this case, since it needs to be adjustable we need to serialize it.
+        /// Our nodes usually don't need to serilaize their height but in this case, since it needs to be adjustable we need to serialize it.
         /// </summary>
         [SerializeField, HideInInspector]
         private float height = 300;
-        
-        /// <summary>
-        /// The group color of our node. We expose this as a serialized value so users can change the color for organizational purposes.
-        /// </summary>
+
         [SerializeField]
         private Color groupColor = new Color(30f / 255f, 30f / 255f, 30f / 255f, 0.5f);
 
-        // reference to the actual view
         private NodeView nodeView;
-        // reference to the poweful node controller to adjust node logic and behavior
         private NodeController nodeController;
         private VisualElement dragElement;
         private VisualElement container;
@@ -63,26 +59,17 @@ namespace NewGraph {
             }
         }
 
-        /// <summary>
-        /// This method is called when our node view is being created.
-        /// Think of it as the constructor of this class.
-        /// </summary>
-        /// <param name="nodeController">The nodeController has all the important information to adjust our node node logic and UI.</param>
         public void Initialize(NodeController nodeController) {
             this.nodeController = nodeController;
             nodeView = nodeController.nodeView;
             // we want our node view to be "behind" all nodes so we give it its own layer
             nodeView.Layer = -20;
-            // set width and height to the serialized values
             nodeView.style.width = width;
             nodeView.style.height = height;
-            // cloak ourselves as a "CommentNode" to receive its .uss values!
             nodeView.AddToClassList(nameof(CommentNode));
-            // remove some default UI that is not needed for our special case
             nodeView.ExtensionContainer.RemoveFromHierarchy();
             nodeView.InputContainer.RemoveFromHierarchy();
             nodeView.OutputContainer.RemoveFromHierarchy();
-            // listen on mouse down and mouse up events
             nodeView.RegisterCallback<MouseDownEvent>(OnNodeViewMouseDown);
             nodeView.RegisterCallback<MouseUpEvent>(OnMouseUp);
 
@@ -103,13 +90,8 @@ namespace NewGraph {
             dragElement.RegisterCallback<MouseDownEvent>(OnMouseDown);
             container.Add(dragElement);
         }
-        
-        /// <summary>
-        /// If the color of our groupColor variable changed, we want to adjust the color of our node accordingly.
-        /// </summary>
-        /// <param name="evt"></param>
+
         private void OnColorChanged(SerializedPropertyChangeEvent evt) {
-            // since we are the class owner we know that the retrieved property is 100% a color value so we can use it directly.
             container.style.backgroundColor = evt.changedProperty.colorValue;
         }
 
@@ -144,7 +126,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="obj"></param>
         private void OnPositionChange(PositionData obj) {
-            // calculate move delta based on our last start position
+            // calculate move data based on our last start position
             nodeMoveDelta = -1*(nodeStartPosition - obj.position);
 
             // set the position of all nodes that are contained
@@ -152,7 +134,7 @@ namespace NewGraph {
                 Vector2 nodePos = nodeView.GetPosition();
                 nodeView.SetPosition(new(nodePos.x+nodeMoveDelta.x, nodePos.y+nodeMoveDelta.y));
             }
-            // reset move delta immediatly, since we don't want to keep track of the start position of every node.
+            // reset move delta immediatly, since we don't want to keep track of the start position ov every node.
             nodeStartPosition = nodeView.GetPosition();
         }
 
@@ -161,7 +143,6 @@ namespace NewGraph {
         /// </summary>
         /// <param name="evt"></param>
         private void OnMouseDown(MouseDownEvent evt) {
-            // make sure we have a left click
             if (evt.button == 0) {
                 expansionStartPosition = GetViewScaleAdjustedPosition(evt.mousePosition);
                 expansionMoveDelta = Vector2.zero;
@@ -197,9 +178,13 @@ namespace NewGraph {
             // calculate the correct move delta
             expansionMoveDelta = -1 * (expansionStartPosition - GetViewScaleAdjustedPosition(evt.mousePosition));
 
+            // make changes to the width and height appear in the undo stack
+            Undo.RecordObject(nodeController.graphController.graphData, nameof(GroupCommentNode)+" Dimension change.");
+
             // set our serialized values for width & height
             width = expansionStartWidth + expansionMoveDelta.x;
             height = expansionStartHeight + expansionMoveDelta.y;
+            
             // set styling accordingly
             nodeView.style.width = width;
             nodeView.style.height = height;
@@ -221,24 +206,18 @@ namespace NewGraph {
         /// Should inspector UI be created?
         /// </summary>
         /// <returns></returns>
-        public bool CreateInspectorUI() {
-            return true;
-        }
+        public bool CreateInspectorUI() => true;
 
         /// <summary>
         /// Should UI for the name be created?
         /// </summary>
         /// <returns></returns>
-        public bool CreateNameUI() {
-            return true;
-        }
+        public bool CreateNameUI() => true;
 
         /// <summary>
         /// Should the background be directly colorized by the node attribute?
         /// </summary>
         /// <returns></returns>
-        public bool ShouldColorizeBackground() {
-            return false;
-        }
+        public bool ShouldColorizeBackground() => false;
     }
 }
