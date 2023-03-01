@@ -18,7 +18,7 @@ namespace NewGraph {
             this.container = container;
             this.portInfo= portListInfo;
 
-            Label staticHeader = new Label(portListInfo.portName);
+            Label staticHeader = new Label(portListInfo.fieldName);
             staticHeader.AddToClassList(nameof(staticHeader));
             hierarchy.Add(staticHeader);
             staticHeader.SendToBack();

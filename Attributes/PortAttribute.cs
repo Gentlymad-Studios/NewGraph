@@ -9,6 +9,6 @@ namespace NewGraph {
         /// <summary>
         /// Port Attribute, this needs to be added to every SerializeReference field that should show up in the graph as a assignable node.
         /// </summary>
-        public PortAttribute() : base(Capacity.Single, PortDirection.Output) { }
+        public PortAttribute(string name=null) : base(name, Capacity.Single, PortDirection.Output) { }
     }
 }

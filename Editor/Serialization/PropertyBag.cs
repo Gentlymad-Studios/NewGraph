@@ -33,7 +33,7 @@ namespace NewGraph {
         private PropertyBag(NodeAttribute nodeAttribute, Type nodeType, SerializedProperty nodeProperty) {
             this.nodeType = nodeType;
 
-            inputPort = new PortInfo(nodeProperty.propertyPath, nodeType, new PortBaseAttribute(nodeAttribute.inputPortCapacity, PortDirection.Input), GraphSettings.Instance.defaultInputName);
+            inputPort = new PortInfo(nodeProperty.propertyPath, nodeType, new PortBaseAttribute(nodeAttribute.inputPortName, nodeAttribute.inputPortCapacity, PortDirection.Input), GraphSettings.Instance.defaultInputName);
             InitializeAttributebehaviors();
             RetrieveAll(nodeProperty);
         }

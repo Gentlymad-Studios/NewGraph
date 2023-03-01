@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using GraphViewBase;
+using System;
 
 namespace NewGraph {
 
@@ -97,38 +98,68 @@ namespace NewGraph {
         public PortView CreatePortUI(PortInfo info, SerializedProperty property) {
             PortView port = new PortView(info, property);
 
-            port.PortName = info.portName == null ? (property != null ? property.displayName : info.fieldType.Name) : info.portName;
+            if (info.portDisplay.name != null) {
+                port.PortName = info.portDisplay.name;
+            } else {
+                if (info.fieldName == null) {
+                    if (property != null) {
+                        port.PortName = property.displayName;
+                    } else {
+                        port.PortName = info.fieldType.Name;
+                    }
+                } else {
+                    port.PortName = info.fieldName;
+                }
+            }
+
             AddPort(port);
             return port;
         }
 
         private void CreatePropertyUI(VisualElement[] groupParents, GraphPropertyInfo propertyInfo, SerializedProperty property) {
-            void Create(VisualElement groupParent, Editability edtability) {
-                /*
-                foreach (HeaderAttribute headerInfo in propertyInfo.headers) {
-                    Label header = new Label { text = headerInfo.header };
-                    header.style.unityFontStyleAndWeight = FontStyle.Bold;
-                    groupParent.Add(header);
-                }*/
-
-                /*
-                for (int i = 0; i < propertyInfo.spacesCount; i++) {
-                    groupParent.Add(new Label { text = " " });
-                }*/
-
+            PropertyField Create(VisualElement groupParent, Editability edtability) {
                 PropertyField propertyField = CreatePropertyField(property);
                 SetupPropertyField(propertyField, propertyInfo, edtability);
+
                 groupParent.Add(propertyField);
+                return propertyField;
             }
+
+            PropertyField nodeViewPropField = null;
+            PropertyField inspectorPropField = null;
 
             if (!controller.nodeItem.isUtilityNode && propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.NodeView)) {
                 hasNodeViewProperty = true;
-                Create(groupParents[0], Editability.NodeView);
+                nodeViewPropField = Create(groupParents[0], Editability.NodeView);
             }
 
             if (propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.Inspector)) {
                 hasInspectorProperty= true;
-                Create(groupParents[groupParents.Length-1], Editability.Inspector);
+                inspectorPropField = Create(groupParents[groupParents.Length-1], Editability.Inspector);
+            }
+
+            // workaround for value change disconnection bug, this can only happen if we have an inspector & and a nodeview together
+            if (inspectorPropField != null && nodeViewPropField != null) {
+                bool inspectorChanged = false;
+                bool nodeViewChanged = false;
+
+                nodeViewPropField.RegisterValueChangeCallback((evt) => {
+                    if (!inspectorChanged) {
+                        inspectorPropField.Unbind();
+                        inspectorPropField.BindProperty(property);
+                        nodeViewChanged = true;
+                    }
+                    inspectorChanged = false;
+                });
+
+                inspectorPropField.RegisterValueChangeCallback((evt) => {
+                    if (!nodeViewChanged) {
+                        nodeViewPropField.Unbind();
+                        nodeViewPropField.BindProperty(property);
+                        inspectorChanged = true;
+                    }
+                    nodeViewChanged = false;
+                });
             }
         }
 
@@ -151,6 +182,7 @@ namespace NewGraph {
         }
 
         private void CreateLabelUI(SerializedProperty property) {
+
             // Add label to title Container
             PropertyField propertyField = CreatePropertyField(property);
             editableLabels.Add(new EditableLabelElement(propertyField));
@@ -166,8 +198,12 @@ namespace NewGraph {
 
         private void BindUI(SerializedObject serializedObject) {
             this.Bind(serializedObject);
-            //inspectorContent.Bind(serializedObject);
+            /*
+            if (inspectorContent != null) {
+                inspectorContent.Bind(serializedObject);
+            }*/
         }
+
 
         private void SetupPropertyField(VisualElement propertyField, GraphPropertyInfo propertyInfo, Editability editability) {
             if (!propertyInfo.graphDisplay.editability.HasFlag(editability)) {
@@ -176,11 +212,10 @@ namespace NewGraph {
         } 
 
         private PropertyField CreatePropertyField(SerializedProperty property) {
-            PropertyField propertyField = new PropertyField(property.Copy()) {
+            PropertyField propertyField = new PropertyField(property) {
                 name = property.name,
                 bindingPath = property.propertyPath,
             };
-
             return propertyField;
         }
 

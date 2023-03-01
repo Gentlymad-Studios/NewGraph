@@ -104,6 +104,9 @@ namespace NewGraph {
             // make sure we have a left click
             if (evt.button == 0) {
                 // clear all previously captured nodes
+                if (containedNodes == null) {
+                    containedNodes = new List<NodeView>();
+                }
                 containedNodes.Clear();
                 // go overy all nodes and check which nodes are contained
                 // this is costly, so we do it only once when the movement process starts

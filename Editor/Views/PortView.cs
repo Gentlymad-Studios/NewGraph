@@ -37,7 +37,8 @@ namespace NewGraph {
                 if (outputPort.boundProperty.managedReferenceValue != inputPort.boundProperty.managedReferenceValue) {
                     //Logger.Log("Connect: change values");
                     //Undo.RegisterCompleteObjectUndo(outputPort.boundProperty.serializedObject.targetObject, "Add Connection");
-                    outputPort.boundProperty.managedReferenceValue = inputPort.boundProperty.managedReferenceValue;
+                    //outputPort.boundProperty.managedReferenceValue = inputPort.boundProperty.managedReferenceValue;
+                    outputPort.boundProperty.managedReferenceId = inputPort.boundProperty.managedReferenceId;
                     //EditorUtility.SetDirty(outputPort.boundProperty.serializedObject.targetObject);
                     outputPort.boundProperty.serializedObject.ApplyModifiedProperties();
                     connectionChangedCallback?.Invoke();

@@ -47,3 +47,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.8] - 2023-03-01
 ### Fixed
 - potential fix for wrong window size of the context menu
+
+## [0.0.9] - 2023-03-01
+### Fixed
+- created a workaround for node references losing their "live connection" after being added as a reference
+- fixed possible null ref in GroupCommentNode
+### Added
+- added ability to pan the view with alt/or options key + left click
+- added ability to rename ports via the [Node] or [Port] attribute
