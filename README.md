@@ -12,6 +12,7 @@ _This is planned to receive long term support as it is an integral part of our i
 ### Requirements
 1. https://github.com/Gentlymad-Studios/GraphViewBase
 2. https://github.com/Gentlymad-Studios/OdinSerializer (Original OdinSerializer repository: https://github.com/TeamSirenix/odin-serializer)
+3. This project requires ![Requirement](https://img.shields.io/badge/-Unity%202022.2-yellow) or later as the Unity version.
 ### Features
 * `WYSIWYG.` A port connecting to a node in the graph is a `real reference` to the object in your `graph .asset`
 * Good performance even with many nodes as this is built upon  the new retained `UIToolkit` UI system.
