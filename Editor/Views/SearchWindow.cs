@@ -173,9 +173,10 @@ namespace NewGraph {
             return false;
         }
 
-        private Rect GetTargetRect(float width) {
-            return new Rect(targetPosition.x - width / 2, targetPosition.y - k_WindowYOffset, width, 1);
+        private Rect GetTargetRect(float width, float height=1) {
+            return new Rect(targetPosition.x - width / 2, targetPosition.y - k_WindowYOffset, width, height);
         }
+
         void Init(ScriptableObject provider, VisualElement visualElement) {
 
             m_Owner = provider;
@@ -190,8 +191,8 @@ namespace NewGraph {
             position = buttonRect;
             
             visualElement.schedule.Execute(() => {
-                Rect buttonRect = GetTargetRect(width);
-                position = buttonRect;
+                Rect rect = GetTargetRect(width, height);
+                position = rect;
             });
             
             Focus();

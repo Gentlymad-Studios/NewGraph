@@ -43,3 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.7] - 2023-02-27
 ### Added
 - added Undo capabilities when changing node dimensions for the GroupCommentNode
+
+## [0.0.8] - 2023-03-01
+### Fixed
+- potential fix for wrong window size of the context menu
