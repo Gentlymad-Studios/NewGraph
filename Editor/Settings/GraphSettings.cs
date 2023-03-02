@@ -13,7 +13,9 @@ namespace NewGraph {
         public const string menuItemBase = "Tools/";
         public const string debugDefine = "TOOLS_DEBUG";
         public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedGraphEditorPrefsKey);
+        public const string lastOpenedDirectoryPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedDirectoryPrefsKey);
 
+        public StyleSheet customStylesheet;
         private static string pathPartialToCategory = null;
         public static string PathPartialToCategory {
             get {
@@ -101,16 +103,6 @@ namespace NewGraph {
                 return Instance.loggerColorHex;
             }
         }
-        [NonSerialized]
-        private string baseGraphAssetPath = null;
-        public string BaseGraphAssetPath {
-            get {
-                if (baseGraphAssetPath == null) {
-                    baseGraphAssetPath = Path.Combine("Assets/", baseGraphPathPartial);
-                }
-                return baseGraphAssetPath;
-            }
-        }
 
         [SerializeField]
         private string handleBarsPartialIdentifier = "4e7bd4c2a267fc147b96af42ce53487c";
@@ -152,9 +144,13 @@ namespace NewGraph {
         public static GraphSettings Instance {
             get {
                 if (_instance == null) {
-
+                    AssetDatabase.Refresh();
                     string blueprintSettingsPath = AssetDatabase.GUIDToAssetPath(assetGUID);
                     GraphSettings blueprintSettings = AssetDatabase.LoadAssetAtPath<GraphSettings>(blueprintSettingsPath);
+                    if (blueprintSettings == null) {
+                        Debug.LogError($"settings blueprint could not be resolved! Path: {blueprintSettingsPath} GUID: {assetGUID}");
+                        blueprintSettings = ScriptableObject.CreateInstance<GraphSettings>();
+                    }
 #if !TOOLS_KEEP_SETTINGS
                     string targetPath = Path.Combine("Assets", blueprintSettings.basePathToSettingsFile, Path.GetFileName(blueprintSettingsPath));
                     string fullTargetPath = Path.GetFullPath(targetPath);

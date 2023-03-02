@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 237dcb76433844e4480d927e69af7b6b, type: 3}
   m_Name: GraphSettings
   m_EditorClassIdentifier: 
+  customStylesheet: {fileID: 0}
   basePathToSettingsFile: Project/Tools
   searchWindowCommandHeader: Commands
   searchWindowRootHeader: Create Nodes

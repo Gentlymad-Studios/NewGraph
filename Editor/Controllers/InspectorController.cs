@@ -135,19 +135,43 @@ namespace NewGraph {
         /// </summary>
         private void CreateButtonClicked() {
             OnCreateButtonClicked?.Invoke();
-            
-            T graphData = ScriptableObject.CreateInstance<T>();
-            if (!Directory.Exists(GraphSettings.Instance.BaseGraphAssetPath)) {
-                Directory.CreateDirectory(GraphSettings.Instance.BaseGraphAssetPath);
-            }
-            string uniqueFilename = Path.Combine(GraphSettings.Instance.BaseGraphAssetPath, typeof(T).Name + ".asset");
-            uniqueFilename = AssetDatabase.GenerateUniqueAssetPath(uniqueFilename);
-            AssetDatabase.CreateAsset(graphData, uniqueFilename);
-            AssetDatabase.SaveAssets();
-            CreateRenameGraphUI(graphData);
-            Clear();
 
-            OnAfterGraphCreated?.Invoke(graphData);
+            string fileEnding = "asset";
+
+            // retrieve the last opened folder
+            string lastOpenedDirectoryGUID = EditorPrefs.GetString(GraphSettings.lastOpenedDirectoryPrefsKey, null);
+            string lastFolder = "";
+            if (lastOpenedDirectoryGUID != null) {
+                lastFolder = AssetDatabase.GUIDToAssetPath(lastOpenedDirectoryGUID);
+                if (lastFolder == null) {
+                    lastFolder = "";
+                }
+            }
+
+            // generate a unique filename that avoids conflicts
+            string uniqueFilename = Path.Combine(lastFolder, typeof(T).Name + "."+ fileEnding);
+            if (File.Exists(uniqueFilename)) {
+                uniqueFilename = AssetDatabase.GenerateUniqueAssetPath(uniqueFilename);
+            }
+            uniqueFilename = Path.GetFileName(uniqueFilename);
+
+            // show the dialog
+            string path = EditorUtility.SaveFilePanel("Create New Graph", lastFolder, uniqueFilename, fileEnding);
+            if (path.Length != 0) {
+                T graphData = ScriptableObject.CreateInstance<T>();
+                path= path.Substring(Application.dataPath.Length-6);
+
+                // save the last selcted folder
+                string folder = AssetDatabase.AssetPathToGUID(Path.GetDirectoryName(path));
+                EditorPrefs.SetString(GraphSettings.lastOpenedDirectoryPrefsKey, folder);
+
+                AssetDatabase.CreateAsset(graphData, path);
+                AssetDatabase.SaveAssets();
+                CreateRenameGraphUI(graphData);
+                Clear();
+
+                OnAfterGraphCreated?.Invoke(graphData);
+            }
         }
 
         /// <summary>

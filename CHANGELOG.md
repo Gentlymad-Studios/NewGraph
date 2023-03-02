@@ -55,3 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - added ability to pan the view with alt/or options key + left click
 - added ability to rename ports via the [Node] or [Port] attribute
+
+## [0.1.0] - 2023-03-02
+### Fixed
+- added a more graceful fallback if the template GraphSettings file could not be retrieved
+### Added
+- refactored create dialog in the GraphView to use EditorUtility.SaveFilePanel so the user can decide & customize the location of new graphs
+- Added a custom stylesheet option in the GraphSettings so all visuals can be customized using a custom .uss file

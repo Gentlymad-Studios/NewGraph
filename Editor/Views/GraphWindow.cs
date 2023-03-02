@@ -49,6 +49,11 @@ namespace NewGraph {
             rootVisualElement.styleSheets.Add(GraphSettings.graphStylesheetVariables);
             rootVisualElement.styleSheets.Add(GraphSettings.graphStylesheet);
 
+            // add potential custom stylesheet
+            if (GraphSettings.Instance.customStylesheet != null) {
+                rootVisualElement.styleSheets.Add(GraphSettings.Instance.customStylesheet);
+            }
+
             // re-open the last opened graph
             GraphModel lastLoadedGraph = GraphSettings.LastOpenedGraphModel;
             if (lastLoadedGraph != null) {
