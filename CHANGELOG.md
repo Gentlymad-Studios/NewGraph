@@ -62,3 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - refactored create dialog in the GraphView to use EditorUtility.SaveFilePanel so the user can decide & customize the location of new graphs
 - Added a custom stylesheet option in the GraphSettings so all visuals can be customized using a custom .uss file
+
+## [0.1.1] - 2023-03-03
+### Fixed
+- Fixed losing right click & key down events after docking the window
+- Added Auto reloading the graph after exiting playmode, so we don't lose our VectorImage contents

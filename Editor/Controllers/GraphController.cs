@@ -28,12 +28,12 @@ namespace NewGraph {
         public void ForEachNode(Action<BaseNode> callback) {
             graphView.ForEachNodeDo(callback);
         }
-        public GraphController(VisualElement uxmlRoot) {
-            graphView = new GraphView(uxmlRoot, OnGraphAction);
+        public GraphController(VisualElement uxmlRoot, VisualElement root) {
+            graphView = new GraphView(uxmlRoot, root, OnGraphAction);
             graphView.OnViewTransformChanged -= OnViewportChanged;
             graphView.OnViewTransformChanged += OnViewportChanged;
-            graphView.OnMouseDown -= DoCommandPanel;
-            graphView.OnMouseDown += DoCommandPanel;
+            graphView.OnMouseDown -= OpenContextMenu;
+            graphView.OnMouseDown += OpenContextMenu;
 
             inspector = new InspectorController<GraphModel>(uxmlRoot);
             inspector.OnSaveClicked = OnSaveClicked;
@@ -63,7 +63,7 @@ namespace NewGraph {
             }
         }
 
-        private void DoCommandPanel(MouseDownEvent evt) {
+        private void OpenContextMenu(MouseDownEvent evt) {
             if (evt.button == 1) {
                 SearchWindow.Open(searchWindow, graphView);
             }
@@ -302,7 +302,7 @@ namespace NewGraph {
         /// <summary>
         /// Called to reload the complete graph...
         /// </summary>
-        private void Reload() {
+        public void Reload() {
             Logger.Log("reload");
             if (graphData != null) {
                 Load(graphData);

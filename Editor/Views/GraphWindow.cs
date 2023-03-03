@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,6 +6,7 @@ namespace NewGraph {
     public class GraphWindow : EditorWindow {
 
         private GraphController graphController;
+        private PlayModeStateChange lastState;
         private static GraphWindow window;
 
         [MenuItem(GraphSettings.menuItemBase+nameof(GraphWindow))]
@@ -14,6 +14,18 @@ namespace NewGraph {
             window = GetWindow<GraphWindow>(nameof(GraphWindow));
             window.wantsMouseMove= true;
             window.Show();
+        }
+
+        private void OnEnable() {
+            EditorApplication.playModeStateChanged -= LogPlayModeState;
+            EditorApplication.playModeStateChanged += LogPlayModeState;
+        }
+
+        public void LogPlayModeState(PlayModeStateChange state) {
+            if (lastState == PlayModeStateChange.ExitingPlayMode && state == PlayModeStateChange.EnteredEditMode) {
+                graphController?.Reload();
+            }
+            lastState= state;
         }
 
         private void OnGUI() {
@@ -45,7 +57,7 @@ namespace NewGraph {
             rootVisualElement.Add(uxmlRoot);
             uxmlRoot.StretchToParentSize();
 
-            graphController = new GraphController(uxmlRoot);
+            graphController = new GraphController(uxmlRoot, rootVisualElement);
             rootVisualElement.styleSheets.Add(GraphSettings.graphStylesheetVariables);
             rootVisualElement.styleSheets.Add(GraphSettings.graphStylesheet);
 

@@ -16,6 +16,8 @@ namespace NewGraph {
         public const string lastOpenedDirectoryPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedDirectoryPrefsKey);
 
         public StyleSheet customStylesheet;
+
+        [NonSerialized]
         private static string pathPartialToCategory = null;
         public static string PathPartialToCategory {
             get {
@@ -94,6 +96,8 @@ namespace NewGraph {
         private string baseGraphPathPartial = string.Empty;
         [SerializeField]
         private Color loggerColor = Color.green;
+        
+        [NonSerialized]
         private string loggerColorHex = null;
         public static string LoggerColorHex {
             get {
@@ -106,7 +110,7 @@ namespace NewGraph {
 
         [SerializeField]
         private string handleBarsPartialIdentifier = "4e7bd4c2a267fc147b96af42ce53487c";
-
+        [NonSerialized]
         private static VisualTreeAsset handleBarsPartial = null;
         public static VisualTreeAsset HandleBarsPartial {
             get {
@@ -140,6 +144,7 @@ namespace NewGraph {
             ValueChanged?.Invoke(evt);
         }
 
+        [NonSerialized]
         private static GraphSettings _instance = null;
         public static GraphSettings Instance {
             get {

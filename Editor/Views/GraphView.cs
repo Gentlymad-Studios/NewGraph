@@ -15,11 +15,11 @@ namespace NewGraph {
         public delegate void MouseDown(MouseDownEvent evt);
         public MouseDown OnMouseDown { get; set; }
 
-        public GraphView(VisualElement parent, Action<Actions, object> OnAction) {
+        public GraphView(VisualElement parent, VisualElement root, Action<Actions, object> OnAction) {
             // this fixes a bug where keyevents are not fired sometimes
             // with this we are attaching a keyevent listener to the up most root object of the window.
-            parent.parent.parent.RegisterCallback<KeyDownEvent>(base.ExecuteDefaultAction);
-            parent.parent.parent.RegisterCallback<MouseDownEvent>((evt) => { OnMouseDown(evt); });
+            root.RegisterCallback<KeyDownEvent>(base.ExecuteDefaultAction);
+            root.RegisterCallback<MouseDownEvent>((evt) => { OnMouseDown(evt); });
 
             graphViewRoot = parent.Q<VisualElement>(nameof(graphViewRoot));
             graphViewRoot.Add(this);
