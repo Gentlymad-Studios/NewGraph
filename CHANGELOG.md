@@ -76,3 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed wrong property visibility
 - groups for fields are now only created if they have properties inside them that should be drawn
+
+## [0.1.3] - 2023-03-03
+### Added
+Added initial NodeEditor functionality. Add CustomNodeEditorAttribute to a class inheriting from NodeEditor and set the nodeType. Works very similar to CustomEditor for mono behaviors.

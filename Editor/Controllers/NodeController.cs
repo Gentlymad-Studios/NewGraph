@@ -54,6 +54,12 @@ namespace NewGraph {
 
         public void Initialize() {
             nodeView.InitializeView();
+
+            NodeEditor customEditor = NodeEditor.CreateEditor(nodeItem.nodeType);
+            if (customEditor != null) {
+                customEditor.Initialize(this);
+            }
+
             //initialized = true;
         }
 
