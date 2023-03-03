@@ -8,10 +8,10 @@ using System;
 
 namespace NewGraph {
     /// <summary>
-    /// Our graph data model split into ar minimalistic runtime part and editor specific extensions.
+    /// Our graph data model split into are minimalistic runtime part and editor specific extensions.
     /// See everything under #if UNITY_EDITOR for all editor specific parts of this class.
     /// </summary>
-    [CreateAssetMenu(fileName =nameof(GraphModel), menuName = "Tools/"+ nameof(GraphModel), order = 1)]
+    [CreateAssetMenu(fileName =nameof(GraphModel), menuName = nameof(GraphModel), order = 1)]
     public class GraphModel : ScriptableObject {
         /// <summary>
         /// List of all the nodes we want to work on.

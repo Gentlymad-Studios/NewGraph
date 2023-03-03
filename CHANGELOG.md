@@ -67,3 +67,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed losing right click & key down events after docking the window
 - Added Auto reloading the graph after exiting playmode, so we don't lose our VectorImage contents
+
+## [0.1.2] - 2023-03-03
+### Added
+- Refactored property and field visibility
+- class object fields can now utilize the GraphDisplay property correctly
+- added createGroup option to GraphDisplay attribute to prevent creating foldouts if this is not desireable
+### Fixed
+- Fixed wrong property visibility
+- groups for fields are now only created if they have properties inside them that should be drawn
