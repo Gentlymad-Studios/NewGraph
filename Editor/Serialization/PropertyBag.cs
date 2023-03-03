@@ -95,7 +95,9 @@ namespace NewGraph {
             //[GraphDisplay]
             int GetGraphDisplayAttribute() {
                 if (currentGraphDisplayAttribute == null) {
+
                     GraphDisplayAttribute attrib = (GraphDisplayAttribute)currentAttribute;
+
                     // if it was set to hide we dont want to show this property anywhere
                     if (attrib.displayType == DisplayType.Hide) {
                         return currentProperty.depth;
@@ -159,6 +161,42 @@ namespace NewGraph {
                 ignoreFurtherDepth = RetrieveCurrentAttributes();
 
             } while (property.NextVisible(diveIntoChildren)); // go to the next property element
+
+            DoVisibilityExceptions(graphPropertiesAndGroups);
+        }
+
+        /// <summary>
+        /// There are cases where a group received a individual GraphDisplay attribute,
+        /// but its child properties has also received a GraphDisplay attribute.
+        /// We need to add the declared visibility to the group and all the group parents.
+        /// </summary>
+        /// <param name="propertiesIncludingGroups"></param>
+        private void DoVisibilityExceptions(List<PropertyInfo> propertiesIncludingGroups) {
+            foreach (PropertyInfo groupOrProperty in propertiesIncludingGroups) {
+                if (groupOrProperty.GetType() == typeof(GroupInfo)) {
+                    GroupInfo groupInfo = (GroupInfo)groupOrProperty;
+                    if (groupInfo.graphProperties.Count > 0) {
+                        DoVisibilityExceptions(groupInfo.graphProperties);
+                    }
+                } else {
+                    GraphPropertyInfo graphProperty = groupOrProperty as GraphPropertyInfo;
+                    if (graphProperty.graphDisplay.displayType != DisplayType.Hide && graphProperty.graphDisplay.displayType != DisplayType.Unspecified) {
+                        DoVisibilityRecursive(graphProperty, graphProperty.groupInfo);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// As long as a group is part of a sub group we need to make sure to update the visibility
+        /// </summary>
+        /// <param name="graphProperty"></param>
+        /// <param name="parent"></param>
+        private void DoVisibilityRecursive(GraphPropertyInfo graphProperty, GroupInfo parent) {
+            if (parent != null && !parent.graphDisplay.displayType.HasFlag(graphProperty.graphDisplay.displayType)) {
+                parent.graphDisplay.displayType |= graphProperty.graphDisplay.displayType;
+                DoVisibilityRecursive(graphProperty, parent.groupInfo);
+            }
         }
 
         /// <summary>
@@ -185,7 +223,7 @@ namespace NewGraph {
                     if (ignoreFurtherDepth < 0) {
                         break;
                     }
-                }
+                } 
             }
 
             // avoid further iteration of this property as it has already been processed or should be ignored...
@@ -195,13 +233,17 @@ namespace NewGraph {
                 if (graphProperty.graphDisplay.displayType != DisplayType.Hide) {
                     // check if we have a generic object, that is not an array.
                     // if this is the case, we need to wrap it in a group and ignore the object itself, as all upcoming child properties will be drawn
-                    if (!IsRealArray(currentProperty) && currentProperty.propertyType == SerializedPropertyType.Generic) {
+                    if (!IsRealArray(currentProperty) && graphProperty.graphDisplay.createGroup && (currentProperty.propertyType == SerializedPropertyType.Generic || currentProperty.propertyType == SerializedPropertyType.ManagedReference)) {
                         // create a new group
-                        GroupInfo groupInfo = new GroupInfo(currentProperty.displayName, currentRelativePropertyPath);
+                        GroupInfo groupInfo = new GroupInfo(currentProperty.displayName, currentRelativePropertyPath, currentGraphDisplayAttribute);
                         // check if the new group should be part of another group and add it to the group graphPropertiesAndGroups
                         FindGroupAndAdd(ref currentRelativePropertyPath, groupInfo);
                         // add new group to lookup
                         groupInfoLookup.Add(groupInfo);
+
+                        if (currentProperty.propertyType == SerializedPropertyType.ManagedReference) {
+                            FindGroupAndAdd(ref currentRelativePropertyPath, graphProperty);
+                        }
                     } else {
                         // check if the property should be part of another group and add it to the group graphPropertiesAndGroups
                         FindGroupAndAdd(ref currentRelativePropertyPath, graphProperty);
@@ -221,7 +263,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="relativePath"></param>
         /// <param name="propertyInfo"></param>
-        private void FindGroupAndAdd(ref string relativePath, PropertyInfo propertyInfo) {
+        private void FindGroupAndAdd(ref string relativePath, GraphPropertyInfo propertyInfo) {
             GroupInfo groupPropertyBelongsTo = null;
             if (groupInfoLookup.Count > 0) {
                 // loop backwards to find the most inner group first!
@@ -234,7 +276,14 @@ namespace NewGraph {
                 }
             }
             if (groupPropertyBelongsTo != null) {
+                propertyInfo.groupInfo= groupPropertyBelongsTo;
                 groupPropertyBelongsTo.graphProperties.Add(propertyInfo);
+
+                // overwrite visibility for child properties with no custom GraphDisplay attribute, so it is the same with the group
+                if (!propertyInfo.hasCustomGraphDisplay) {
+                    GraphDisplayAttribute displayAttribute = propertyInfo.graphDisplay;
+                    displayAttribute.displayType = groupPropertyBelongsTo.graphDisplay.displayType;
+                }
             } else {
                 graphPropertiesAndGroups.Add(propertyInfo);
             }

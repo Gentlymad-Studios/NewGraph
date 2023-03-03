@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using GraphViewBase;
-using System;
 
 namespace NewGraph {
 
@@ -14,7 +13,6 @@ namespace NewGraph {
         private ReactiveSettings reactiveSettings;
         private List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
         public Color nodeColor;
-        private bool hasNodeViewProperty = false;
         private bool hasInspectorProperty = false;
         
         public NodeController controller;
@@ -56,12 +54,10 @@ namespace NewGraph {
                 controller.DoForEachPropertyOrGroup(new[] { ExtensionContainer, inspectorContent }, CreateGroupUI, CreatePropertyUI);
 
                 // hide empty groups
-                if (ExtensionContainer.childCount > 0 && !hasNodeViewProperty) {
-                    ExtensionContainer[0].style.display = DisplayStyle.None;
-                }
                 if (inspectorContent.childCount > 1 && !hasInspectorProperty) {
                     inspectorContent[1].style.display = DisplayStyle.None;
                 }
+
             } else {
                 IUtilityNode utilityNode = controller.nodeItem.nodeData as IUtilityNode;
                 if (utilityNode.ShouldColorizeBackground()) {
@@ -127,15 +123,14 @@ namespace NewGraph {
 
             PropertyField nodeViewPropField = null;
             PropertyField inspectorPropField = null;
-
-            if (!controller.nodeItem.isUtilityNode && propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.NodeView)) {
-                hasNodeViewProperty = true;
+            
+            if (groupParents[0] != null && !controller.nodeItem.isUtilityNode && propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.NodeView)) {
                 nodeViewPropField = Create(groupParents[0], Editability.NodeView);
             }
 
-            if (propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.Inspector)) {
+            if (groupParents[1] != null && propertyInfo.graphDisplay.displayType.HasFlag(DisplayType.Inspector)) {
                 hasInspectorProperty= true;
-                inspectorPropField = Create(groupParents[groupParents.Length-1], Editability.Inspector);
+                inspectorPropField = Create(groupParents[1], Editability.Inspector);
             }
 
             // workaround for value change disconnection bug, this can only happen if we have an inspector & and a nodeview together
@@ -164,20 +159,39 @@ namespace NewGraph {
         }
 
         private VisualElement[] CreateGroupUI(GroupInfo groupInfo, VisualElement[] parents, SerializedProperty property) {
-            SerializedProperty prop = property.Copy();
             VisualElement[] newGroups = new VisualElement[parents.Length];
-            for (int i=0; i<newGroups.Length; i++) {
-                Foldout newGroup = new Foldout();
-                newGroup.AddToClassList(nameof(GroupInfo));
-                newGroup.text = groupInfo.groupName;
-                newGroup.name = groupInfo.relativePropertyPath;
-                newGroup.bindingPath = prop.propertyPath;
-                newGroup.name = "unity-foldout-" + prop.propertyPath;
 
+            void AddAtIndex(int index, bool empty) {
                 // add label/ foldout etc.
-                newGroups[i] = newGroup;
-                parents[i].Add(newGroups[i]);
+                if (!empty) {
+                    SerializedProperty prop = property.Copy();
+                    Foldout newGroup = new Foldout();
+                    newGroup.AddToClassList(nameof(GroupInfo));
+                    newGroup.text = groupInfo.groupName;
+                    newGroup.name = groupInfo.relativePropertyPath;
+                    newGroup.bindingPath = prop.propertyPath;
+                    newGroup.name = "unity-foldout-" + prop.propertyPath;
+                    newGroups[index] = newGroup;
+                } else {
+                    newGroups[index] = null;
+                }
+                if (parents[index] != null) {
+                    parents[index].Add(newGroups[index]);
+                }
             }
+
+            bool addEmpty = true;
+            if (groupInfo.graphDisplay.displayType.HasFlag(DisplayType.NodeView)) {
+                addEmpty = false;
+            }
+            AddAtIndex(0, addEmpty);
+            
+            addEmpty = true;
+            if (groupInfo.graphDisplay.displayType.HasFlag(DisplayType.Inspector)) {
+                addEmpty = false;
+            }
+            AddAtIndex(1, addEmpty);
+
             return newGroups;
         }
 
@@ -212,10 +226,18 @@ namespace NewGraph {
         } 
 
         private PropertyField CreatePropertyField(SerializedProperty property) {
-            PropertyField propertyField = new PropertyField(property) {
+            PropertyField propertyField = new PropertyField(property.Copy()) {
                 name = property.name,
                 bindingPath = property.propertyPath,
             };
+
+            /*
+            if (property.propertyType != SerializedPropertyType.ManagedReference) {
+                Debug.Log($" {property.name} {property.propertyPath} {property.propertyType} {property.depth}");
+            } else {
+                Debug.Log($" {property.name} {property.propertyPath} {property.propertyType} {property.managedReferenceId} {property.managedReferenceFullTypename}");
+            }*/
+
             return propertyField;
         }
 
