@@ -80,3 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.3] - 2023-03-03
 ### Added
 Added initial NodeEditor functionality. Add CustomNodeEditorAttribute to a class inheriting from NodeEditor and set the nodeType. Works very similar to CustomEditor for mono behaviors.
+
+## [0.1.4] - 2023-03-04
+### Added
+Extended NodeEditor functionality, so that derived nodetypes can also receive the same inspector. Set the bool property in CustomNodeEditorAttribute to true to enable this.
