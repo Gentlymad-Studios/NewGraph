@@ -9,15 +9,15 @@ NewGraph is a data-oriented node graph solution for **Unity** powered by **UIToo
 
 _This is planned to receive long term support as it is an integral part of our internal suite of tools at Gentlymad Studios._
 
-### Changelog
+### Changelog 📢
 See the [Changelog](https://github.com/Gentlymad-Studios/NewGraph/blob/main/CHANGELOG.md) for current updates!
 
-### Requirements
+### Requirements 🌵
 1. [GraphViewBase](https://github.com/Gentlymad-Studios/GraphViewBase)
 2. [OdinSerializer](https://github.com/Gentlymad-Studios/OdinSerializer) (Original OdinSerializer repository: https://github.com/TeamSirenix/odin-serializer)
 3. This project requires ![Requirement](https://img.shields.io/badge/-Unity%202022.2-yellow) or later as the Unity version.
 
-### Features
+### Features 🍒
 * `WYSIWYG.` A port connecting to a node in the graph is a `real reference` to the object in your `graph .asset`
 * Good performance even with many nodes as this is built upon  the new retained `UIToolkit` UI system.
 * create visual data oriented networks based on your custom `[Serializable]` data classes simply by `adding attributes`.
@@ -31,7 +31,7 @@ See the [Changelog](https://github.com/Gentlymad-Studios/NewGraph/blob/main/CHAN
 * `No reliance` on the now deprecated `Experimental.GraphView`. Everything was written from scratch or is based on maintainable code.
 * `Keyboard shortcuts`, a `searchable context menu`, default UtilityNodes like [`CommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#groupcommentnode), [`GroupCommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#groupcommentnode), a extensively commented code base and more...
 
-### Wiki
+### Wiki 📒
 See the [Wiki](https://github.com/Gentlymad-Studios/NewGraph/wiki) for installation & usage instructions.
 
 ~ Use at your own risk. ~
