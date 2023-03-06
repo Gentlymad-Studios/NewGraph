@@ -21,15 +21,15 @@ See the [Changelog](https://github.com/Gentlymad-Studios/NewGraph/blob/main/CHAN
 * `WYSIWYG.` A port connecting to a node in the graph is a `real reference` to the object in your `graph .asset`
 * Good performance even with many nodes as this is built upon  the new retained `UIToolkit` UI system.
 * create visual data oriented networks based on your custom `[Serializable]` data classes simply by `adding attributes`.
-* `Fully serialized dynamic lists` of ports with the [`[PortList]`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#portlist) attribute.
-* Customize data visualization with [`[GraphDisplay]`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#graphdisplay): Display a field inside the graph, side inspector or both views.
+* `Fully serialized dynamic lists` of ports with the [`[PortList]`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage-%F0%9F%91%88#portlist) attribute.
+* Customize data visualization with [`[GraphDisplay]`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage-%F0%9F%91%88#graphdisplay): Display a field inside the graph, side inspector or both views.
 * Full support of Unity's native `Undo/Redo` stack.
 * Support for `Utility Nodes` that can be created to help organize your specific graph business.
 * `Copy & Paste` even across graphs.
 * No child `ScriptableObject` mayhem! A graph asset will hold all your data in `one single scriptable object`.
 * `Cyclic references` and `complex reference chains` are natively supported with the use of [SerializeReference] attribute.
 * `No reliance` on the now deprecated `Experimental.GraphView`. Everything was written from scratch or is based on maintainable code.
-* `Keyboard shortcuts`, a `searchable context menu`, default UtilityNodes like [`CommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#groupcommentnode), [`GroupCommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage#groupcommentnode), a extensively commented code base and more...
+* `Keyboard shortcuts`, a `searchable context menu`, default UtilityNodes like [`CommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage-%F0%9F%91%88#commentnode), [`GroupCommentNode`](https://github.com/Gentlymad-Studios/NewGraph/wiki/2.-Usage-%F0%9F%91%88#groupcommentnode), a extensively commented code base and more...
 
 ### Wiki 📒
 See the [Wiki](https://github.com/Gentlymad-Studios/NewGraph/wiki) for installation & usage instructions.
