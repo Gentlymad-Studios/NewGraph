@@ -100,3 +100,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - Removed helper scripts that are not longer needed
 - Removed old way to traverse SerializedProperty (was faulty) and extended CreateGenericUI method
+
+## [0.1.7] - 2023-03-09
+### Added
+- Added ability for EditableLabelFields to be exited via escape or return

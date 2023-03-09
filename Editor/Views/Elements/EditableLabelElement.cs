@@ -2,7 +2,7 @@ using UnityEditor.UIElements;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+using System;
 
 namespace NewGraph {
     /// <summary>
@@ -11,6 +11,7 @@ namespace NewGraph {
     public class EditableLabelElement {
         private Image editButton;
         private VisualElement inputField;
+        private TextField textField;
         private VisualElement textElement;
         private PropertyField propertyField;
         public bool isInEditMode = false;
@@ -50,7 +51,11 @@ namespace NewGraph {
         /// <param name="e"></param>
         private void InitializeAfterVisualTreeReady(GeometryChangedEvent e) {
             if (propertyField.childCount > 0 && propertyField[0].childCount > 1 && propertyField[0][1].childCount > 0) {
-                inputField = propertyField[0][1];
+                textField = propertyField[0] as TextField;
+                textField.RegisterCallback<KeyDownEvent>(OnKeyDown);
+
+                inputField = textField[1];
+
                 textElement = inputField[0];
                 editButton = new Image() { image = editIconTexture };
 
@@ -60,6 +65,18 @@ namespace NewGraph {
                 EnableInput(false);
                 propertyField.UnregisterCallback<GeometryChangedEvent>(InitializeAfterVisualTreeReady);
                 //propertyField.style.display = DisplayStyle.None;
+            }
+        }
+
+        /// <summary>
+        /// Executed when a key was doen in the inputfield
+        /// </summary>
+        /// <param name="evt"></param>
+        private void OnKeyDown(KeyDownEvent evt) {
+            // only do something when we are in edit mode and enter was pressed
+            // enter/escape = exit edit mode
+            if (isInitialized && isInEditMode && (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.Escape)) {
+                EnableInput(false);
             }
         }
 
