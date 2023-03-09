@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -23,47 +22,71 @@ namespace NewGraph {
             return CreateAdditionalUI;
         }
 
-        public override void OnActivate(string searchContext, VisualElement rootElement) {
-            base.OnActivate(searchContext, rootElement);
-            rootElement.styleSheets.Add(GraphSettings.settingsStylesheet);
-            rootElement.Add(new Button(() => {
-                EditorUtility.CopySerialized(BlueprintSettings, Settings);
-                new SerializedObject(Settings).ApplyModifiedProperties();
-            }) { text = "Reset All To Default"});
+        protected override string GetRootPropertyPath() {
+            return nameof(GraphSettingsAsset.graphSettings);
         }
 
+        public override void OnActivate(string searchContext, VisualElement rootElement) {
+            base.OnActivate(searchContext, rootElement);
+            
+            // create a button to reset all properties back to the bleuprint value
+            Button resetAll = new Button(() => {
+                CopyAllFromBlueprint(serializedObject);
+            });
+            resetAll.text = Settings.resetAllLabel;
+            resetAll.tooltip = Settings.resetAllTooltip;
+            resetAll.AddToClassList(nameof(resetAll));
+            rootElement[0].Insert(1, resetAll);
+            // add a custom stylesheet
+            rootElement.styleSheets.Add(GraphSettings.settingsStylesheet);
+        }
+
+        /// <summary>
+        /// Executed after every PropertyField.
+        /// We'll attach a reset button here.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <param name="container"></param>
         private void CreateAdditionalUI(SerializedProperty property, VisualElement container) {
+            // create a resetButton per Row
             Button resetButton= new Button(() => {
-                SerializedProperty blueprintProperty = new SerializedObject(BlueprintSettings).FindProperty(property.propertyPath);
-                property.serializedObject.CopyFromSerializedProperty(blueprintProperty);
-                property.serializedObject.ApplyModifiedProperties();
+                // if reset is executed, copy the property from the blueprint to the property
+                CopyFromBlueprint(property);
             });
             resetButton.AddToClassList(nameof(resetButton));
             resetButton.Add(GraphSettings.ResetButtonIcon);
-            resetButton.tooltip = "Reset this value back to the default value.";
+            resetButton.tooltip = Settings.resetButtonTooltip;
             container.Add(resetButton);
         }
 
+        /// <summary>
+        /// Called when any value changed.
+        /// </summary>
+        /// <param name="evt"></param>
         private void ValueChanged(SerializedPropertyChangeEvent evt) {
+            // notify all listeneres (ReactiveSettings)
             Settings.NotifyValueChanged(evt);
+            serializedObject.ApplyModifiedProperties();
+            // call save on our singleton as it is a strange hybrid and not a full ScriptableObject
+            Save();
         }
 
-        // Register the SettingsProvider
         [SettingsProvider]
         public static SettingsProvider CreateMyCustomSettingsProvider() {
-            return Settings ? new GraphSettingsProvider() : null;
+            return Settings != null ? new GraphSettingsProvider() : null;
+        }
+
+        protected override string GetHeader() {
+            return nameof(GraphSettings);
         }
 
         public override Type GetDataType() {
-            return typeof(GraphSettings);
+            return typeof(GraphSettingsAsset);
         }
 
         public override dynamic GetInstance() {
-            return Settings;
+            return GraphSettingsSingleton.instance.settingsAsset;
         }
 
-        protected override void OnChange() {
-            Save();
-        }
     }
 }

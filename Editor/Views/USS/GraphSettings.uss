@@ -19,3 +19,9 @@ ScrollView.propertyListScrollView Label{
 	min-width: 200px;
 
 }
+
+Button.resetAll {
+	position:absolute;
+	margin-top: 6px;
+	right: 3px;
+}

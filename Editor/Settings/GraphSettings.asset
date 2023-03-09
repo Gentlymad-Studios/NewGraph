@@ -12,39 +12,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 237dcb76433844e4480d927e69af7b6b, type: 3}
   m_Name: GraphSettings
   m_EditorClassIdentifier: 
-  customStylesheet: {fileID: 0}
-  searchWindowCommandHeader: Commands
-  searchWindowRootHeader: Create Nodes
-  openGraphButtonText: Open Graph
-  wasBlueprintTransferred: 1
-  hideInspectorIcon: SceneLoadIn
-  showInspectorIcon: SceneLoadOut
-  homeButtonIcon: d_SceneViewCamera@2x
-  createButtonIcon: d_Toolbar Plus
-  loadButtonIcon: d_FolderOpened Icon
-  resetButtonIcon: Refresh@2x
-  createUtilityNodeLabel: Create Utility
-  createNodeLabel: Create Node
-  noGraphLoadedLabel: No graph active!
-  multipleSelectedMessagePartial: selected. Select a single Node to change any exposed
-    values.
-  node: node
-  edge: edge
-  edgeWidthSelected: 4
-  edgeWidthUnselected: 3
-  disabledPortColor: {r: 0.27450982, g: 0.27450982, b: 0.27450982, a: 0.27}
-  portColor: {r: 0.9411765, g: 0.9411765, b: 1, a: 0.95}
-  colorSelected: {r: 0.9411765, g: 0.9411765, b: 0.9411765, a: 1}
-  colorUnselected: {r: 0.57254905, g: 0.57254905, b: 0.57254905, a: 1}
-  defaultNodeColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
-  defaultLabelForPortListItems: Empty
-  defaultInputName: Input
-  nodeWidth: 210
-  inspectorWidth: 290
-  baseGraphPathPartial: Project/Graphs
-  loggerColor: {r: 0, g: 0.49803922, b: 0, a: 1}
-  handleBarsPartialIdentifier: 4e7bd4c2a267fc147b96af42ce53487c
-  graphDocumentIdentifier: a1a3b33cb142d06479dfaa381cc82245
-  graphStylesheetVariablesIdentifier: a22fe40a267e5824dbde2cea493f40e4
-  graphStylesheetIdentifier: e2825f280a2499d4587129e0a3716e17
-  settingsStylesheetIdentifier: 7d7e4dcd278879849b62a784de9bdc3c
+  graphSettings:
+    customStylesheet: {fileID: 0}
+    searchWindowCommandHeader: Commands
+    searchWindowRootHeader: Create Nodes
+    openGraphButtonText: Open Graph
+    wasBlueprintTransferred: 0
+    hideInspectorIcon: SceneLoadIn
+    showInspectorIcon: SceneLoadOut
+    homeButtonIcon: d_SceneViewCamera@2x
+    createButtonIcon: d_Toolbar Plus
+    loadButtonIcon: d_FolderOpened Icon
+    resetButtonIcon: Refresh@2x
+    createUtilityNodeLabel: Create Utility
+    createNodeLabel: Create Node
+    noGraphLoadedLabel: No graph active!
+    multipleSelectedMessagePartial: selected. Select a single node to change any
+      exposed values.
+    node: node
+    edge: edge
+    edgeWidthSelected: 4
+    edgeWidthUnselected: 3
+    disabledPortColor: {r: 0.27450982, g: 0.27450982, b: 0.27450982, a: 0.27}
+    portColor: {r: 0.9411765, g: 0.9411765, b: 1, a: 0.95}
+    colorSelected: {r: 0.9411765, g: 0.9411765, b: 0.9411765, a: 1}
+    colorUnselected: {r: 0.57254905, g: 0.57254905, b: 0.57254905, a: 1}
+    defaultNodeColor: {r: 0.21960786, g: 0.21960786, b: 0.21960786, a: 1}
+    defaultLabelForPortListItems: Empty
+    defaultInputName: input
+    nodeWidth: 210
+    inspectorWidth: 290
+    baseGraphPathPartial: Project/Graphs
+    loggerColor: {r: 0, g: 0.49803922, b: 0, a: 1}
+    handleBarsPartialIdentifier: 4e7bd4c2a267fc147b96af42ce53487c
+    graphDocumentIdentifier: a1a3b33cb142d06479dfaa381cc82245
+    graphStylesheetVariablesIdentifier: a22fe40a267e5824dbde2cea493f40e4
+    graphStylesheetIdentifier: e2825f280a2499d4587129e0a3716e17
+    settingsStylesheetIdentifier: 7d7e4dcd278879849b62a784de9bdc3c

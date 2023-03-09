@@ -6,15 +6,14 @@ using UnityEngine.UIElements;
 using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
-
-    [CreateAssetMenu(fileName = nameof(GraphSettings), menuName = nameof(GraphSettings), order = 1)]
-    public class GraphSettings : ScriptableObject {
+    [System.Serializable]
+    public class GraphSettings {
         public const string assetGUID = "015778251503b3c44a2b9dfc3a36ad10";
         public const string menuItemBase = "Tools/";
         public const string debugDefine = "TOOLS_DEBUG";
-        public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedGraphEditorPrefsKey);
-        public const string lastOpenedDirectoryPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedDirectoryPrefsKey);
-        public const string isInspectorVisiblePrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(isInspectorVisiblePrefsKey);
+        public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedGraphEditorPrefsKey);
+        public const string lastOpenedDirectoryPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedDirectoryPrefsKey);
+        public const string isInspectorVisiblePrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(isInspectorVisiblePrefsKey);
 
         public StyleSheet customStylesheet;
 
@@ -23,7 +22,7 @@ namespace NewGraph {
         public static string PathPartialToCategory {
             get {
                 if (pathPartialToCategory == null) {
-                    pathPartialToCategory = menuItemBase+nameof(GraphSettings);
+                    pathPartialToCategory = menuItemBase + nameof(GraphSettings);
                 }
                 return pathPartialToCategory;
             }
@@ -76,16 +75,14 @@ namespace NewGraph {
         [SerializeField]
         private string loadButtonIcon = "d_FolderOpened Icon";
         public static Image LoadButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.loadButtonIcon).image };
-        
+
         [SerializeField]
         private string resetButtonIcon = "Refresh@2x";
         public static Image ResetButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.resetButtonIcon).image };
 
-        /*
-        [SerializeField]
-        private string saveButtonIcon = "d_SaveAs@2x";
-        public static Image SaveButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.saveButtonIcon).image };
-        */
+        public string resetButtonTooltip = "Reset this value back to the default value.";
+        public string resetAllLabel = "Reset All To Default";
+        public string resetAllTooltip = "Reset All values to default values.";
 
         public string createUtilityNodeLabel = "Create Utility";
         public string createNodeLabel = "Create Node";
@@ -112,7 +109,7 @@ namespace NewGraph {
         private string baseGraphPathPartial = string.Empty;
         [SerializeField]
         private Color loggerColor = Color.green;
-        
+
         [NonSerialized]
         private string loggerColorHex = null;
         public static string LoggerColorHex {

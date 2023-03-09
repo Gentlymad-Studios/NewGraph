@@ -104,3 +104,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.7] - 2023-03-09
 ### Added
 - Added ability for EditableLabelFields to be exited via escape or return
+
+## [0.1.8] - 2023-03-09
+### Fixed
+- Fixed settings file not serializing correctly.
