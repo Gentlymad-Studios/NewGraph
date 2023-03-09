@@ -19,6 +19,10 @@ namespace NewGraph {
             return null;
         }
 
+        protected virtual System.Action<SerializedProperty,VisualElement> GetCreateAdditionalUIAction() {
+            return null;
+        }
+
         // This function is called when the user clicks on the MyCustom element in the Settings window.
         public override void OnActivate(string searchContext, VisualElement rootElement) {
             serializedObject = new SerializedObject(GetInstance());
@@ -35,8 +39,7 @@ namespace NewGraph {
 
             settingsRoot.Add(title);
 
-
-            UIElementsHelper.CreateGenericUI(serializedObject, GetDataType(), settingsRoot, GetValueChangedCallback());
+            UIElementsHelper.CreateGenericUI(serializedObject, settingsRoot, GetValueChangedCallback(), GetCreateAdditionalUIAction());
 
             rootElement.Add(settingsRoot);
             settingsRoot.Bind(serializedObject);

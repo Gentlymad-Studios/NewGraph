@@ -1,7 +1,9 @@
 using System;
+using UnityEngine;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
 
@@ -17,14 +19,39 @@ namespace NewGraph {
             return ValueChanged;
         }
 
+        protected override Action<SerializedProperty, VisualElement> GetCreateAdditionalUIAction() {
+            return CreateAdditionalUI;
+        }
+
+        public override void OnActivate(string searchContext, VisualElement rootElement) {
+            base.OnActivate(searchContext, rootElement);
+            rootElement.styleSheets.Add(GraphSettings.settingsStylesheet);
+            rootElement.Add(new Button(() => {
+                EditorUtility.CopySerialized(BlueprintSettings, Settings);
+                new SerializedObject(Settings).ApplyModifiedProperties();
+            }) { text = "Reset All To Default"});
+        }
+
+        private void CreateAdditionalUI(SerializedProperty property, VisualElement container) {
+            Button resetButton= new Button(() => {
+                SerializedProperty blueprintProperty = new SerializedObject(BlueprintSettings).FindProperty(property.propertyPath);
+                property.serializedObject.CopyFromSerializedProperty(blueprintProperty);
+                property.serializedObject.ApplyModifiedProperties();
+            });
+            resetButton.AddToClassList(nameof(resetButton));
+            resetButton.Add(GraphSettings.ResetButtonIcon);
+            resetButton.tooltip = "Reset this value back to the default value.";
+            container.Add(resetButton);
+        }
+
         private void ValueChanged(SerializedPropertyChangeEvent evt) {
-            GraphSettings.Instance.NotifyValueChanged(evt);
+            Settings.NotifyValueChanged(evt);
         }
 
         // Register the SettingsProvider
         [SettingsProvider]
         public static SettingsProvider CreateMyCustomSettingsProvider() {
-            return GraphSettings.Instance ? new GraphSettingsProvider() : null;
+            return Settings ? new GraphSettingsProvider() : null;
         }
 
         public override Type GetDataType() {
@@ -32,11 +59,11 @@ namespace NewGraph {
         }
 
         public override dynamic GetInstance() {
-            return GraphSettings.Instance;
+            return Settings;
         }
 
         protected override void OnChange() {
-
+            Save();
         }
     }
 }

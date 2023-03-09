@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
@@ -7,33 +6,48 @@ using UnityEngine.UIElements;
 namespace NewGraph {
     public static class UIElementsHelper {
 
-        public static void CreateGenericUI<T>(SerializedObject serializedObject, VisualElement root, EventCallback<SerializedPropertyChangeEvent> changeCallback = null, bool createGroup = false) {
-            CreateGenericUI(serializedObject, typeof(T), root, changeCallback, createGroup);
+        public static PropertyField CreatePropertyFieldWithCallback(SerializedProperty property, EventCallback<SerializedPropertyChangeEvent> changeCallback = null) {
+            PropertyField propertyField = new PropertyField(property);
+            if (changeCallback != null) {
+                propertyField.RegisterValueChangeCallback(changeCallback);
+            }
+            return propertyField;
         }
 
-        public static void CreateGenericUI(SerializedObject serializedObject, Type type, VisualElement root, EventCallback<SerializedPropertyChangeEvent> changeCallback = null, bool createGroup = false) {
-            List<SerializedProperty> serializedProperties = new List<SerializedProperty>();
-            SerializationHelper.RetrieveAllSerializedProperties(ref serializedProperties, type, serializedObject);
+        public static void CreateGenericUI(SerializedObject serializedObject, VisualElement root, EventCallback<SerializedPropertyChangeEvent> changeCallback = null, System.Action<SerializedProperty, VisualElement> CreateAdditionalUI = null) {
 
-            void ForEachProperty(ref VisualElement parent) {
-                foreach (SerializedProperty property in serializedProperties) {
-                    PropertyField propertyField = new PropertyField(property);
-                    if (changeCallback != null) {
-                        propertyField.RegisterValueChangeCallback(changeCallback);
+            Action<SerializedProperty, ScrollView> creationLogic;
+            if (CreateAdditionalUI != null) {
+                creationLogic = (prop, scrollView) => {
+                    VisualElement container = new VisualElement();
+                    container.AddToClassList(nameof(container)+nameof(PropertyField));
+                    container.Add(CreatePropertyFieldWithCallback(prop, changeCallback));
+                    CreateAdditionalUI(prop, container);
+                    scrollView.Add(container);
+                };
+            } else {
+                creationLogic = (prop, scrollView) => {
+                    scrollView.Add(CreatePropertyFieldWithCallback(prop, changeCallback));
+                };
+            }
+
+            void ForEachProperty(ref ScrollView scrollView) {
+                SerializedProperty prop = serializedObject.GetIterator();
+                if (prop.NextVisible(true)) {
+                    do {
+                        if (prop.name != "m_Script") {
+                            creationLogic(prop.Copy(), scrollView);
+                        }
                     }
-                    parent.Add(propertyField);
+                    while (prop.NextVisible(false));
                 }
             }
 
-            if (createGroup) {
-                VisualElement group = new VisualElement();
-                ForEachProperty(ref group);
-                root.Add(group);
-                group.Bind(serializedObject);
-            } else {
-                ForEachProperty(ref root);
-                root.Bind(serializedObject);
-            }
+            ScrollView scrollView = new ScrollView();
+            scrollView.AddToClassList("propertyList"+nameof(ScrollView));
+            root.Add(scrollView);
+            ForEachProperty(ref scrollView);
+            root.Bind(serializedObject);
 
         }
     }

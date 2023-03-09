@@ -92,3 +92,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added "nodeName" field for NodeAttribute so you can customize the nodeName to your liking
 ### Removed
 - Removed Save dialog as it is legacy and not needed
+
+## [0.1.6] - 2023-03-09
+### Added
+- Added new way to handle the Settings file, that avoids the need to store it in the Assets folder (you can reach the graph settings via ProjectSettings)
+- Settings can now also be reverted on a per property basis or alltogether
+### Removed
+- Removed helper scripts that are not longer needed
+- Removed old way to traverse SerializedProperty (was faulty) and extended CreateGenericUI method

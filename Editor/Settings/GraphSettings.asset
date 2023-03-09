@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: GraphSettings
   m_EditorClassIdentifier: 
   customStylesheet: {fileID: 0}
-  basePathToSettingsFile: Project/Tools
   searchWindowCommandHeader: Commands
   searchWindowRootHeader: Create Nodes
   openGraphButtonText: Open Graph
+  wasBlueprintTransferred: 1
   hideInspectorIcon: SceneLoadIn
   showInspectorIcon: SceneLoadOut
   homeButtonIcon: d_SceneViewCamera@2x
   createButtonIcon: d_Toolbar Plus
   loadButtonIcon: d_FolderOpened Icon
+  resetButtonIcon: Refresh@2x
   createUtilityNodeLabel: Create Utility
   createNodeLabel: Create Node
   noGraphLoadedLabel: No graph active!
@@ -29,7 +30,7 @@ MonoBehaviour:
     values.
   node: node
   edge: edge
-  edgeWidthSelected: 3
+  edgeWidthSelected: 4
   edgeWidthUnselected: 3
   disabledPortColor: {r: 0.27450982, g: 0.27450982, b: 0.27450982, a: 0.27}
   portColor: {r: 0.9411765, g: 0.9411765, b: 1, a: 0.95}
@@ -46,3 +47,4 @@ MonoBehaviour:
   graphDocumentIdentifier: a1a3b33cb142d06479dfaa381cc82245
   graphStylesheetVariablesIdentifier: a22fe40a267e5824dbde2cea493f40e4
   graphStylesheetIdentifier: e2825f280a2499d4587129e0a3716e17
+  settingsStylesheetIdentifier: 7d7e4dcd278879849b62a784de9bdc3c

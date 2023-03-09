@@ -1,0 +1,21 @@
+VisualElement.containerPropertyField {
+	flex-direction: row;
+}
+
+VisualElement.containerPropertyField Button.resetButton {
+	padding:1px;
+	width: 20px;
+	height: 17px;
+}
+VisualElement.containerPropertyField Button.resetButton Image {
+	width: 18px;
+	height: 15px;
+}
+VisualElement.containerPropertyField PropertyField {
+	flex-grow: 1;
+}
+
+ScrollView.propertyListScrollView Label{
+	min-width: 200px;
+
+}

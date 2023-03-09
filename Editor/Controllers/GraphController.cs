@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     public class GraphController {
@@ -325,7 +326,7 @@ namespace NewGraph {
             Func<bool> defaultEnabledCheck = () => graphView.GetSelectedNodeCount() > 0;
             Func<bool> nodeEnabledCheck = () => graphData != null;
 
-            searchWindow.StartAddingMenuEntries(GraphSettings.Instance.searchWindowRootHeader);
+            searchWindow.StartAddingMenuEntries(Settings.searchWindowRootHeader);
             // get all types across all assemblies that implement our INode interface
             TypeCache.TypeCollection nodeTypes = TypeCache.GetTypesWithAttribute<NodeAttribute>();
             foreach (Type nodeType in nodeTypes) {
@@ -350,13 +351,13 @@ namespace NewGraph {
 
                     // add to the list of createable nodes
                     string createNodeLabel = $"{categoryPath}{nodeAttribute.GetName(nodeType)}";
-                    createNodeLabel = (!isUtilityNode ? GraphSettings.Instance.createNodeLabel : GraphSettings.Instance.createUtilityNodeLabel) + createNodeLabel;
+                    createNodeLabel = (!isUtilityNode ? Settings.createNodeLabel : Settings.createUtilityNodeLabel) + createNodeLabel;
 
                     searchWindow.AddNodeEntry(createNodeLabel, (obj) => CreateNewNode(nodeType, isUtilityNode));
                 }
             }
             searchWindow.ResolveNodeEntries(nodeEnabledCheck);
-            searchWindow.AddSeparator(GraphSettings.Instance.searchWindowCommandHeader);
+            searchWindow.AddSeparator(Settings.searchWindowCommandHeader);
             searchWindow.AddShortcutEntry(Actions.Frame, SearchTreeEntry.AlwaysEnabled, FrameGraph);
             searchWindow.AddShortcutEntry(Actions.Cut, defaultEnabledCheck, OnCut);
             searchWindow.AddShortcutEntry(Actions.Copy, defaultEnabledCheck, OnCopy);

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine.UIElements;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     public class PortListView : ListView {
@@ -178,7 +179,7 @@ namespace NewGraph {
             // so we hookup to the connection changed action of the port
             void OnConnectionChanged() {
                 if (prop.managedReferenceValue == null) {
-                    label.text = GraphSettings.Instance.defaultLabelForPortListItems;
+                    label.text = Settings.defaultLabelForPortListItems;
                 } else {
                     // we need to get the foreign nodeview
                     NodeView attachedNodeView = nodeView.controller.graphController.GetNodeView(prop.managedReferenceValue);

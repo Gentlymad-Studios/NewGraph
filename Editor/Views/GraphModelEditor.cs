@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     [CustomEditor(typeof(GraphModel))]
@@ -12,7 +13,7 @@ namespace NewGraph {
             VisualElement inspector = new VisualElement();
             inspector.AddToClassList("baseGraphEditor");
 
-            Button openGraphButton = new Button(OpenGraphClicked) { text = GraphSettings.Instance.openGraphButtonText };
+            Button openGraphButton = new Button(OpenGraphClicked) { text = Settings.openGraphButtonText };
             openGraphButton.Add(GraphSettings.LoadButtonIcon);
             inspector.Add(openGraphButton);
             inspector.styleSheets.Add(GraphSettings.graphStylesheetVariables);

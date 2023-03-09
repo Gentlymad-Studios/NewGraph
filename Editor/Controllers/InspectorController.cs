@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     /// <summary>
@@ -62,7 +63,7 @@ namespace NewGraph {
             inspectorButton.Add(inspectorButtonImage);
             inspectorHeader = inspectorRoot.Q<VisualElement>(nameof(inspectorHeader));
 
-            Label startLabel = new Label(GraphSettings.Instance.noGraphLoadedLabel);
+            Label startLabel = new Label(Settings.noGraphLoadedLabel);
             startLabel.AddToClassList(nameof(startLabel));
 
             inspectorHeader.Add(startLabel);
@@ -87,7 +88,7 @@ namespace NewGraph {
             } else {
                 inspectorContainer.style.visibility = Visibility.Visible;
                 inspectorHeader.style.visibility = Visibility.Visible;
-                inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = GraphSettings.Instance.inspectorWidth;
+                inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = Settings.inspectorWidth;
                 inspectorButtonImage.image = GraphSettings.HideInspectorIcon;
             }
         }
@@ -108,20 +109,20 @@ namespace NewGraph {
             }
 
             string DoNodeText(ref int selectedCount) {
-                return SelectText(ref selectedCount, GraphSettings.Instance.node);
+                return SelectText(ref selectedCount, Settings.node);
             }
 
             string DoEdgeText(ref int selectedCount) {
-                return SelectText(ref selectedCount, GraphSettings.Instance.edge);
+                return SelectText(ref selectedCount, Settings.edge);
             }
 
             if (active && nodeCount == 0 && edgeCount == 0) {
                 active = false;
             } else {
                 if (nodeCount > 0 && edgeCount > 0) {
-                    multipleNodesSelected.text = $"{DoNodeText(ref nodeCount)} and {DoEdgeText(ref edgeCount)} {GraphSettings.Instance.multipleSelectedMessagePartial}";
+                    multipleNodesSelected.text = $"{DoNodeText(ref nodeCount)} and {DoEdgeText(ref edgeCount)} {Settings.multipleSelectedMessagePartial}";
                 } else {
-                    multipleNodesSelected.text = $"{(nodeCount > 0 ? DoNodeText(ref nodeCount) : DoEdgeText(ref edgeCount))} {GraphSettings.Instance.multipleSelectedMessagePartial}";
+                    multipleNodesSelected.text = $"{(nodeCount > 0 ? DoNodeText(ref nodeCount) : DoEdgeText(ref edgeCount))} {Settings.multipleSelectedMessagePartial}";
                 }
             }
 
@@ -159,7 +160,7 @@ namespace NewGraph {
         /// </summary>
         private void SettingsChanged() {
             if (isInspectorVisible) {
-                inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = GraphSettings.Instance.inspectorWidth;
+                inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = Settings.inspectorWidth;
             }
         }
          

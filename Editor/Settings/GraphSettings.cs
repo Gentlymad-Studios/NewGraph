@@ -1,9 +1,9 @@
 using System;
-using System.IO;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
 
@@ -23,8 +23,7 @@ namespace NewGraph {
         public static string PathPartialToCategory {
             get {
                 if (pathPartialToCategory == null) {
-                    pathPartialToCategory = Path.Combine(Instance.basePathToSettingsFile, Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(Instance)));
-                    pathPartialToCategory = pathPartialToCategory.Replace("\\", "/");
+                    pathPartialToCategory = menuItemBase+nameof(GraphSettings);
                 }
                 return pathPartialToCategory;
             }
@@ -51,7 +50,6 @@ namespace NewGraph {
             }
         }
 
-        public string basePathToSettingsFile = "Project/Tools";
         public string searchWindowCommandHeader = "Commands";
         public string searchWindowRootHeader = "Create Nodes";
         public string openGraphButtonText = "Open Graph";
@@ -61,23 +59,27 @@ namespace NewGraph {
 
         [SerializeField]
         private string hideInspectorIcon = "SceneLoadIn";
-        public static Texture HideInspectorIcon => EditorGUIUtility.IconContent(Instance.hideInspectorIcon).image;
+        public static Texture HideInspectorIcon => EditorGUIUtility.IconContent(Settings.hideInspectorIcon).image;
 
         [SerializeField]
         private string showInspectorIcon = "SceneLoadOut";
-        public static Texture ShowInspectorIcon => EditorGUIUtility.IconContent(Instance.showInspectorIcon).image;
+        public static Texture ShowInspectorIcon => EditorGUIUtility.IconContent(Settings.showInspectorIcon).image;
 
         [SerializeField]
         private string homeButtonIcon = "d_Profiler.UIDetails@2x";
-        public static Image HomeButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.homeButtonIcon).image };
+        public static Image HomeButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.homeButtonIcon).image };
 
         [SerializeField]
         private string createButtonIcon = "d_Toolbar Plus";
-        public static Image CreateButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.createButtonIcon).image };
+        public static Image CreateButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.createButtonIcon).image };
 
         [SerializeField]
         private string loadButtonIcon = "d_FolderOpened Icon";
-        public static Image LoadButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.loadButtonIcon).image };
+        public static Image LoadButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.loadButtonIcon).image };
+        
+        [SerializeField]
+        private string resetButtonIcon = "Refresh@2x";
+        public static Image ResetButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.resetButtonIcon).image };
 
         /*
         [SerializeField]
@@ -115,10 +117,10 @@ namespace NewGraph {
         private string loggerColorHex = null;
         public static string LoggerColorHex {
             get {
-                if (Instance.loggerColorHex == null) {
-                    Instance.loggerColorHex = ColorUtility.ToHtmlStringRGB(Instance.loggerColor);
+                if (Settings.loggerColorHex == null) {
+                    Settings.loggerColorHex = ColorUtility.ToHtmlStringRGB(Settings.loggerColor);
                 }
-                return Instance.loggerColorHex;
+                return Settings.loggerColorHex;
             }
         }
 
@@ -129,7 +131,7 @@ namespace NewGraph {
         public static VisualTreeAsset HandleBarsPartial {
             get {
                 if (handleBarsPartial == null) {
-                    handleBarsPartial = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetDatabase.GUIDToAssetPath(Instance.handleBarsPartialIdentifier));
+                    handleBarsPartial = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetDatabase.GUIDToAssetPath(Settings.handleBarsPartialIdentifier));
                 }
                 return handleBarsPartial;
             }
@@ -141,62 +143,26 @@ namespace NewGraph {
 
         [SerializeField]
         private string graphDocumentIdentifier = "a1a3b33cb142d06479dfaa381cc82245";
-        public static VisualTreeAsset graphDocument => AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetDatabase.GUIDToAssetPath(Instance.graphDocumentIdentifier));
+        public static VisualTreeAsset graphDocument => AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetDatabase.GUIDToAssetPath(Settings.graphDocumentIdentifier));
 
         [SerializeField]
         private string graphStylesheetVariablesIdentifier = "a22fe40a267e5824dbde2cea493f40e4";
-        public static StyleSheet graphStylesheetVariables => AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(Instance.graphStylesheetVariablesIdentifier));
+        public static StyleSheet graphStylesheetVariables => AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(Settings.graphStylesheetVariablesIdentifier));
 
         [SerializeField]
         private string graphStylesheetIdentifier = "e2825f280a2499d4587129e0a3716e17";
-        public static StyleSheet graphStylesheet => AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(Instance.graphStylesheetIdentifier));
+        public static StyleSheet graphStylesheet => AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(Settings.graphStylesheetIdentifier));
+
+        [SerializeField]
+        private string settingsStylesheetIdentifier = "7d7e4dcd278879849b62a784de9bdc3c";
+        public static StyleSheet settingsStylesheet => AssetDatabase.LoadAssetAtPath<StyleSheet>(AssetDatabase.GUIDToAssetPath(Settings.settingsStylesheetIdentifier));
+
 
         public delegate void ValueChangedEvent(SerializedPropertyChangeEvent evt);
         public event ValueChangedEvent ValueChanged;
 
         public void NotifyValueChanged(SerializedPropertyChangeEvent evt) {
             ValueChanged?.Invoke(evt);
-        }
-
-        [NonSerialized]
-        private static GraphSettings _instance = null;
-        public static GraphSettings Instance {
-            get {
-                if (_instance == null) {
-                    AssetDatabase.Refresh();
-                    string blueprintSettingsPath = AssetDatabase.GUIDToAssetPath(assetGUID);
-                    GraphSettings blueprintSettings = AssetDatabase.LoadAssetAtPath<GraphSettings>(blueprintSettingsPath);
-                    if (blueprintSettings == null) {
-                        Debug.LogError($"settings blueprint could not be resolved! Path: {blueprintSettingsPath} GUID: {assetGUID}");
-                        blueprintSettings = ScriptableObject.CreateInstance<GraphSettings>();
-                    }
-#if !TOOLS_KEEP_SETTINGS
-                    string targetPath = Path.Combine("Assets", blueprintSettings.basePathToSettingsFile, Path.GetFileName(blueprintSettingsPath));
-                    string fullTargetPath = Path.GetFullPath(targetPath);
-
-                    if (!File.Exists(fullTargetPath)) {
-                        string directories = Path.GetDirectoryName(targetPath);
-                        if (!Directory.Exists(directories)) {
-                            Directory.CreateDirectory(directories);
-                        }
-                        bool copied = AssetDatabase.CopyAsset(blueprintSettingsPath, targetPath);
-                        if (!copied) {
-                            Logger.LogAlways($"Unable to copy settings to directory: {fullTargetPath}. Falling back to original file! Please make sure this file can be copied.");
-                            _instance = blueprintSettings;
-                        }
-                        AssetDatabase.Refresh();
-                    }
-                    _instance = AssetDatabase.LoadAssetAtPath<GraphSettings>(targetPath);
-                    if (_instance == null) {
-                        Logger.LogAlways($"There was an error loading the settings file at path: {fullTargetPath}. Falling back to original file! Please fix any errors.");
-                        _instance = blueprintSettings;
-                    }
-#else
-                    _instance = blueprintSettings;
-#endif
-                }
-                return _instance;
-            }
         }
     }
 }

@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     public class GraphWindow : EditorWindow {
@@ -62,8 +63,8 @@ namespace NewGraph {
             rootVisualElement.styleSheets.Add(GraphSettings.graphStylesheet);
 
             // add potential custom stylesheet
-            if (GraphSettings.Instance.customStylesheet != null) {
-                rootVisualElement.styleSheets.Add(GraphSettings.Instance.customStylesheet);
+            if (Settings.customStylesheet != null) {
+                rootVisualElement.styleSheets.Add(Settings.customStylesheet);
             }
 
             // re-open the last opened graph

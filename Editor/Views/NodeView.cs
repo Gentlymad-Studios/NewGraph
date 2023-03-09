@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using GraphViewBase;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
 
@@ -29,7 +30,7 @@ namespace NewGraph {
             if (nodeColor != default) {
                 style.backgroundColor = nodeColor;
             } else {
-                style.backgroundColor = GraphSettings.Instance.defaultNodeColor;
+                style.backgroundColor = Settings.defaultNodeColor;
             }
         }
 
@@ -261,7 +262,7 @@ namespace NewGraph {
         }
 
         private void SettingsChanged() {
-            style.width = GraphSettings.Instance.nodeWidth;
+            style.width = Settings.nodeWidth;
         }
     }
 }

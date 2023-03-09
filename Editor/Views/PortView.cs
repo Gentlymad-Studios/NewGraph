@@ -1,6 +1,7 @@
 using GraphViewBase;
 using System;
 using UnityEditor;
+using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     public class PortView : BasePort {
@@ -19,8 +20,8 @@ namespace NewGraph {
             PortColor = DefaultPortColor;
         }
 
-        public override UnityEngine.Color DefaultPortColor => GraphSettings.Instance.portColor;
-        public override UnityEngine.Color DisabledPortColor => GraphSettings.Instance.disabledPortColor;
+        public override UnityEngine.Color DefaultPortColor => Settings.portColor;
+        public override UnityEngine.Color DisabledPortColor => Settings.disabledPortColor;
 
         public void SetConnectionChangedCallback(Action callback) {
             connectionChangedCallback = callback;
@@ -76,7 +77,7 @@ namespace NewGraph {
         private void ColorizeEdgeAndPort(EdgeView edge) {
             Type nodeType = (edge.Input as PortView).type;
             targetColor = NodeModel.GetNodeAttribute(nodeType).color;
-            edge.currentUnselectedColor = (targetColor == default) ? GraphSettings.Instance.colorUnselected : targetColor;
+            edge.currentUnselectedColor = (targetColor == default) ? Settings.colorUnselected : targetColor;
             edge.InputColor = edge.OutputColor = edge.currentUnselectedColor;
 
             if (edge.Input != null) {
