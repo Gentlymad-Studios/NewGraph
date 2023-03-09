@@ -39,7 +39,7 @@ namespace NewGraph {
 
             string name = nodeItem.GetName();
             if (string.IsNullOrEmpty(name)) {
-                nodeItem.SetName(nodeItem.nodeType.Name);
+                nodeItem.SetName(nodeItem.nodeAttribute.GetName(nodeItem.nodeType));
             }
 
         }

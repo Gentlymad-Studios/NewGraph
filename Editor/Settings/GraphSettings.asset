@@ -17,10 +17,11 @@ MonoBehaviour:
   searchWindowCommandHeader: Commands
   searchWindowRootHeader: Create Nodes
   openGraphButtonText: Open Graph
+  hideInspectorIcon: SceneLoadIn
+  showInspectorIcon: SceneLoadOut
   homeButtonIcon: d_SceneViewCamera@2x
   createButtonIcon: d_Toolbar Plus
-  loadButtonIcon: Import-Available@2x
-  saveButtonIcon: d_SaveAs@2x
+  loadButtonIcon: d_FolderOpened Icon
   createUtilityNodeLabel: Create Utility
   createNodeLabel: Create Node
   noGraphLoadedLabel: No graph active!

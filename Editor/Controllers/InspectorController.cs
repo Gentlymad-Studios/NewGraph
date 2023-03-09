@@ -16,16 +16,18 @@ namespace NewGraph {
 
         private VisualElement commandPanel;
         private VisualElement inspectorRoot;
-        private Button createButton, saveButton, loadButton, homeButton;
+        private Button createButton, /*saveButton,*/ loadButton, homeButton, inspectorButton;
         private Label multipleNodesSelected;
         private VisualElement inspectorContainer;
         private VisualElement selectedNodeInspector;
         private VisualElement inspectorHeader;
+        private Image inspectorButtonImage;
 
         private int currentPickerWindow;
-        private bool pickerActive;
+        private bool pickerActive = false;
+        private bool isInspectorVisible = true;
 
-        public Action OnCreateButtonClicked, OnSaveClicked, OnLoadClicked, OnHomeClicked;
+        public Action OnCreateButtonClicked, /*OnSaveClicked,*/ OnLoadClicked, OnHomeClicked;
         public Action<T> OnShouldLoadGraph;
         public Action<T> OnAfterGraphCreated;
 
@@ -40,9 +42,11 @@ namespace NewGraph {
             createButton.clicked += CreateButtonClicked;
             createButton.Add(GraphSettings.CreateButtonIcon);
 
+            /*
             saveButton = commandPanel.Q<Button>(nameof(saveButton));
             saveButton.clicked += SaveButtonClicked;
             saveButton.Add(GraphSettings.SaveButtonIcon);
+            */
 
             loadButton = commandPanel.Q<Button>(nameof(loadButton));
             loadButton.clicked += LoadButtonClicked;
@@ -52,6 +56,10 @@ namespace NewGraph {
             homeButton.clicked += HomeButtonClicked;
             homeButton.Add(GraphSettings.HomeButtonIcon);
 
+            inspectorButton = commandPanel.Q<Button>(nameof(inspectorButton));
+            inspectorButton.clicked += InspectorButtonClicked;
+            inspectorButtonImage = new Image();
+            inspectorButton.Add(inspectorButtonImage);
             inspectorHeader = inspectorRoot.Q<VisualElement>(nameof(inspectorHeader));
 
             Label startLabel = new Label(GraphSettings.Instance.noGraphLoadedLabel);
@@ -62,7 +70,30 @@ namespace NewGraph {
             multipleNodesSelected.text = "";
 
             SetSelectedNodeInfoActive();
+            SetInspectorVisibility(EditorPrefs.GetBool(GraphSettings.isInspectorVisiblePrefsKey, isInspectorVisible));
+        }
 
+        private void SetInspectorVisibility(bool visible=true) {
+            if (visible != isInspectorVisible) {
+                EditorPrefs.SetBool(GraphSettings.isInspectorVisiblePrefsKey, visible);
+            }
+
+            isInspectorVisible = visible;
+            if (!isInspectorVisible) {
+                inspectorContainer.style.visibility = Visibility.Hidden;
+                inspectorHeader.style.visibility = Visibility.Hidden;
+                inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = 0;
+                inspectorButtonImage.image = GraphSettings.ShowInspectorIcon;
+            } else {
+                inspectorContainer.style.visibility = Visibility.Visible;
+                inspectorHeader.style.visibility = Visibility.Visible;
+                inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = GraphSettings.Instance.inspectorWidth;
+                inspectorButtonImage.image = GraphSettings.HideInspectorIcon;
+            }
+        }
+
+        private void InspectorButtonClicked() {
+            SetInspectorVisibility(!isInspectorVisible);
         }
 
         /// <summary>
@@ -127,9 +158,11 @@ namespace NewGraph {
         /// Adjust visual styling when setting shave changed.
         /// </summary>
         private void SettingsChanged() {
-            inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = GraphSettings.Instance.inspectorWidth;
+            if (isInspectorVisible) {
+                inspectorRoot.style.minWidth = inspectorRoot.style.maxWidth = GraphSettings.Instance.inspectorWidth;
+            }
         }
-
+         
         /// <summary>
         /// called when the create button was clicked.
         /// </summary>
@@ -257,12 +290,14 @@ namespace NewGraph {
             OnHomeClicked?.Invoke();
         }
 
+        /*
         /// <summary>
         /// Called when the save button was clicked.
         /// </summary>
         private void SaveButtonClicked() {
             OnSaveClicked?.Invoke();
         }
+        */
 
         /// <summary>
         /// Called when the load button was clicked.

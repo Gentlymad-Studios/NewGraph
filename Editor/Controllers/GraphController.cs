@@ -35,8 +35,8 @@ namespace NewGraph {
             graphView.OnMouseDown -= OpenContextMenu;
             graphView.OnMouseDown += OpenContextMenu;
 
-            inspector = new InspectorController<GraphModel>(uxmlRoot);
-            inspector.OnSaveClicked = OnSaveClicked;
+            inspector = new InspectorController<GraphModel>(uxmlRoot);  
+            //inspector.OnSaveClicked = OnSaveClicked;
             inspector.OnShouldLoadGraph = OnShouldLoadGraph;
             inspector.OnAfterGraphCreated = OnAfterGraphCreated;
             inspector.OnHomeClicked = OnHomeClicked;
@@ -333,9 +333,10 @@ namespace NewGraph {
                 if (nodeType.ImplementsOrInherits(typeof(INode))) {
                     // check if we have a utility node...
                     bool isUtilityNode = nodeType.ImplementsOrInherits(typeof(IUtilityNode));
-
+                    NodeAttribute nodeAttribute = NodeModel.GetNodeAttribute(nodeType);
+                   
                     // retrieve subcategories
-                    string categoryPath = NodeModel.GetNodeAttribute(nodeType).categories;
+                    string categoryPath = nodeAttribute.categories;
                     string endSlash = "/";
                     categoryPath.Replace(@"\", "/");
                     if (string.IsNullOrWhiteSpace(categoryPath)) {
@@ -348,7 +349,7 @@ namespace NewGraph {
                     }
 
                     // add to the list of createable nodes
-                    string createNodeLabel = $"{categoryPath}{nodeType.Name}";
+                    string createNodeLabel = $"{categoryPath}{nodeAttribute.GetName(nodeType)}";
                     createNodeLabel = (!isUtilityNode ? GraphSettings.Instance.createNodeLabel : GraphSettings.Instance.createUtilityNodeLabel) + createNodeLabel;
 
                     searchWindow.AddNodeEntry(createNodeLabel, (obj) => CreateNewNode(nodeType, isUtilityNode));
@@ -407,6 +408,7 @@ namespace NewGraph {
             Load(graphData);
         }
 
+        /*
         /// <summary>
         /// Called when Save was clicked in the inspector panel....
         /// </summary>
@@ -414,6 +416,7 @@ namespace NewGraph {
             Logger.Log("save clicked");
             Reload();
         }
+        */
 
         /// <summary>
         /// Opens a new graph from an external resource.

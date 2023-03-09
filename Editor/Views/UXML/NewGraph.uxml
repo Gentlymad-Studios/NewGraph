@@ -3,10 +3,11 @@
         <ui:VisualElement name="graphViewRoot" style="flex-direction: column; flex-wrap: nowrap; flex-grow: 1;" />
         <ui:VisualElement name="inspectorRoot" style="flex-grow: 1; max-width: 200px; min-width: 200px;">
             <ui:VisualElement name="commandPanel">
-                <ui:Button tabindex="-1" display-tooltip-when-elided="true" name="homeButton" />
-                <ui:Button tabindex="-1" text="Create" display-tooltip-when-elided="true" name="createButton" />
-                <ui:Button tabindex="-1" text="Load" display-tooltip-when-elided="true" name="loadButton" />
+                <ui:Button tabindex="-1" display-tooltip-when-elided="true" tooltip="Center the viewport." name="homeButton" />
+                <ui:Button tabindex="-1" text="Create" display-tooltip-when-elided="true" tooltip="Create a new Graph." name="createButton" />
+                <ui:Button tabindex="-1" text="Load" display-tooltip-when-elided="true" tooltip="Load a Graph." name="loadButton" />
                 <ui:Button tabindex="-1" text="Save" display-tooltip-when-elided="true" name="saveButton" />
+                <ui:Button tabindex="-1" display-tooltip-when-elided="true" tooltip="Show or Hide the inspector." name="inspectorButton" />
             </ui:VisualElement>
             <ui:VisualElement name="inspectorHeader" />
             <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" vertical-scroller-visibility="AlwaysVisible" name="inspectorContainer" style="flex-grow: 1;">

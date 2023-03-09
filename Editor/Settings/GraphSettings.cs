@@ -14,6 +14,7 @@ namespace NewGraph {
         public const string debugDefine = "TOOLS_DEBUG";
         public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedGraphEditorPrefsKey);
         public const string lastOpenedDirectoryPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(lastOpenedDirectoryPrefsKey);
+        public const string isInspectorVisiblePrefsKey = nameof(NewGraph) + "." + nameof(GraphSettings) + "." + nameof(isInspectorVisiblePrefsKey);
 
         public StyleSheet customStylesheet;
 
@@ -55,6 +56,17 @@ namespace NewGraph {
         public string searchWindowRootHeader = "Create Nodes";
         public string openGraphButtonText = "Open Graph";
 
+        [HideInInspector]
+        public bool wasBlueprintTransferred = false;
+
+        [SerializeField]
+        private string hideInspectorIcon = "SceneLoadIn";
+        public static Texture HideInspectorIcon => EditorGUIUtility.IconContent(Instance.hideInspectorIcon).image;
+
+        [SerializeField]
+        private string showInspectorIcon = "SceneLoadOut";
+        public static Texture ShowInspectorIcon => EditorGUIUtility.IconContent(Instance.showInspectorIcon).image;
+
         [SerializeField]
         private string homeButtonIcon = "d_Profiler.UIDetails@2x";
         public static Image HomeButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.homeButtonIcon).image };
@@ -64,12 +76,14 @@ namespace NewGraph {
         public static Image CreateButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.createButtonIcon).image };
 
         [SerializeField]
-        private string loadButtonIcon = "Import-Available@2x";
+        private string loadButtonIcon = "d_FolderOpened Icon";
         public static Image LoadButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.loadButtonIcon).image };
 
+        /*
         [SerializeField]
         private string saveButtonIcon = "d_SaveAs@2x";
         public static Image SaveButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Instance.saveButtonIcon).image };
+        */
 
         public string createUtilityNodeLabel = "Create Utility";
         public string createNodeLabel = "Create Node";

@@ -1,8 +1,9 @@
-GridBackground {
-    --grid-background-color: var(--newGraph-colors-grid-light-grey);
-    --line-color: var(--newGraph-colors-grid-transparent);
-    --thick-line-color: var(--newGraph-colors-grid-opaque);
-    --spacing: var(--newGraph-colors-grid-space);
+GridBackground.grid-background {
+    --grid-spacing: 50;
+    --grid-thick-lines: 10;
+    --grid-line-color: rgba(0, 0, 0, 0.08);
+    --grid-thick-line-color: rgba(0, 0, 0, 0.18);
+    --grid-background-color: rgba(45, 45, 45, 1);
 }
 
 .EditableLabelElement {
@@ -226,6 +227,16 @@ PortListView > ScrollView {
     margin-right: 0px;
     padding-right: 2px;
     max-width: 61px;
+    display:none;
+}
+
+#commandPanel Button#inspectorButton {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-right: 2px;
+    max-width: 23px;
 }
 
 #commandPanel Button#loadButton {

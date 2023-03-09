@@ -84,3 +84,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.4] - 2023-03-04
 ### Added
 - Extended NodeEditor functionality, so that derived nodetypes can also receive the same inspector. Set the bool property in CustomNodeEditorAttribute to true to enable this.
+
+## [0.1.5] - 2023-03-09
+### Added
+- Added ability to show & hide the inspector panel
+- Added tooltips for command panel buttons
+- Added "nodeName" field for NodeAttribute so you can customize the nodeName to your liking
+### Removed
+- Removed Save dialog as it is legacy and not needed
