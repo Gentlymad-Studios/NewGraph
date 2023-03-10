@@ -21,7 +21,7 @@ namespace NewGraph {
 
         private bool isLoading = false;
         private Dictionary<object, NodeView> dataToViewLookup = new Dictionary<object, NodeView>();
-
+        
         public Vector2 GetViewScale() {
             return graphView.GetCurrentScale();
         }
@@ -67,7 +67,16 @@ namespace NewGraph {
         }
 
         private void OnEdgeDrop(object obj) {
-            //SearchWindow.Open(searchWindow, graphView);
+            BaseEdge baseEdge = (BaseEdge)obj;
+            if(baseEdge == null) return;
+
+            PortView port = baseEdge.Input != null ? baseEdge.Input as PortView : baseEdge.Output != null ? baseEdge.Output as PortView : null;
+            if (port != null) {
+                //Debug.Log(port.type);
+                foreach (Type type in port.connectableTypes) {
+                    //Debug.Log(type);
+                }
+            }
         }
           
         private void OpenContextMenu(MouseDownEvent evt) {
@@ -414,16 +423,6 @@ namespace NewGraph {
         private void OnShouldLoadGraph(GraphModel graphData) {
             Load(graphData);
         }
-
-        /*
-        /// <summary>
-        /// Called when Save was clicked in the inspector panel....
-        /// </summary>
-        private void OnSaveClicked() {
-            Logger.Log("save clicked");
-            Reload();
-        }
-        */
 
         /// <summary>
         /// Opens a new graph from an external resource.

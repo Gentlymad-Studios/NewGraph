@@ -6,6 +6,7 @@ namespace NewGraph {
         public string groupName;
         public List<PropertyInfo> graphProperties = new List<PropertyInfo>();
         public string[] levels = new string[] {};
+        public bool hasEmbeddedManagedReference = false;
 
         public GroupInfo(string groupName, string relativePropertyPath, GraphDisplayAttribute graphDisplayAttribute) : base(relativePropertyPath, graphDisplayAttribute) {
             this.groupName = groupName;

@@ -125,3 +125,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - implemented custom foldout states for groups/foldouts and indepedently from nodeView and inspector. This way a graph will always keep track over every expanded state for each node.
 - implemented empty method in graphController to extend for new EdgeDrop action
+
+## [0.2.1] - 2023-03-10
+### Added
+- Catered for special case where a field is a managedReference to avoid double headers
+### Fixed
+- fixed case where a group would not be drawn/ appear correctly
+- fixed group label being cut off
+

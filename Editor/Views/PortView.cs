@@ -1,5 +1,6 @@
 using GraphViewBase;
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using static NewGraph.GraphSettingsSingleton;
 
@@ -8,12 +9,16 @@ namespace NewGraph {
 
         public Type type;
         public SerializedProperty boundProperty;
+        public List<Type> connectableTypes;
+
         private Action connectionChangedCallback;
         private Func<Type,Type, bool> isValidConnectionCheck;
         private UnityEngine.Color targetColor;
+
         public PortView(PortInfo info, SerializedProperty boundProperty, Action connectionChangedCallback=null) : base(Orientation.Horizontal, (Direction)(int)info.portDisplay.direction, (PortCapacity)(int)info.portDisplay.capacity) {
             this.type = info.fieldType;
             this.isValidConnectionCheck = info.portDisplay.isValidConnectionCheck;
+            this.connectableTypes = info.connectableTypes;
             this.boundProperty = boundProperty;
             this.connectionChangedCallback = connectionChangedCallback;
 

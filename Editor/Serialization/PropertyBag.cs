@@ -237,13 +237,15 @@ namespace NewGraph {
                     if (!IsRealArray(currentProperty) && graphProperty.graphDisplay.createGroup && (currentProperty.propertyType == SerializedPropertyType.Generic || currentProperty.propertyType == SerializedPropertyType.ManagedReference)) {
                         // create a new group
                         GroupInfo groupInfo = new GroupInfo(currentProperty.displayName, currentRelativePropertyPath, currentGraphDisplayAttribute);
+                        
                         // check if the new group should be part of another group and add it to the group graphPropertiesAndGroups
                         FindGroupAndAdd(ref currentRelativePropertyPath, groupInfo);
+                        
                         // add new group to lookup
                         groupInfoLookup.Add(groupInfo);
 
                         if (currentProperty.propertyType == SerializedPropertyType.ManagedReference) {
-                            FindGroupAndAdd(ref currentRelativePropertyPath, graphProperty);
+                            FindGroupAndAdd(ref currentRelativePropertyPath, graphProperty, true);
                         }
                     } else {
                         // check if the property should be part of another group and add it to the group graphPropertiesAndGroups
@@ -264,7 +266,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="relativePath"></param>
         /// <param name="propertyInfo"></param>
-        private void FindGroupAndAdd(ref string relativePath, GraphPropertyInfo propertyInfo) {
+        private void FindGroupAndAdd(ref string relativePath, GraphPropertyInfo propertyInfo, bool embeddedManagedReference = false) {
             GroupInfo groupPropertyBelongsTo = null;
             if (groupInfoLookup.Count > 0) {
                 string[] levels = relativePath.Split('.');
@@ -273,13 +275,20 @@ namespace NewGraph {
                 for (int i = groupInfoLookup.Count - 1; i >= 0; i--) {
                     GroupInfo groupInfo = groupInfoLookup[i];
                     if (groupInfo.levels.Length < levels.Length) {
-                        if(levels[levels.Length-2] == groupInfo.levels[groupInfo.levels.Length - 1]) {
+                        if (levels[levels.Length-2] == groupInfo.levels[groupInfo.levels.Length - 1]) {
                             groupPropertyBelongsTo = groupInfo;
+                            break;
+                        } 
+                    } else if (groupInfo.levels.Length == levels.Length) {
+                        if (levels[levels.Length - 1] == groupInfo.levels[groupInfo.levels.Length - 1]) {
+                            groupPropertyBelongsTo = groupInfo;
+                            groupPropertyBelongsTo.hasEmbeddedManagedReference= embeddedManagedReference;
                             break;
                         }
                     }
                 }
             }
+
             if (groupPropertyBelongsTo != null) {
                 propertyInfo.groupInfo= groupPropertyBelongsTo;
                 groupPropertyBelongsTo.graphProperties.Add(propertyInfo);

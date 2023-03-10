@@ -64,9 +64,23 @@ GridBackground.grid-background {
     border-color: rgba(0, 0, 0, 0.3);
 }
 
-Foldout.GroupInfo Toggle{
-    max-width:50px;
+Foldout.GroupInfo {
+    padding-top: 20px;
 }
+
+Foldout.GroupInfo>PropertyField>Foldout.managedReference>Toggle.hasEmbeddedManagedReference {
+    display: none;
+}
+
+Foldout.GroupInfo>PropertyField>Foldout.managedReference>VisualElement#unity-content{
+    margin-left: 0;
+}
+
+Foldout.GroupInfo>Toggle{
+    position: absolute;
+    margin-top:-18px;
+}
+
 .unity-base-field__label {
     min-width: 80px;
 }

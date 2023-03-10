@@ -11,6 +11,7 @@ namespace NewGraph {
         public string name = null;
         public Capacity capacity = Capacity.Single;
         public PortDirection direction = PortDirection.Input;
+        public ConnectionPolicy connectionPolicy = ConnectionPolicy.IdenticalOrSubclass;
         public Func<Type, Type, bool> isValidConnectionCheck = null;
 
         private static Dictionary<ConnectionPolicy, Func<Type, Type, bool>> connectionPolicybehaviors = new Dictionary<ConnectionPolicy, Func<Type, Type, bool>>() {
@@ -32,11 +33,13 @@ namespace NewGraph {
             if (direction != PortDirection.Unspecified) {
                 this.direction = direction;
             }
-            if (connectionPolicy == ConnectionPolicy.Unspecified) {
-                connectionPolicy = ConnectionPolicy.IdenticalOrSubclass;
+
+            if (connectionPolicy != ConnectionPolicy.Unspecified) {
+                this.connectionPolicy = connectionPolicy;
             }
+
             this.name = name;
-            isValidConnectionCheck = connectionPolicybehaviors[connectionPolicy];
+            isValidConnectionCheck = connectionPolicybehaviors[this.connectionPolicy];
         }
     }
 }

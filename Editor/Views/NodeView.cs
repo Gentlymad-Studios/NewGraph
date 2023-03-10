@@ -180,7 +180,36 @@ namespace NewGraph {
                     foldOutState.used= true;
 
                     newGroup.value = foldOutState.isExpanded;
-                    
+
+                    void GeomChanged(GeometryChangedEvent _) {
+                        // handle special cases where we have an embedded managed reference that is within a group
+                        // normally we would have double header labels, so to be able to hide them via styling we need to add some classes.
+                        VisualElement unityContent = newGroup.Q<VisualElement>("unity-content");
+                        if (groupInfo.hasEmbeddedManagedReference) {
+                            PropertyField pField = unityContent.Q<PropertyField>();
+                            if (pField != null) {
+                                Foldout fOut = pField.Q<Foldout>();
+                                fOut.value = true;
+                                fOut.RegisterValueChangedCallback((evt) => {
+                                    if (evt.newValue != true) {
+                                        fOut.value = true;
+                                    }
+                                });
+                                if (fOut != null) {
+                                    Toggle tg = fOut.Q<Toggle>();
+                                    if (tg != null) {
+                                        fOut.AddToClassList("managedReference");
+                                        tg.AddToClassList(nameof(groupInfo.hasEmbeddedManagedReference));
+                                    }
+                                }
+                            }
+                        }
+
+                        unityContent.pickingMode = PickingMode.Ignore;
+                        newGroup.UnregisterCallback<GeometryChangedEvent>(GeomChanged);
+                    }
+                    newGroup.RegisterCallback<GeometryChangedEvent>(GeomChanged);
+
                     newGroup.RegisterValueChangedCallback((evt) => {
                         foldOutState.isExpanded = evt.newValue;
                         controller.GetSerializedObject().ApplyModifiedPropertiesWithoutUndo();
