@@ -120,3 +120,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - removed faulty isExpanded property from foldouts (they are just claused on default now)
 - fixed HasSelectedEdges check that worked with the wrong field
 - fixed long foldout label that prevented node dragging
+
+## [0.2.0] - 2023-03-10
+### Added
+- implemented custom foldout states for groups/foldouts and indepedently from nodeView and inspector. This way a graph will always keep track over every expanded state for each node.
+- implemented empty method in graphController to extend for new EdgeDrop action

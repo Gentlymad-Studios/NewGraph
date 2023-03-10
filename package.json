@@ -1,6 +1,6 @@
 {
   "name": "com.gentlymad.newgraph",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "displayName": "NewGraph",
   "description": "Our general node graph solution. This is build upon the idea to visualize complex data structures as graph networks without having to modify already established data classes, except adding [Node], [Port] and [SerializeReference] attributes to call classes that should show in the Graph View.",
   "unity": "2022.2",

@@ -15,11 +15,12 @@ namespace NewGraph {
         private List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
         public Color nodeColor;
         private bool hasInspectorProperty = false;
-        
+
         public NodeController controller;
         public PortView inputPort = null;
         public List<PortView> outputPorts = new List<PortView>();
         public List<PortListView> portLists = new List<PortListView>();
+        public List<Foldout> foldouts = new List<Foldout>();
 
         public NodeView(NodeController controller, Color nodeColor) {
             this.controller = controller;
@@ -76,6 +77,8 @@ namespace NewGraph {
 
                 (controller.nodeItem.nodeData as IUtilityNode).Initialize(controller);
             }
+
+            controller.nodeItem.CleanupFoldoutStates();
 
             BindUI(controller.GetSerializedObject());
         }
@@ -159,28 +162,32 @@ namespace NewGraph {
             }
         }
 
+
         private VisualElement[] CreateGroupUI(GroupInfo groupInfo, VisualElement[] parents, SerializedProperty property) {
             VisualElement[] newGroups = new VisualElement[parents.Length];
 
-            void AddAtIndex(int index, bool empty) {
+            void AddAtIndex(int index, bool empty, string prefix) {
                 // add label/ foldout etc.
                 if (!empty) {
-                    SerializedProperty prop = property.Copy();
                     Foldout newGroup = new Foldout();
                     newGroup.pickingMode = PickingMode.Ignore;
                     newGroup.AddToClassList(nameof(GroupInfo));
                     newGroup.text = groupInfo.groupName;
-                    newGroup.name = groupInfo.relativePropertyPath;
-                    newGroup.value = false /*prop.isExpanded*/;
-                    /*
+                    newGroup.name = prefix + groupInfo.relativePropertyPath;
+
+                    int propertyPathHash = newGroup.name.GetHashCode();
+                    NodeModel.FoldoutState foldOutState = controller.nodeItem.GetOrCreateFoldout(propertyPathHash);
+                    foldOutState.used= true;
+
+                    newGroup.value = foldOutState.isExpanded;
+                    
                     newGroup.RegisterValueChangedCallback((evt) => {
-                        prop.isExpanded = evt.newValue;
-                        prop.serializedObject.ApplyModifiedProperties();
+                        foldOutState.isExpanded = evt.newValue;
+                        controller.GetSerializedObject().ApplyModifiedPropertiesWithoutUndo();
                     });
-                    newGroup.bindingPath = prop.propertyPath;
-                    */
-                    newGroup.name = "unity-foldout-" + prop.propertyPath;
+
                     newGroups[index] = newGroup;
+                    foldouts.Add(newGroup);
                 } else {
                     newGroups[index] = null;
                 }
@@ -189,17 +196,17 @@ namespace NewGraph {
                 }
             }
 
-            bool addEmpty = true;
+            bool noNodeView = true;
             if (groupInfo.graphDisplay.displayType.HasFlag(DisplayType.NodeView)) {
-                addEmpty = false;
+                noNodeView = false;
             }
-            AddAtIndex(0, addEmpty);
-            
-            addEmpty = true;
+            AddAtIndex(0, noNodeView, nameof(DisplayType.NodeView));
+
+            bool noInspector = true;
             if (groupInfo.graphDisplay.displayType.HasFlag(DisplayType.Inspector)) {
-                addEmpty = false;
+                noInspector = false;
             }
-            AddAtIndex(1, addEmpty);
+            AddAtIndex(1, noInspector, nameof(DisplayType.Inspector));
 
             return newGroups;
         }

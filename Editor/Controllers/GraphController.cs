@@ -29,6 +29,7 @@ namespace NewGraph {
         public void ForEachNode(Action<BaseNode> callback) {
             graphView.ForEachNodeDo(callback);
         }
+
         public GraphController(VisualElement uxmlRoot, VisualElement root) {
             graphView = new GraphView(uxmlRoot, root, OnGraphAction);
             graphView.OnViewTransformChanged -= OnViewportChanged;
@@ -54,7 +55,8 @@ namespace NewGraph {
                 { Actions.EdgeCreate, OnEdgeCreate },
                 { Actions.EdgeDelete, OnEdgeDelete },
                 { Actions.SelectionChanged, OnSelected },
-                { Actions.SelectionCleared, OnDeselected }
+                { Actions.SelectionCleared, OnDeselected },
+                { Actions.EdgeDrop, OnEdgeDrop },
             };
 
             if (searchWindow == null) {
@@ -64,10 +66,14 @@ namespace NewGraph {
             }
         }
 
+        private void OnEdgeDrop(object obj) {
+            //SearchWindow.Open(searchWindow, graphView);
+        }
+          
         private void OpenContextMenu(MouseDownEvent evt) {
             if (evt.button == 1) {
                 SearchWindow.Open(searchWindow, graphView);
-            }
+            } 
         }
 
         /// <summary>
@@ -472,6 +478,7 @@ namespace NewGraph {
                     // go over every node...
                     for (int i = 0; i < nodes.Count; i++) {
                         NodeModel node = nodes[i];
+
                         // initialize the node...
                         node.Initialize();
 

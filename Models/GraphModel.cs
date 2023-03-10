@@ -10,6 +10,9 @@ namespace NewGraph {
     /// <summary>
     /// Our graph data model split into are minimalistic runtime part and editor specific extensions.
     /// See everything under #if UNITY_EDITOR for all editor specific parts of this class.
+    /// The compilation tags allow us to strip away any unwated data for a runtime scenario.
+    /// Source: https://docs.unity3d.com/2022.2/Documentation/Manual/script-Serialization.html
+    /// Discussion: https://forum.unity.com/threads/serialize-fields-only-in-editor.433422/
     /// </summary>
     [CreateAssetMenu(fileName =nameof(GraphModel), menuName = nameof(GraphModel), order = 1)]
     public class GraphModel : ScriptableObject {
@@ -108,6 +111,7 @@ namespace NewGraph {
         public void RemoveNode(NodeModel node) {
             if (!node.isUtilityNode) {
                 nodes.Remove(node);
+
             } else {
                 utilityNodes.Remove(node);
             }
