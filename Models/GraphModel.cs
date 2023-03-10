@@ -114,8 +114,11 @@ namespace NewGraph {
         }
 
         public void RemoveNodes(List<NodeModel> nodesToRemove) {
-            foreach (NodeModel node in nodesToRemove) {
-                RemoveNode(node);
+            if (nodesToRemove.Count > 0) {
+                Undo.RecordObject(this, "Remove Nodes");
+                foreach (NodeModel node in nodesToRemove) {
+                    RemoveNode(node);
+                }
             }
         }
 

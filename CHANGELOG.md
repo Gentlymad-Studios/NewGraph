@@ -108,3 +108,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.8] - 2023-03-09
 ### Fixed
 - Fixed settings file not serializing correctly.
+
+## [0.1.9] - 2023-03-09
+### Added
+- Added workaround for bugged KeyDownEvent by implementing global key events
+### Fixed
+- Fixed bug in group creation logic that could lead to properties being part of groups because their names were similar
+- Fixed error when using undo after a node was deleted
+- Removed old keydown recognition system
+- fixed a visibility related null ref in GraphModelEditor
+- removed faulty isExpanded property from foldouts (they are just claused on default now)
+- fixed HasSelectedEdges check that worked with the wrong field
+- fixed long foldout label that prevented node dragging

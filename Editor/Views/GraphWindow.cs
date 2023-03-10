@@ -4,11 +4,18 @@ using UnityEngine.UIElements;
 using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+    /// <summary>
+    /// The actual editor window for our graph.
+    /// Contains a key down workaround to prevent an issue where key down events are passing through elements instead of bein received.
+    /// https://forum.unity.com/threads/capturing-keydownevents-in-editorwindow-and-focus.762155/
+    /// </summary>
     public class GraphWindow : EditorWindow {
 
         private GraphController graphController;
         private PlayModeStateChange lastState;
         private static GraphWindow window;
+
+        public static event System.Action<Event> OnGlobalKeyDown;
 
         [MenuItem(GraphSettings.menuItemBase+nameof(GraphWindow))]
         public static void Initialize() {
@@ -20,6 +27,14 @@ namespace NewGraph {
         private void OnEnable() {
             EditorApplication.playModeStateChanged -= LogPlayModeState;
             EditorApplication.playModeStateChanged += LogPlayModeState;
+            GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
+            GlobalKeyEventHandler.OnKeyEvent += HandleGlobalKeyPressEvents;
+        }
+
+        private void HandleGlobalKeyPressEvents(Event evt) {
+            if (evt.isKey && mouseOverWindow == this && hasFocus) {
+                OnGlobalKeyDown?.Invoke(evt);
+            }
         }
 
         public void LogPlayModeState(PlayModeStateChange state) {
@@ -35,6 +50,8 @@ namespace NewGraph {
 
         private void OnDisable() {
             graphController?.Disable();
+            GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
+            EditorApplication.playModeStateChanged -= LogPlayModeState;
         } 
 
         public static Vector2 screenPosition {
@@ -43,7 +60,7 @@ namespace NewGraph {
                     Initialize();
                 }
                 return window.position.position;
-            }
+            } 
         }
 
         public static void Redraw() {
@@ -72,7 +89,7 @@ namespace NewGraph {
             if (lastLoadedGraph != null) {
                 graphController.OpenGraphExternal(lastLoadedGraph);
             }
-        }
 
+        }
     }
 }

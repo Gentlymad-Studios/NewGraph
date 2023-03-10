@@ -46,9 +46,15 @@ namespace NewGraph {
         }
 
         private void BindItem(VisualElement itemRow, int i) {
+            serializedObject.Update();
             SerializedProperty prop = listProperty.GetArrayElementAtIndex(i);
             Label label = itemRow[0] as Label;
-            label.text = $"Element {i+1}: {prop.FindPropertyRelative(NodeModel.nameIdentifier).stringValue}";
+            if (prop != null) {
+                SerializedProperty propRelative = prop.FindPropertyRelative(NodeModel.nameIdentifier);
+                if (propRelative != null) {
+                    label.text = $"Element {i + 1}: {propRelative.stringValue}";
+                }
+            }
         }
 
         private void OpenGraphClicked() {

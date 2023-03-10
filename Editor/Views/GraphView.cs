@@ -16,9 +16,8 @@ namespace NewGraph {
         public MouseDown OnMouseDown { get; set; }
 
         public GraphView(VisualElement parent, VisualElement root, Action<Actions, object> OnAction) {
-            // this fixes a bug where keyevents are not fired sometimes
-            // with this we are attaching a keyevent listener to the up most root object of the window.
-            root.RegisterCallback<KeyDownEvent>(base.ExecuteDefaultAction);
+            GraphWindow.OnGlobalKeyDown -= OnKeyDown;
+            GraphWindow.OnGlobalKeyDown += OnKeyDown;
             root.RegisterCallback<MouseDownEvent>((evt) => { OnMouseDown(evt); });
 
             graphViewRoot = parent.Q<VisualElement>(nameof(graphViewRoot));
@@ -26,6 +25,10 @@ namespace NewGraph {
             this.StretchToParentSize();
 
             this.OnAction = OnAction;
+        }
+
+        private void OnKeyDown(Event evt) {
+            ExecuteShortcutHandler(evt.keyCode, evt.modifiers);
         }
 
         public Vector2 LocalToViewTransformPosition(Vector2 localMousePosition) {
@@ -38,6 +41,14 @@ namespace NewGraph {
 
         public Vector2 GetCurrentMouseViewPosition() {
             return LocalToViewTransformPosition(this.WorldToLocal(mousePosition));
+        }
+
+        /// <summary>
+        /// Empty override to prevent defualt logic due to keydown event bugs.
+        /// </summary>
+        /// <param name="baseEvent"></param>
+        protected override void ExecuteDefaultAction(EventBase baseEvent) {
+            //base.ExecuteDefaultAction(baseEvent);
         }
 
         public void SetSelected(GraphElement graphElement, bool selected = true, bool clear = true) {
@@ -65,7 +76,6 @@ namespace NewGraph {
         }
 
 
-
         public BaseNode GetFirstSelectedNode() {
             return ContentContainer.NodesSelected.First();
         }
@@ -84,7 +94,8 @@ namespace NewGraph {
         }
 
         public bool HasSelectedEdges() {
-            return ContentContainer.NodesSelected.Count() > 0 ? true : false;
+
+            return ContentContainer.EdgesSelected.Count() > 0 ? true : false;
         }
 
         public void ForEachPortDo(Action<BasePort> callback) {

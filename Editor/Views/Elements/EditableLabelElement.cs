@@ -77,6 +77,7 @@ namespace NewGraph {
             // enter/escape = exit edit mode
             if (isInitialized && isInEditMode && (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.Escape)) {
                 EnableInput(false);
+                evt.StopImmediatePropagation();
             }
         }
 

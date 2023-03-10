@@ -167,10 +167,18 @@ namespace NewGraph {
                 if (!empty) {
                     SerializedProperty prop = property.Copy();
                     Foldout newGroup = new Foldout();
+                    newGroup.pickingMode = PickingMode.Ignore;
                     newGroup.AddToClassList(nameof(GroupInfo));
                     newGroup.text = groupInfo.groupName;
                     newGroup.name = groupInfo.relativePropertyPath;
+                    newGroup.value = false /*prop.isExpanded*/;
+                    /*
+                    newGroup.RegisterValueChangedCallback((evt) => {
+                        prop.isExpanded = evt.newValue;
+                        prop.serializedObject.ApplyModifiedProperties();
+                    });
                     newGroup.bindingPath = prop.propertyPath;
+                    */
                     newGroup.name = "unity-foldout-" + prop.propertyPath;
                     newGroups[index] = newGroup;
                 } else {
@@ -213,10 +221,6 @@ namespace NewGraph {
 
         private void BindUI(SerializedObject serializedObject) {
             this.Bind(serializedObject);
-            /*
-            if (inspectorContent != null) {
-                inspectorContent.Bind(serializedObject);
-            }*/
         }
 
 
@@ -231,13 +235,6 @@ namespace NewGraph {
                 name = property.name,
                 bindingPath = property.propertyPath,
             };
-
-            /*
-            if (property.propertyType != SerializedPropertyType.ManagedReference) {
-                Debug.Log($" {property.name} {property.propertyPath} {property.propertyType} {property.depth}");
-            } else {
-                Debug.Log($" {property.name} {property.propertyPath} {property.propertyType} {property.managedReferenceId} {property.managedReferenceFullTypename}");
-            }*/
 
             return propertyField;
         }

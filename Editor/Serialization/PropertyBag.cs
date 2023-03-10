@@ -267,12 +267,16 @@ namespace NewGraph {
         private void FindGroupAndAdd(ref string relativePath, GraphPropertyInfo propertyInfo) {
             GroupInfo groupPropertyBelongsTo = null;
             if (groupInfoLookup.Count > 0) {
+                string[] levels = relativePath.Split('.');
+
                 // loop backwards to find the most inner group first!
                 for (int i = groupInfoLookup.Count - 1; i >= 0; i--) {
                     GroupInfo groupInfo = groupInfoLookup[i];
-                    if (relativePath.Contains(groupInfo.relativePropertyPath)) {
-                        groupPropertyBelongsTo = groupInfo;
-                        break;
+                    if (groupInfo.levels.Length < levels.Length) {
+                        if(levels[levels.Length-2] == groupInfo.levels[groupInfo.levels.Length - 1]) {
+                            groupPropertyBelongsTo = groupInfo;
+                            break;
+                        }
                     }
                 }
             }
