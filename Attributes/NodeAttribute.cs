@@ -41,6 +41,7 @@ namespace NewGraph {
         /// <param name="categories">The subcategories this node should appear under in the creation menu.</param>
         /// <param name="inputPortName">A custom name for the input port.</param>
         /// <param name="inputPortCapacity">The maximum amount of allowed connections to the input port of this node.</param>
+        /// <param name="nodeName">A custom name for the node.</param>
         public NodeAttribute(string color = null, string categories = "", string inputPortName = null, Capacity inputPortCapacity = Capacity.Multiple, string nodeName = null) {
             if (color != null) {
                 ColorUtility.TryParseHtmlString(color, out this.color);
