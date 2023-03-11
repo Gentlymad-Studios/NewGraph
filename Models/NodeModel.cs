@@ -109,14 +109,14 @@ namespace NewGraph {
         /// <returns></returns>
         public FoldoutState GetOrCreateFoldout(int pathHash, bool defaultState=true) {
             if (!FoldoutsLookup.ContainsKey(pathHash)) {
-                serializedProperty.serializedObject.Update();
+                //serializedProperty.serializedObject.Update();
 
                 FoldoutState foldoutState = new FoldoutState() { relativePropertyPathHash = pathHash, isExpanded = defaultState };
                 FoldoutsLookup.Add(pathHash, foldoutState);
                 foldouts.Add(foldoutState);
 
-                EditorUtility.SetDirty(serializedProperty.serializedObject.targetObject);
-                serializedProperty.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+                //EditorUtility.SetDirty(serializedProperty.serializedObject.targetObject);
+                //serializedProperty.serializedObject.ApplyModifiedPropertiesWithoutUndo();
             }
             return FoldoutsLookup[pathHash];
         }
@@ -125,7 +125,7 @@ namespace NewGraph {
         /// Remove unused states so we dont pollute this if the class structure changes.
         /// </summary>
         public void CleanupFoldoutStates() {
-            serializedProperty.serializedObject.Update();
+            //serializedProperty.serializedObject.Update();
             
             for (int i=foldouts.Count-1; i>=0; i--) {
                 FoldoutState state = foldouts[i];
@@ -134,8 +134,8 @@ namespace NewGraph {
                 }
             }
 
-            EditorUtility.SetDirty(serializedProperty.serializedObject.targetObject);
-            serializedProperty.serializedObject.ApplyModifiedPropertiesWithoutUndo();
+            //EditorUtility.SetDirty(serializedProperty.serializedObject.targetObject);
+            //serializedProperty.serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
 
         public Vector2 GetPosition() {

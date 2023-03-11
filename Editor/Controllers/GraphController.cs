@@ -21,7 +21,11 @@ namespace NewGraph {
 
         private bool isLoading = false;
         private Dictionary<object, NodeView> dataToViewLookup = new Dictionary<object, NodeView>();
+        private Dictionary<Type, string> nodeTypeToCreationLabel = new Dictionary<Type, string>();
         
+        private GenericMenu dropdownMenu;
+        private Type dropdownMenuCurrentType;
+
         public Vector2 GetViewScale() {
             return graphView.GetCurrentScale();
         }
@@ -64,21 +68,33 @@ namespace NewGraph {
                 searchWindow.Initialize(graphView.shortcutHandler);
                 BuildSearchableMenu();
             }
+
         }
 
-        private void OnEdgeDrop(object obj) {
-            BaseEdge baseEdge = (BaseEdge)obj;
+        private void OnEdgeDrop(object edge) {
+            BaseEdge baseEdge = (BaseEdge)edge;
             if(baseEdge == null) return;
 
-            PortView port = baseEdge.Input != null ? baseEdge.Input as PortView : baseEdge.Output != null ? baseEdge.Output as PortView : null;
+            PortView port = baseEdge.Output != null ? baseEdge.Output as PortView : null;
             if (port != null) {
-                //Debug.Log(port.type);
-                foreach (Type type in port.connectableTypes) {
-                    //Debug.Log(type);
+                if (port.type != dropdownMenuCurrentType) {
+                    dropdownMenu = null;
+                    dropdownMenu = new GenericMenu();
+                    foreach (Type type in port.connectableTypes) {
+                        if (nodeTypeToCreationLabel.ContainsKey(type)) {
+                            void CreateNodeAndConnect() {
+                                NodeView nodeView = CreateNewNode(type, false);
+                                ConnectPorts(port, nodeView.inputPort);
+                                //Reload();
+                            }
+                            dropdownMenu.AddItem(new GUIContent(nodeTypeToCreationLabel[type]), false, CreateNodeAndConnect);
+                        }
+                    }
+                    dropdownMenu.ShowAsContext();
                 }
             }
         }
-          
+
         private void OpenContextMenu(MouseDownEvent evt) {
             if (evt.button == 1) {
                 SearchWindow.Open(searchWindow, graphView);
@@ -178,7 +194,7 @@ namespace NewGraph {
             copyPasteHandler.Resolve(graphData, (nodes) => {
                 Undo.RecordObject(graphData, "Paste Action");
                 // position node clones relative to the current mouse position & add them to the current graph
-                Vector2 viewPosition = graphView.GetCurrentMouseViewPosition();
+                Vector2 viewPosition = graphView.GetMouseViewPosition();
                 PositionNodesRelative(viewPosition, nodes);
             }, Reload);
         }
@@ -367,6 +383,7 @@ namespace NewGraph {
                     // add to the list of createable nodes
                     string createNodeLabel = $"{categoryPath}{nodeAttribute.GetName(nodeType)}";
                     createNodeLabel = (!isUtilityNode ? Settings.createNodeLabel : Settings.createUtilityNodeLabel) + createNodeLabel;
+                    nodeTypeToCreationLabel.Add(nodeType, createNodeLabel);
 
                     searchWindow.AddNodeEntry(createNodeLabel, (obj) => CreateNewNode(nodeType, isUtilityNode));
                 }
@@ -385,9 +402,9 @@ namespace NewGraph {
         /// Create a new node for the graph simply based on a valid type.
         /// </summary>
         /// <param name="nodeType">The node type.</param>
-        private void CreateNewNode(Type nodeType, bool isUtilityNode = false) {
+        private NodeView CreateNewNode(Type nodeType, bool isUtilityNode = false) {
             // get the current view position of the mouse, so we can display the new node at the tip of the mouse...
-            Vector2 viewPosition = graphView.GetCurrentMouseViewPosition();
+            Vector2 viewPosition = graphView.GetMouseViewPosition();
 
             // create a new instance of the give node type
             INode node = Activator.CreateInstance(nodeType) as INode;
@@ -404,6 +421,7 @@ namespace NewGraph {
             graphView.SetSelected(nodeController.nodeView);
 
             dataToViewLookup.Add(nodeItem.nodeData, nodeController.nodeView);
+            return nodeController.nodeView;
         }
 
         /// <summary>

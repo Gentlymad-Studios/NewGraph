@@ -83,6 +83,19 @@ namespace NewGraph {
             BindUI(controller.GetSerializedObject());
         }
 
+        public void RebuildPortListView(PortListView view) {
+            SerializedProperty prop = view.listProperty;
+            PortInfo info = view.portInfo;
+            view.Unbind();
+            view.RemoveFromHierarchy();
+
+            int index = portLists.IndexOf(view);
+            portLists[index] = null;
+            view = new PortListView(prop, info, this, ExtensionContainer, index);
+            portLists[index] = view;
+            view.Bind(controller.GetSerializedObject());
+        }
+
         private void CreatePortListUI(PortInfo info, SerializedProperty property) {
             portLists.Add(new PortListView(property, info, this, ExtensionContainer));
         }
@@ -166,6 +179,46 @@ namespace NewGraph {
         private VisualElement[] CreateGroupUI(GroupInfo groupInfo, VisualElement[] parents, SerializedProperty property) {
             VisualElement[] newGroups = new VisualElement[parents.Length];
 
+            // handle special cases where we have an embedded managed reference that is within a group
+            // normally we would have double header labels, so to be able to hide them via styling we need to add some classes.
+            void HandleEmbeddedReferenceCase(VisualElement foldoutContent) {
+                PropertyField propertyField = foldoutContent.Q<PropertyField>();
+                if (propertyField != null) {
+                    // get the containing foldout
+                    Foldout foldout = propertyField.Q<Foldout>();
+                    if (foldout != null) {
+                        // make sure to force the foldoutvalue to stay open
+                        foldout.value = true;
+                        foldout.RegisterValueChangedCallback((evt) => {
+                            if (evt.newValue != true) {
+                                foldout.value = true;
+                            }
+                        });
+                        // get the toggle
+                        Toggle toggle = foldout.Q<Toggle>();
+                        if (toggle != null) {
+                            // we found everything we need so tag classes
+                            foldout.AddToClassList("managedReference");
+                            toggle.AddToClassList(nameof(groupInfo.hasEmbeddedManagedReference));
+                        }
+                    }
+                }
+            }
+
+            // handle our custom foldout state for a group
+            void HandleFoldoutState(Foldout newGroup, int index) {
+                int propertyPathHash = newGroup.name.GetHashCode();
+                NodeModel.FoldoutState foldOutState = controller.nodeItem.GetOrCreateFoldout(propertyPathHash);
+                foldOutState.used = true;
+                newGroup.value = foldOutState.isExpanded;
+                newGroup.RegisterValueChangedCallback((evt) => {
+                    foldOutState.isExpanded = evt.newValue;
+                    controller.GetSerializedObject().ApplyModifiedPropertiesWithoutUndo();
+                });
+                newGroups[index] = newGroup;
+                foldouts.Add(newGroup);
+            }
+
             void AddAtIndex(int index, bool empty, string prefix) {
                 // add label/ foldout etc.
                 if (!empty) {
@@ -175,48 +228,26 @@ namespace NewGraph {
                     newGroup.text = groupInfo.groupName;
                     newGroup.name = prefix + groupInfo.relativePropertyPath;
 
-                    int propertyPathHash = newGroup.name.GetHashCode();
-                    NodeModel.FoldoutState foldOutState = controller.nodeItem.GetOrCreateFoldout(propertyPathHash);
-                    foldOutState.used= true;
+                    // handle our custom foldout state
+                    HandleFoldoutState(newGroup, index);
 
-                    newGroup.value = foldOutState.isExpanded;
-
+                    // wait until the visual tree was built
                     void GeomChanged(GeometryChangedEvent _) {
-                        // handle special cases where we have an embedded managed reference that is within a group
-                        // normally we would have double header labels, so to be able to hide them via styling we need to add some classes.
                         VisualElement unityContent = newGroup.Q<VisualElement>("unity-content");
+
+                        // check if we need to apply special behavior for managed references
                         if (groupInfo.hasEmbeddedManagedReference) {
-                            PropertyField pField = unityContent.Q<PropertyField>();
-                            if (pField != null) {
-                                Foldout fOut = pField.Q<Foldout>();
-                                fOut.value = true;
-                                fOut.RegisterValueChangedCallback((evt) => {
-                                    if (evt.newValue != true) {
-                                        fOut.value = true;
-                                    }
-                                });
-                                if (fOut != null) {
-                                    Toggle tg = fOut.Q<Toggle>();
-                                    if (tg != null) {
-                                        fOut.AddToClassList("managedReference");
-                                        tg.AddToClassList(nameof(groupInfo.hasEmbeddedManagedReference));
-                                    }
-                                }
-                            }
+                            HandleEmbeddedReferenceCase(unityContent);
                         }
 
+                        // make sure to disable, that the ui captures input an prevents panning
                         unityContent.pickingMode = PickingMode.Ignore;
+                        
+                        // toss the callback away, since we are done
                         newGroup.UnregisterCallback<GeometryChangedEvent>(GeomChanged);
                     }
                     newGroup.RegisterCallback<GeometryChangedEvent>(GeomChanged);
 
-                    newGroup.RegisterValueChangedCallback((evt) => {
-                        foldOutState.isExpanded = evt.newValue;
-                        controller.GetSerializedObject().ApplyModifiedPropertiesWithoutUndo();
-                    });
-
-                    newGroups[index] = newGroup;
-                    foldouts.Add(newGroup);
                 } else {
                     newGroups[index] = null;
                 }

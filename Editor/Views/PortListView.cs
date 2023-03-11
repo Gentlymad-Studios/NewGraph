@@ -1,18 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     public class PortListView : ListView {
         public List<PortView> ports = new List<PortView>();
-        private SerializedProperty listProperty;
+        public SerializedProperty listProperty;
         private NodeView nodeView;
-        private PortInfo portInfo;
+        public PortInfo portInfo;
         private VisualElement container;
 
-        public PortListView(SerializedProperty listProperty, PortInfo portListInfo, NodeView nodeView, VisualElement container) {
+        public PortListView(SerializedProperty listProperty, PortInfo portListInfo, NodeView nodeView, VisualElement container, int index=-1) {
 
             this.nodeView = nodeView;
             this.listProperty = listProperty.Copy();
@@ -56,15 +57,28 @@ namespace NewGraph {
             Button removeButton = this.Q<Button>("unity-list-view__remove-button");
             removeButton.clickable = null;
             removeButton.clicked += OnRemoveClicked;
-            //Button addButton = this.Q<Button>("unity-list-view__add-button");
-            //addButton.clickable = null;
-            //addButton.clicked += OnAddClicked;
+            Button addButton = this.Q<Button>("unity-list-view__add-button");
+            addButton.clickable = null;
+            addButton.clicked += OnAddClicked;
 
             // add ourselves to the visual tree
-            container.Add(this);
+            if (index >= 0) {
+                container.Insert(index, this);
+            } else {
+                container.Add(this);
+            }
+
+        }
+
+        private void OnAddClicked() {
+            listProperty.arraySize++;
+            listProperty.serializedObject.ApplyModifiedProperties();
+
+            nodeView.RebuildPortListView(this);
         }
 
         private void OnItemsRemoved(IEnumerable<int> indices) {
+            /*
             foreach (var index in indices) {
                 PortView port = ports[index];
 
@@ -73,8 +87,21 @@ namespace NewGraph {
                     edges[i].Disconnect();
                 }
 
+                Debug.Log("disconnect");
+                ports.Remove(port);
+            }*/
+            
+            for (int i= ports.Count-1; i>=0; i--) {
+                PortView port = ports[i];
+                GraphViewBase.BaseEdge[] edges = port.Connections.ToArray();
+                for (int j = edges.Length - 1; j >= 0; j--) {
+                    edges[j].Disconnect();
+                }
+
                 ports.Remove(port);
             }
+
+            nodeView.RebuildPortListView(this);
         }
 
         /// <summary>
@@ -84,6 +111,7 @@ namespace NewGraph {
             List<int> indices = new List<int>(selectedIndices);
             indices.Sort();
 
+            listProperty.serializedObject.Update();
             if (indices.Any()) {
                 for (var i = indices.Count - 1; i >= 0; i--) {
                     int index = indices[i];
@@ -101,9 +129,7 @@ namespace NewGraph {
                             }
                         }
                     }
-                    listProperty.serializedObject.ApplyModifiedProperties();
                 }
-
                 ClearSelection();
             } else if (listProperty.arraySize > 0) {
                 var index = listProperty.arraySize - 1;
@@ -111,6 +137,9 @@ namespace NewGraph {
                 indices.Add(index);
             }
 
+            if (indices.Any()) {
+                listProperty.serializedObject.ApplyModifiedProperties();
+            }
             OnItemsRemoved(indices);
         }
 
@@ -213,6 +242,8 @@ namespace NewGraph {
         }
 
         private void ItemIndexChanged(int draggedIndex, int dropIndex) {
+            Debug.Log("ItemIndexChanged");
+
             // get "real" indices
             draggedIndex = viewController.GetIndexForId(draggedIndex);
             dropIndex = viewController.GetIndexForId(dropIndex);

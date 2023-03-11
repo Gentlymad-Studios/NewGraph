@@ -46,7 +46,7 @@ namespace NewGraph {
         }
 
         private void BindItem(VisualElement itemRow, int i) {
-            serializedObject.Update();
+            //serializedObject.Update();
             SerializedProperty prop = listProperty.GetArrayElementAtIndex(i);
             Label label = itemRow[0] as Label;
             if (prop != null) {

@@ -39,7 +39,7 @@ namespace NewGraph {
             return ContentContainer.transform.scale;
         }
 
-        public Vector2 GetCurrentMouseViewPosition() {
+        public Vector2 GetMouseViewPosition() {
             return LocalToViewTransformPosition(this.WorldToLocal(mousePosition));
         }
 
