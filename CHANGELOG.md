@@ -133,3 +133,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - fixed case where a group would not be drawn/ appear correctly
 - fixed group label being cut off
 
+## [0.2.2] - 2023-03-11
+### Added
+- added a context menu when dropping an edge into empty space
+### Fixed
+- Fixed port lists that could become unresponsive
+- fixed possible null ref in managed references group handling
+
