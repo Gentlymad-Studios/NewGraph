@@ -140,3 +140,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed port lists that could become unresponsive
 - fixed possible null ref in managed references group handling
 
+## [0.2.3] - 2023-03-14
+### Added
+- added renaming action as a shortcut and menu action (F2) for a selected node
+### Fixed
+- refactored key down detection system
+- fixed GraphSettings not being created on first run
+
+## [0.2.4] - 2023-03-14
+### Fixed
+- fixed selection info not updating properly ([#1](https://github.com/Gentlymad-Studios/NewGraph/issues/1))
+
