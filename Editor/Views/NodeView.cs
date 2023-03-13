@@ -12,7 +12,7 @@ namespace NewGraph {
 
         public VisualElement inspectorContent;
         private ReactiveSettings reactiveSettings;
-        private List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
+        public List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
         public Color nodeColor;
         private bool hasInspectorProperty = false;
 

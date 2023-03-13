@@ -10,7 +10,9 @@ namespace NewGraph {
     /// https://forum.unity.com/threads/capturing-keydownevents-in-editorwindow-and-focus.762155/
     /// </summary>
     public class GraphWindow : EditorWindow {
-
+        private KeyCode lastKeyCode;
+        private EventModifiers lastModifiers;
+        private EventType eventType;
         private GraphController graphController;
         private PlayModeStateChange lastState;
         private static GraphWindow window;
@@ -33,7 +35,16 @@ namespace NewGraph {
 
         private void HandleGlobalKeyPressEvents(Event evt) {
             if (evt.isKey && mouseOverWindow == this && hasFocus) {
-                OnGlobalKeyDown?.Invoke(evt);
+                if (lastKeyCode != evt.keyCode || lastModifiers != evt.modifiers) {
+                    lastModifiers = evt.modifiers;
+                    lastKeyCode = evt.keyCode;
+                    eventType = evt.type;
+                    OnGlobalKeyDown?.Invoke(evt);
+                }
+                if (evt.type == EventType.KeyUp) {
+                    lastKeyCode = KeyCode.None;
+                    lastModifiers = EventModifiers.None;
+                }
             }
         }
 

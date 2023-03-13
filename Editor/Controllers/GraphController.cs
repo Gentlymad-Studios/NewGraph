@@ -61,6 +61,7 @@ namespace NewGraph {
                 { Actions.SelectionChanged, OnSelected },
                 { Actions.SelectionCleared, OnDeselected },
                 { Actions.EdgeDrop, OnEdgeDrop },
+                { Actions.Rename, OnRename }
             };
 
             if (searchWindow == null) {
@@ -69,6 +70,16 @@ namespace NewGraph {
                 BuildSearchableMenu();
             }
 
+        }
+
+        private void OnRename(object obj) {
+            if (graphView.GetSelectedNodeCount() == 1){
+                NodeView node = graphView.GetFirstSelectedNode() as NodeView;
+                foreach (EditableLabelElement label in node.editableLabels){
+                    label.EnableInput(!label.isInEditMode);
+                    break;
+                }
+            }
         }
 
         private void OnEdgeDrop(object edge) {
@@ -391,6 +402,7 @@ namespace NewGraph {
             searchWindow.ResolveNodeEntries(nodeEnabledCheck);
             searchWindow.AddSeparator(Settings.searchWindowCommandHeader);
             searchWindow.AddShortcutEntry(Actions.Frame, SearchTreeEntry.AlwaysEnabled, FrameGraph);
+            searchWindow.AddShortcutEntry(Actions.Rename, () => graphView.GetSelectedNodeCount() == 1, OnRename);
             searchWindow.AddShortcutEntry(Actions.Cut, defaultEnabledCheck, OnCut);
             searchWindow.AddShortcutEntry(Actions.Copy, defaultEnabledCheck, OnCopy);
             searchWindow.AddShortcutEntry(Actions.Paste, () => copyPasteHandler.HasNodes(), OnPaste);
