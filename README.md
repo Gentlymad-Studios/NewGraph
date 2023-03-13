@@ -1,5 +1,5 @@
 # NewGraph
-![Requirement](https://img.shields.io/badge/Requirement-Unity%202022.2-yellow)
+![UnityVersion](https://img.shields.io/static/v1?label=unity&message=2022.2%2B&color=blue&style=flat&logo=Unity)
 ![Version](https://img.shields.io/github/package-json/v/Gentlymad-Studios/NewGraph)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Gentlymad-Studios/NewGraph)
 ![GitHub](https://img.shields.io/github/license/Gentlymad-Studios/NewGraph)
