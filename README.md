@@ -15,7 +15,7 @@ See the [Changelog](https://github.com/Gentlymad-Studios/NewGraph/blob/main/CHAN
 ### Requirements 🌵
 1. [GraphViewBase](https://github.com/Gentlymad-Studios/GraphViewBase)
 2. [OdinSerializer](https://github.com/Gentlymad-Studios/OdinSerializer) (Original OdinSerializer repository: https://github.com/TeamSirenix/odin-serializer)
-3. This project requires ![Requirement](https://img.shields.io/badge/-Unity%202022.2-yellow) or later as the Unity version.
+3. This project requires ![UnityVersion](https://img.shields.io/static/v1?label=unity&message=2022.2%2B&color=blue&style=flat&logo=Unity) (or later) as the Unity version.
 
 ### Features 🍒
 * `WYSIWYG.` A port connecting to a node in the graph is a `real reference` to the object in your `graph .asset`
