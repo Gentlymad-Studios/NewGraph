@@ -157,7 +157,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.6] - 2023-03-14
 ### Fixed
-- Removed unnecessary frame delay when reloading a graph
+- Removed unnecessary frame delay when reloading a graph [#2](https://github.com/Gentlymad-Studios/NewGraph/issues/2)
 - Removed Unbind call when clearing a graph 
 - PortListView entries will now update their name, if the referenced node name is changed
 
