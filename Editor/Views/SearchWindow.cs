@@ -52,7 +52,7 @@ namespace NewGraph {
 
         // Constants
         private const float k_DefaultWidth = 240f;
-        private const float k_DefaultHeight = 250f;
+        private const float k_DefaultHeight = 270f;
         private const int k_HeaderHeight = 30;
         private const int k_WindowYOffset = 40;
         private const string kSearchHeader = "Search";
@@ -248,13 +248,13 @@ namespace NewGraph {
             s_DirtyList = false;
             RebuildSearch();
         }
-
+        //Vector2 scroll = Vector2.zero;
         internal void OnGUI() {
             if (s_Styles == null)
                 s_Styles = new Styles();
 
             GUI.Label(new Rect(0, 0, position.width, position.height), GUIContent.none, s_Styles.background);
-
+            
             if (s_DirtyList)
                 CreateSearchTree();
 
@@ -285,7 +285,7 @@ namespace NewGraph {
                     m_DelayedSearch = newSearch;
                 }
             }
-
+            //scroll = EditorGUILayout.BeginScrollView(scroll, false, true, GUILayout.ExpandHeight(true));
             // Show lists
             ListGUI(activeTree, m_Anim, GetSearchTreeEntryRelative(0), GetSearchTreeEntryRelative(-1));
             if (m_Anim < 1)
@@ -304,6 +304,7 @@ namespace NewGraph {
                 }
                 Repaint();
             }
+            //EditorGUILayout.EndScrollView();
         }
 
         private void HandleKeyboard() {
