@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static NewGraph.GraphSettingsSingleton;
@@ -215,6 +216,7 @@ namespace NewGraph {
                     if (attachedNodeView != null) {
                         //...and retrieve its name, hihi
                         label.text = attachedNodeView.controller.nodeItem.GetName();
+                        label.TrackPropertyValue(attachedNodeView.controller.nodeItem.GetNameSerializedProperty().Copy(), (p) => label.text = p.stringValue);
                     }
                 }
             }
@@ -242,8 +244,6 @@ namespace NewGraph {
         }
 
         private void ItemIndexChanged(int draggedIndex, int dropIndex) {
-            Debug.Log("ItemIndexChanged");
-
             // get "real" indices
             draggedIndex = viewController.GetIndexForId(draggedIndex);
             dropIndex = viewController.GetIndexForId(dropIndex);

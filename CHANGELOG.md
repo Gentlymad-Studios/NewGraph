@@ -155,3 +155,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - fixed issue with change callback handler for property fields in settings file
 
+## [0.2.6] - 2023-03-14
+### Fixed
+- Removed unnecessary frame delay when reloading a graph
+- Removed Unbind call when clearing a graph 
+- PortListView entries will now update their name, if the referenced node name is changed
+

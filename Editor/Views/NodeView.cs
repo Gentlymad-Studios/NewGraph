@@ -109,7 +109,7 @@ namespace NewGraph {
         }
 
         public PortView CreatePortUI(PortInfo info, SerializedProperty property) {
-            PortView port = new PortView(info, property);
+            PortView port = new PortView(info, property.Copy());
 
             if (info.portDisplay.name != null) {
                 port.PortName = info.portDisplay.name;

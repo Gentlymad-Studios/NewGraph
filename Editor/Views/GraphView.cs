@@ -60,7 +60,7 @@ namespace NewGraph {
         }
 
         public void ClearView() {
-            this.Unbind();
+            //this.Unbind();
 
             foreach (BaseNode node in ContentContainer.Nodes) {
                 node.RemoveFromHierarchy();

@@ -25,10 +25,6 @@ namespace NewGraph {
             graphController.ForEachNode(callback);
         }
 
-        public void Dispose() {
-
-        }
-
         public NodeController(NodeModel nodeItem, GraphController graphController) {
             this.graphController = graphController;
             this.nodeItem = nodeItem;

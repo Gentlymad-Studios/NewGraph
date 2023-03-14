@@ -22,7 +22,7 @@ namespace NewGraph {
         private bool isLoading = false;
         private Dictionary<object, NodeView> dataToViewLookup = new Dictionary<object, NodeView>();
         private Dictionary<Type, string> nodeTypeToCreationLabel = new Dictionary<Type, string>();
-        
+         
         private GenericMenu dropdownMenu;
         private Type dropdownMenuCurrentType;
 
@@ -288,10 +288,10 @@ namespace NewGraph {
             if (isDirty) {
                 // unbind and reload this graph to avoid serialization issues...
                 graphView.Unbind();
-                graphView.schedule.Execute(() => {
-                    graphData.RemoveNodes(nodesToRemove);
-                    Reload();
-                });
+                //graphView.schedule.Execute(() => {
+                graphData.RemoveNodes(nodesToRemove);
+                Reload();
+                //});
             }
 
         }
@@ -482,9 +482,6 @@ namespace NewGraph {
             isLoading = true;
 
             // clear everything up since we have changed contexts....
-            graphView.ForEachNodeDo((node) => {
-                (node as NodeView).controller.Dispose();
-            });
             inspector.Clear();
             graphView.ClearView();
             dataToViewLookup.Clear();
