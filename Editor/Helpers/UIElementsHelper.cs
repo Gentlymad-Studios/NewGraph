@@ -15,7 +15,7 @@ namespace NewGraph {
         public static PropertyField CreatePropertyFieldWithCallback(SerializedProperty property, EventCallback<SerializedPropertyChangeEvent> changeCallback = null) {
             PropertyField propertyField = new PropertyField(property);
             if (changeCallback != null) {
-                propertyField.RegisterValueChangeCallback(changeCallback);
+                propertyField.RegisterCallback(changeCallback);
             }
             return propertyField;
         }

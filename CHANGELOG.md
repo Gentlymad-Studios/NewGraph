@@ -151,3 +151,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - fixed selection info not updating properly [#1](https://github.com/Gentlymad-Studios/NewGraph/issues/1)
 
+## [0.2.5] - 2023-03-14
+### Fixed
+- fixed issue with change callback handler for property fields in settings file
+
