@@ -140,3 +140,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed port lists that could become unresponsive
 - fixed possible null ref in managed references group handling
 
+## [0.2.3] - 2023-03-13
+### Fixed
+- Fixed creationprocess of GraphSettings not serializing

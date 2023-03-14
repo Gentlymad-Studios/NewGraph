@@ -18,7 +18,7 @@ namespace NewGraph {
         /// <summary>
         /// The actual GraphSettings that are serialized. 
         /// </summary>
-        public GraphSettings settings = null;
+        public GraphSettings settings = new GraphSettings();
 
         /// <summary>
         /// Blueprints is a GraphSettings file that is shipped with the NewGrpah framework.
