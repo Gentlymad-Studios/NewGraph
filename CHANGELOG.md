@@ -149,5 +149,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.2.4] - 2023-03-14
 ### Fixed
-- fixed selection info not updating properly ([#1](https://github.com/Gentlymad-Studios/NewGraph/issues/1))
+- fixed selection info not updating properly [#1](https://github.com/Gentlymad-Studios/NewGraph/issues/1)
 
