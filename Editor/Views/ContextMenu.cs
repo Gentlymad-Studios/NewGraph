@@ -80,7 +80,9 @@ namespace NewGraph {
 
                     // add to the list of createable nodes
                     string createNodeLabel = $"{categoryPath}{nodeAttribute.GetName(nodeType)}";
-                    nodeTypeToCreationLabel.Add(nodeType, createNodeLabel.Substring(1));
+                    if (!nodeTypeToCreationLabel.ContainsKey(nodeType)) {
+                        nodeTypeToCreationLabel.Add(nodeType, createNodeLabel.Substring(1));
+                    }
                     createNodeLabel = (!isUtilityNode ? Settings.createNodeLabel : Settings.createUtilityNodeLabel) + createNodeLabel;
                     AddNodeEntry(createNodeLabel, (obj) => graphController.CreateNewNode(nodeType, isUtilityNode));
                 }

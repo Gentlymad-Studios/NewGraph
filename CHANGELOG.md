@@ -166,3 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - added new edge drop window based on searchwindow instead of GenericMenu
 - added CustomContextMenu attribute to customize the default context menu [#3](https://github.com/Gentlymad-Studios/NewGraph/issues/3)
 - added CustomEdgeDropMenu attribute to customize the default edge drop menu
+
+## [0.2.8] - 2023-03-15
+### Fixed
+- Fixed possible ArgumentException caused by the new ContextMenu architecture
