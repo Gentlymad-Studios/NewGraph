@@ -9,6 +9,11 @@ namespace NewGraph {
     [AttributeUsage(AttributeTargets.Class)]
     public class NodeAttribute : Attribute {
         /// <summary>
+        /// Should an input port be created?
+        /// </summary>
+        public bool createInputPort = true;
+
+        /// <summary>
         /// Color of the node as a hex string, like #FFFFFFFF. Be aware: The last two characters are for alpha values!
         /// </summary>
         public Color color = default;
@@ -42,7 +47,8 @@ namespace NewGraph {
         /// <param name="inputPortName">A custom name for the input port.</param>
         /// <param name="inputPortCapacity">The maximum amount of allowed connections to the input port of this node.</param>
         /// <param name="nodeName">A custom name for the node.</param>
-        public NodeAttribute(string color = null, string categories = "", string inputPortName = null, Capacity inputPortCapacity = Capacity.Multiple, string nodeName = null) {
+        /// <param name="createInputPort">The maximum amount of allowed connections to the input port of this node.</param>
+        public NodeAttribute(string color = null, string categories = "", string inputPortName = null, Capacity inputPortCapacity = Capacity.Multiple, string nodeName = null, bool createInputPort = true) {
             if (color != null) {
                 ColorUtility.TryParseHtmlString(color, out this.color);
             }
@@ -52,6 +58,7 @@ namespace NewGraph {
             this.inputPortName = inputPortName;
             this.inputPortCapacity = inputPortCapacity;
             this.categories = categories;
+            this.createInputPort = createInputPort;
         }
 
 

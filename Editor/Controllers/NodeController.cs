@@ -102,7 +102,9 @@ namespace NewGraph {
         }
 
         public void DoForInputPortProperty(Action<PortInfo, SerializedProperty> action) {
-            action(propertyBag.inputPort, nodeDataProperty);
+            if (propertyBag.inputPort != null) {
+                action(propertyBag.inputPort, nodeDataProperty);
+            }
         }
 
         public void DoForNameProperty(Action<SerializedProperty> action) {

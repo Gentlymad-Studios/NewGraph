@@ -170,3 +170,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.2.8] - 2023-03-15
 ### Fixed
 - Fixed possible ArgumentException caused by the new ContextMenu architecture
+
+## [0.2.9] - 2023-03-16
+### Added
+- Added createInputPort to [Node] attribute. This allows to hide the input port for a node. [#6](https://github.com/Gentlymad-Studios/NewGraph/issues/6)
+- Added comments to ContextMenu, EdgeDropMenu so it is easier to understand & extend
