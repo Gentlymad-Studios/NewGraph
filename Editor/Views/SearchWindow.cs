@@ -248,6 +248,13 @@ namespace NewGraph {
             s_DirtyList = false;
             RebuildSearch();
         }
+
+        /*
+        private void CreateGUI() {
+            rootVisualElement.Add(new Label() { text = "jjjj" });
+        }
+        */
+        
         //Vector2 scroll = Vector2.zero;
         internal void OnGUI() {
             if (s_Styles == null)
@@ -306,7 +313,7 @@ namespace NewGraph {
             }
             //EditorGUILayout.EndScrollView();
         }
-
+        
         private void HandleKeyboard() {
             Event evt = Event.current;
             if (evt.type == EventType.KeyDown) {

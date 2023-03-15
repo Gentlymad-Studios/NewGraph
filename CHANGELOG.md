@@ -161,3 +161,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed Unbind call when clearing a graph 
 - PortListView entries will now update their name, if the referenced node name is changed
 
+## [0.2.7] - 2023-03-15
+### Added
+- added new edge drop window based on searchwindow instead of GenericMenu
+- added CustomContextMenu attribute to customize the default context menu [#3](https://github.com/Gentlymad-Studios/NewGraph/issues/3)
+- added CustomEdgeDropMenu attribute to customize the default edge drop menu

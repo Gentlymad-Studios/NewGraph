@@ -2,13 +2,12 @@ using GraphViewBase;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static GraphViewBase.GraphView;
 
 namespace NewGraph {
     /// <summary>
     /// A searchable menu window. This is a more sophisticated version of a dropdown menu.
     /// </summary>
-    public class GraphSearchWindow : ScriptableObject, ISearchWindowProvider {
+    public class GraphSearchWindowProvider : ScriptableObject, ISearchWindowProvider {
         /// <summary>
         /// Node entries need to be pre-processed this helper class allows us to freely add all nodes first and process them later.
         /// </summary>
@@ -26,12 +25,13 @@ namespace NewGraph {
         private ShortcutHandler shortcutHandler;
         private List<SearchTreeEntry> searchTreeEntries = new List<SearchTreeEntry>();
         private List<NodeCreationEntry> nodeEntries = new List<NodeCreationEntry>();
+        private Dictionary<string, List<SearchTreeEntry>> nodeEntriesLookup = new Dictionary<string, List<SearchTreeEntry>>();
 
         /// <summary>
         /// Method to be called right after an object of this type was created.
         /// </summary>
         /// <param name="shortcutHandler"></param>
-        public void Initialize(ShortcutHandler shortcutHandler) {
+        protected virtual void Initialize(ShortcutHandler shortcutHandler) {
             this.shortcutHandler = shortcutHandler;
         }
 
@@ -68,26 +68,41 @@ namespace NewGraph {
             // build submenus & actual node menu entries
             HashSet<string> menus = new HashSet<string>();
             foreach (NodeCreationEntry entry in nodeEntries) {
-                int level = 1;
-                // lets go over every path partial
-                string[] submenus = entry.fullpath.Split('/');
-                if (submenus.Length > 1) {
-                    level = 1;
-                    string menuNameBuilder = "";
-                    for (int i = 0; i < submenus.Length - 1; i++) {
-                        menuNameBuilder += submenus[i] + "/";
-                        string menuName = submenus[i];
-                        // have we already constructed the sub menu?
-                        if (!menus.Contains(menuNameBuilder)) {
-                            menus.Add(menuNameBuilder);
-                            // add a group entry
-                            AddGroupEntry(menuName, false, level);
+
+                if (!nodeEntriesLookup.ContainsKey(entry.fullpath)) {
+                    nodeEntriesLookup.Add(entry.fullpath, new List<SearchTreeEntry>());
+
+                    int level = 1;
+                    // lets go over every path partial
+                    string[] submenus = entry.fullpath.Split('/');
+                    if (submenus.Length > 1) {
+                        level = 1;
+                        string menuNameBuilder = "";
+                        for (int i = 0; i < submenus.Length - 1; i++) {
+                            menuNameBuilder += submenus[i] + "/";
+                            string menuName = submenus[i];
+                            // have we already constructed the sub menu?
+                            if (!menus.Contains(menuNameBuilder)) {
+                                menus.Add(menuNameBuilder);
+                                // add a group entry
+                                nodeEntriesLookup[entry.fullpath].Add(AddGroupEntry(menuName, false, level));
+                            }
+                            level++;
                         }
-                        level++;
+                    }
+                    // the last item is always the actual node we need to create an entry for.
+                    nodeEntriesLookup[entry.fullpath].Add(AddEntry(submenus[submenus.Length - 1], nodeEnabledCheck, entry.action, level));
+
+                } else {
+                    List<SearchTreeEntry> entries = nodeEntriesLookup[entry.fullpath];
+                    if (entries.Count > 0) {
+                        foreach (SearchTreeEntry nodeEntry in entries) {
+                            searchTreeEntries.Add(nodeEntry);
+                        }
+                        entries[entries.Count - 1].actionToExecute = entry.action;
                     }
                 }
-                // the last item is always the actual node we need to create an entry for.
-                AddEntry(submenus[submenus.Length - 1], nodeEnabledCheck, entry.action, level);
+
             }
         }
 
@@ -105,12 +120,15 @@ namespace NewGraph {
         /// <param name="label"></param>
         /// <param name="asInline">if this is marked as true, we'll just create a headline instead</param>
         /// <param name="level">The level that the subemenu belongs to.</param>
-        private void AddGroupEntry(string label, bool asInline=true, int level=0) {
+        private SearchTreeEntry AddGroupEntry(string label, bool asInline=true, int level=0) {
+            SearchTreeEntry entry = null;
             if (asInline) {
-                searchTreeEntries.Add(new InlineHeaderEntry(label) { level = level == 0 ? 1 : level });
+                entry = new InlineHeaderEntry(label) { level = level == 0 ? 1 : level };
             } else {
-                searchTreeEntries.Add(new SearchTreeGroupEntry(label, SearchTreeEntry.AlwaysEnabled, level));
+                entry = new SearchTreeGroupEntry(label, SearchTreeEntry.AlwaysEnabled, level);
             }
+            searchTreeEntries.Add(entry);
+            return entry;
         }
 
         /// <summary>
@@ -119,7 +137,7 @@ namespace NewGraph {
         /// <param name="fullPath">The full menu path of this node.</param>
         /// <param name="action">The actions that should be executed when this element was clicked.</param>
         public void AddNodeEntry(string fullPath, Action<object> action) {
-            nodeEntries.Add(new NodeCreationEntry() { fullpath= fullPath, action= action });
+            nodeEntries.Add(new NodeCreationEntry() { fullpath = fullPath, action = action });
         }
 
         /// <summary>
@@ -129,8 +147,10 @@ namespace NewGraph {
         /// <param name="enabledCheck"></param>
         /// <param name="action"></param>
         /// <param name="level"></param>
-        private void AddEntry(string label, Func<bool> enabledCheck, Action<object> action, int level = 1) {
-            searchTreeEntries.Add(new SearchTreeEntry(label, enabledCheck, action) { level = level });
+        private SearchTreeEntry AddEntry(string label, Func<bool> enabledCheck, Action<object> action, int level = 1) {
+            SearchTreeEntry entry = new SearchTreeEntry(label, enabledCheck, action) { level = level };
+            searchTreeEntries.Add(entry);
+            return entry;
         }
 
         /// <summary>

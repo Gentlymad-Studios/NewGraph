@@ -1,34 +1,29 @@
 using GraphViewBase;
-using OdinSerializer.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
     public class GraphController {
 
         public GraphModel graphData;
-        private GraphView graphView;
+        public GraphView graphView;
         private InspectorController<GraphModel> inspector;
-        private GraphSearchWindow searchWindow;
+        private ContextMenu contextMenu;
+        private EdgeDropMenu edgeDropMenu;
 
         private Dictionary<Actions, Action<object>> internalActions;
-        private CopyPasteHandler copyPasteHandler = new CopyPasteHandler();
+        public CopyPasteHandler copyPasteHandler = new CopyPasteHandler();
 
         private bool isLoading = false;
         private Dictionary<object, NodeView> dataToViewLookup = new Dictionary<object, NodeView>();
-        private Dictionary<Type, string> nodeTypeToCreationLabel = new Dictionary<Type, string>();
-         
-        private GenericMenu dropdownMenu;
-        private Type dropdownMenuCurrentType;
 
         public Vector2 GetViewScale() {
             return graphView.GetCurrentScale();
-        }
+        } 
 
         public void ForEachNode(Action<BaseNode> callback) {
             graphView.ForEachNodeDo(callback);
@@ -64,15 +59,19 @@ namespace NewGraph {
                 { Actions.Rename, OnRename }
             };
 
-            if (searchWindow == null) {
-                searchWindow = ScriptableObject.CreateInstance<GraphSearchWindow>();
-                searchWindow.Initialize(graphView.shortcutHandler);
-                BuildSearchableMenu();
+
+            if (contextMenu == null) {
+                contextMenu = ContextMenu.CreateContextMenu(this);
+                contextMenu.BuildContextMenu();
+            }
+
+            if (edgeDropMenu == null) {
+                edgeDropMenu = EdgeDropMenu.CreateEdgeDropMenu(this);
             }
 
         }
 
-        private void OnRename(object obj) {
+        public void OnRename(object obj) {
             if (graphView.GetSelectedNodeCount() == 1){
                 NodeView node = graphView.GetFirstSelectedNode() as NodeView;
                 foreach (EditableLabelElement label in node.editableLabels){
@@ -88,27 +87,15 @@ namespace NewGraph {
 
             PortView port = baseEdge.Output != null ? baseEdge.Output as PortView : null;
             if (port != null) {
-                if (port.type != dropdownMenuCurrentType) {
-                    dropdownMenu = null;
-                    dropdownMenu = new GenericMenu();
-                    foreach (Type type in port.connectableTypes) {
-                        if (nodeTypeToCreationLabel.ContainsKey(type)) {
-                            void CreateNodeAndConnect() {
-                                NodeView nodeView = CreateNewNode(type, false);
-                                ConnectPorts(port, nodeView.inputPort);
-                                //Reload();
-                            }
-                            dropdownMenu.AddItem(new GUIContent(nodeTypeToCreationLabel[type]), false, CreateNodeAndConnect);
-                        }
-                    }
-                    dropdownMenu.ShowAsContext();
-                }
+                edgeDropMenu.port = port;
+                edgeDropMenu.BuildContextMenu();
+                SearchWindow.Open(edgeDropMenu, graphView);
             }
         }
 
         private void OpenContextMenu(MouseDownEvent evt) {
             if (evt.button == 1) {
-                SearchWindow.Open(searchWindow, graphView);
+                SearchWindow.Open(contextMenu, graphView);
             } 
         }
 
@@ -123,7 +110,7 @@ namespace NewGraph {
         /// <summary>
         /// Frame the graph based on the active selection.
         /// </summary>
-        private void FrameGraph(object _=null) {
+        public void FrameGraph(object _=null) {
             graphView.FrameSelected();
         }
 
@@ -184,7 +171,7 @@ namespace NewGraph {
         /// Called if a copy operation should be started...
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
-        private void OnCopy(object data = null) {
+        public void OnCopy(object data = null) {
             List<NodeView> nodesToCapture = new List<NodeView>();
 
             graphView.ForEachSelectedNodeDo((node) => {
@@ -201,7 +188,7 @@ namespace NewGraph {
         /// Called if a paste operation should be started...
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
-        private void OnPaste(object data = null) {
+        public void OnPaste(object data = null) {
             copyPasteHandler.Resolve(graphData, (nodes) => {
                 Undo.RecordObject(graphData, "Paste Action");
                 // position node clones relative to the current mouse position & add them to the current graph
@@ -240,7 +227,7 @@ namespace NewGraph {
         /// Called if a delete operation should be started...
         /// </summary>
         /// <param name="data"></param>
-        private void OnDelete(object data = null) {
+        public void OnDelete(object data = null) {
             bool isDirty = false;
 
             // go over every selected edge...
@@ -300,7 +287,7 @@ namespace NewGraph {
         /// Called if a cut operation should be started...
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
-        private void OnCut(object data = null) {
+        public void OnCut(object data = null) {
             OnCopy();
             OnDelete();
         }
@@ -309,7 +296,7 @@ namespace NewGraph {
         /// Called if a duplication operation should be started...
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
-        private void OnDuplicate(object data = null) {
+        public void OnDuplicate(object data = null) {
             OnCopy();
             OnPaste();
         }
@@ -364,57 +351,11 @@ namespace NewGraph {
             }
         }
 
-        private void BuildSearchableMenu() {
-            Func<bool> defaultEnabledCheck = () => graphView.GetSelectedNodeCount() > 0;
-            Func<bool> nodeEnabledCheck = () => graphData != null;
-
-            searchWindow.StartAddingMenuEntries(Settings.searchWindowRootHeader);
-            // get all types across all assemblies that implement our INode interface
-            TypeCache.TypeCollection nodeTypes = TypeCache.GetTypesWithAttribute<NodeAttribute>();
-            foreach (Type nodeType in nodeTypes) {
-                // make sure the class tagged with the attribute actually is of type INode
-                if (nodeType.ImplementsOrInherits(typeof(INode))) {
-                    // check if we have a utility node...
-                    bool isUtilityNode = nodeType.ImplementsOrInherits(typeof(IUtilityNode));
-                    NodeAttribute nodeAttribute = NodeModel.GetNodeAttribute(nodeType);
-                   
-                    // retrieve subcategories
-                    string categoryPath = nodeAttribute.categories;
-                    string endSlash = "/";
-                    categoryPath.Replace(@"\", "/");
-                    if (string.IsNullOrWhiteSpace(categoryPath)) {
-                        categoryPath = endSlash;
-                    } else if (!categoryPath.EndsWith(endSlash)) {
-                        categoryPath += endSlash;
-                    }
-                    if (!categoryPath.StartsWith(endSlash)) {
-                        categoryPath = endSlash + categoryPath;
-                    }
-
-                    // add to the list of createable nodes
-                    string createNodeLabel = $"{categoryPath}{nodeAttribute.GetName(nodeType)}";
-                    createNodeLabel = (!isUtilityNode ? Settings.createNodeLabel : Settings.createUtilityNodeLabel) + createNodeLabel;
-                    nodeTypeToCreationLabel.Add(nodeType, createNodeLabel);
-
-                    searchWindow.AddNodeEntry(createNodeLabel, (obj) => CreateNewNode(nodeType, isUtilityNode));
-                }
-            }
-            searchWindow.ResolveNodeEntries(nodeEnabledCheck);
-            searchWindow.AddSeparator(Settings.searchWindowCommandHeader);
-            searchWindow.AddShortcutEntry(Actions.Frame, SearchTreeEntry.AlwaysEnabled, FrameGraph);
-            searchWindow.AddShortcutEntry(Actions.Rename, () => graphView.GetSelectedNodeCount() == 1, OnRename);
-            searchWindow.AddShortcutEntry(Actions.Cut, defaultEnabledCheck, OnCut);
-            searchWindow.AddShortcutEntry(Actions.Copy, defaultEnabledCheck, OnCopy);
-            searchWindow.AddShortcutEntry(Actions.Paste, () => copyPasteHandler.HasNodes(), OnPaste);
-            searchWindow.AddShortcutEntry(Actions.Duplicate, defaultEnabledCheck, OnDuplicate);
-            searchWindow.AddShortcutEntry(Actions.Delete, () => graphView.HasSelectedEdges() || defaultEnabledCheck(), OnDelete);
-        }
-
         /// <summary>
         /// Create a new node for the graph simply based on a valid type.
         /// </summary>
         /// <param name="nodeType">The node type.</param>
-        private NodeView CreateNewNode(Type nodeType, bool isUtilityNode = false) {
+        public NodeView CreateNewNode(Type nodeType, bool isUtilityNode = false) {
             // get the current view position of the mouse, so we can display the new node at the tip of the mouse...
             Vector2 viewPosition = graphView.GetMouseViewPosition();
 
