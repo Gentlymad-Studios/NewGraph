@@ -77,5 +77,13 @@ namespace NewGraph {
         /// </summary>
         /// <param name="nodeController"></param>
         public abstract void Initialize(NodeController nodeController);
+
+        /// <summary>
+        /// Bool flag if the background color should be set
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool ShouldSetBackgroundColor() {
+            return true;
+        }
     }
 }

@@ -49,11 +49,15 @@ namespace NewGraph {
         }
 
         public void Initialize() {
-            nodeView.InitializeView();
+            
 
             NodeEditor customEditor = NodeEditor.CreateEditor(nodeItem.nodeType);
             if (customEditor != null) {
+                nodeView.shouldSetBackgroundColor = customEditor.ShouldSetBackgroundColor();
+                nodeView.InitializeView();
                 customEditor.Initialize(this);
+            } else {
+                nodeView.InitializeView();
             }
 
             //initialized = true;

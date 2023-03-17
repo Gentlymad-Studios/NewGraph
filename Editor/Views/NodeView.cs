@@ -14,6 +14,7 @@ namespace NewGraph {
         private ReactiveSettings reactiveSettings;
         public List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
         public Color nodeColor;
+        public bool shouldSetBackgroundColor = true;
         private bool hasInspectorProperty = false;
 
         public NodeController controller;
@@ -28,7 +29,7 @@ namespace NewGraph {
         }
 
         private void ColorizeBackground() {
-            if (nodeColor != default) {
+            if (shouldSetBackgroundColor && nodeColor != default) {
                 style.backgroundColor = nodeColor;
             } else {
                 style.backgroundColor = Settings.defaultNodeColor;
