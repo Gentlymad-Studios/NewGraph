@@ -392,6 +392,8 @@ namespace NewGraph {
         /// </summary>
         /// <param name="graphData"></param>
         private void OnShouldLoadGraph(GraphModel graphData) {
+            inspector.CreateRenameGraphUI(graphData);
+            inspector.Clear();
             Load(graphData);
         }
 
@@ -400,8 +402,6 @@ namespace NewGraph {
         /// </summary>
         /// <param name="baseGraphModel">The graph data that should get loaded.</param>
         public void OpenGraphExternal(GraphModel baseGraphModel) {
-            inspector.CreateRenameGraphUI(baseGraphModel);
-            inspector.Clear();
             OnShouldLoadGraph(baseGraphModel);
         }
 

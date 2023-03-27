@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,15 +16,31 @@ namespace NewGraph {
         private EventType eventType;
         private GraphController graphController;
         private PlayModeStateChange lastState;
-        private static GraphWindow window;
 
         public static event System.Action<Event> OnGlobalKeyDown;
 
+        [NonSerialized]
+        private static GraphWindow window = null;
+        [NonSerialized]
+        private static bool loadRequested = false;
+
+        private static GraphWindow Window {
+            get {
+                CacheWindow();
+                return window;
+            }
+        }
+        private static void CacheWindow() {
+            if (window == null) {
+                window = GetWindow<GraphWindow>(nameof(GraphWindow));
+                window.wantsMouseMove = true;
+                window.Show();
+            }
+        }
+
         [MenuItem(GraphSettings.menuItemBase+nameof(GraphWindow))]
-        public static void Initialize() {
-            window = GetWindow<GraphWindow>(nameof(GraphWindow));
-            window.wantsMouseMove= true;
-            window.Show();
+        private static void Initialize() {
+            CacheWindow();
         }
 
         private void OnEnable() {
@@ -63,22 +80,18 @@ namespace NewGraph {
             graphController?.Disable();
             GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
             EditorApplication.playModeStateChanged -= LogPlayModeState;
-        } 
-
-        public static Vector2 screenPosition {
-            get {
-                if (window == null) {
-                    Initialize();
-                }
-                return window.position.position;
-            } 
+            loadRequested = false;
         }
 
-        public static void Redraw() {
-            if (window == null) {
-                Initialize();
+        public static void LoadGraph(GraphModel graph=null) {
+            if (graph != null) {
+                GraphSettings.LastOpenedGraphModel = graph;
+            } else {
+                graph = GraphSettings.LastOpenedGraphModel;
             }
-            window.Repaint();
+
+            Window.graphController.OpenGraphExternal(graph);
+            loadRequested = true;
         }
 
         private void CreateGUI() {
@@ -95,11 +108,14 @@ namespace NewGraph {
                 rootVisualElement.styleSheets.Add(Settings.customStylesheet);
             }
 
-            // re-open the last opened graph
-            GraphModel lastLoadedGraph = GraphSettings.LastOpenedGraphModel;
-            if (lastLoadedGraph != null) {
-                graphController.OpenGraphExternal(lastLoadedGraph);
-            }
+            // delay loading the last graph to the next frame
+            // otherwise this method will be called before loadRequested could be set
+            rootVisualElement.schedule.Execute(() =>{
+                if (!loadRequested) {
+                    LoadGraph(); 
+                }
+                loadRequested = false;
+            });
 
         }
     }

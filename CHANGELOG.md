@@ -179,3 +179,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.0] - 2023-03-17
 ### Added
 - Added ShouldColorizeBackground that can be overridden in NodeEditors to prevent the background from being automatically colorized
+
+## [0.3.1] - 2023-03-27
+### Fixed
+- Fixed double click on asset not opening graph, when window was already open. [#7](https://github.com/Gentlymad-Studios/NewGraph/issues/7)
+- Some refactoring to opening a graph externally

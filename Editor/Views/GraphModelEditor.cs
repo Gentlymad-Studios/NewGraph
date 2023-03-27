@@ -62,8 +62,7 @@ namespace NewGraph {
         }
 
         private static void OpenGraph(GraphModel graphModel) {
-            GraphSettings.LastOpenedGraphModel = graphModel;
-            GraphWindow.Initialize();
+            GraphWindow.LoadGraph(graphModel);
         }
 
         [OnOpenAsset]
