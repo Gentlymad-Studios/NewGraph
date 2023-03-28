@@ -170,6 +170,12 @@ namespace NewGraph {
         private void CreateButtonClicked() {
             OnCreateButtonClicked?.Invoke();
 
+#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
+            GameObject newGraph = new GameObject { name = "New Graph" };
+            T graphData = newGraph.AddComponent<T>();
+            CreateRenameGraphUI(graphData);
+            Clear();
+#else
             string fileEnding = "asset";
 
             // retrieve the last opened folder
@@ -201,11 +207,12 @@ namespace NewGraph {
 
                 AssetDatabase.CreateAsset(graphData, path);
                 AssetDatabase.SaveAssets();
+               
                 CreateRenameGraphUI(graphData);
                 Clear();
-
                 OnAfterGraphCreated?.Invoke(graphData);
             }
+#endif 
         }
 
         /// <summary>

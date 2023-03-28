@@ -14,8 +14,12 @@ namespace NewGraph {
     /// Source: https://docs.unity3d.com/2022.2/Documentation/Manual/script-Serialization.html
     /// Discussion: https://forum.unity.com/threads/serialize-fields-only-in-editor.433422/
     /// </summary>
+#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
+    public class GraphModel : MonoBehaviour {
+#else
     [CreateAssetMenu(fileName =nameof(GraphModel), menuName = nameof(GraphModel), order = 1)]
     public class GraphModel : ScriptableObject {
+#endif
         /// <summary>
         /// List of all the nodes we want to work on.
         /// </summary>

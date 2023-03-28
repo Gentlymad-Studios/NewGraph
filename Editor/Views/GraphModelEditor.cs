@@ -65,8 +65,10 @@ namespace NewGraph {
             GraphWindow.LoadGraph(graphModel);
         }
 
+#if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
         [OnOpenAsset]
         public static bool OnOpenAsset(int instanceID, int line) {
+            Debug.Log("OnOpenAsset: Graph");
             GraphModel baseGraphModel = EditorUtility.InstanceIDToObject(instanceID) as GraphModel;
             if (baseGraphModel != null) {
                 OpenGraph(baseGraphModel);
@@ -74,6 +76,7 @@ namespace NewGraph {
             }
             return false;
         }
+#endif
     }
 }
 

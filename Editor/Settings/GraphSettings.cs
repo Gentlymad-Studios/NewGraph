@@ -28,6 +28,20 @@ namespace NewGraph {
             }
         }
 
+#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
+        public static GraphModel LastOpenedGraphModel {
+            get {
+                if (EditorPrefs.HasKey(lastOpenedGraphEditorPrefsKey)) {
+                    int lastOpenedGraphID = EditorPrefs.GetInt(lastOpenedGraphEditorPrefsKey);
+                    return EditorUtility.InstanceIDToObject(lastOpenedGraphID) as GraphModel;
+                }
+                return null;
+            }
+            set {
+                EditorPrefs.SetInt(lastOpenedGraphEditorPrefsKey, value.GetInstanceID());
+            }
+        }
+#else
         public static GraphModel LastOpenedGraphModel {
             get {
                 if (EditorPrefs.HasKey(lastOpenedGraphEditorPrefsKey)) {
@@ -48,6 +62,7 @@ namespace NewGraph {
                 }
             }
         }
+#endif
 
         public string searchWindowCommandHeader = "Commands";
         public string searchWindowRootHeader = "Create Nodes";
