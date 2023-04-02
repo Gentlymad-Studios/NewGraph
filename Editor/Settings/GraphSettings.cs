@@ -11,9 +11,13 @@ namespace NewGraph {
         public const string assetGUID = "015778251503b3c44a2b9dfc3a36ad10";
         public const string menuItemBase = "Tools/";
         public const string debugDefine = "TOOLS_DEBUG";
-        public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedGraphEditorPrefsKey);
         public const string lastOpenedDirectoryPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedDirectoryPrefsKey);
         public const string isInspectorVisiblePrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(isInspectorVisiblePrefsKey);
+#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
+        public const string lastOpenedGraphIDEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedGraphIDEditorPrefsKey);
+#else
+        public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedGraphEditorPrefsKey);
+#endif
 
         public StyleSheet customStylesheet;
 
@@ -28,20 +32,7 @@ namespace NewGraph {
             }
         }
 
-#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
-        public static GraphModel LastOpenedGraphModel {
-            get {
-                if (EditorPrefs.HasKey(lastOpenedGraphEditorPrefsKey)) {
-                    int lastOpenedGraphID = EditorPrefs.GetInt(lastOpenedGraphEditorPrefsKey);
-                    return EditorUtility.InstanceIDToObject(lastOpenedGraphID) as GraphModel;
-                }
-                return null;
-            }
-            set {
-                EditorPrefs.SetInt(lastOpenedGraphEditorPrefsKey, value.GetInstanceID());
-            }
-        }
-#else
+#if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
         public static GraphModel LastOpenedGraphModel {
             get {
                 if (EditorPrefs.HasKey(lastOpenedGraphEditorPrefsKey)) {

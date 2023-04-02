@@ -39,6 +39,7 @@ namespace NewGraph {
 
             inspectorContainer = parent.Q<VisualElement>(nameof(inspectorContainer));
 
+#if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
             createButton = commandPanel.Q<Button>(nameof(createButton));
             createButton.clicked += CreateButtonClicked;
             createButton.Add(GraphSettings.CreateButtonIcon);
@@ -52,7 +53,7 @@ namespace NewGraph {
             loadButton = commandPanel.Q<Button>(nameof(loadButton));
             loadButton.clicked += LoadButtonClicked;
             loadButton.Add(GraphSettings.LoadButtonIcon);
-
+#endif
             homeButton = commandPanel.Q<Button>(nameof(homeButton));
             homeButton.clicked += HomeButtonClicked;
             homeButton.Add(GraphSettings.HomeButtonIcon);
@@ -62,7 +63,7 @@ namespace NewGraph {
             inspectorButtonImage = new Image();
             inspectorButton.Add(inspectorButtonImage);
             inspectorHeader = inspectorRoot.Q<VisualElement>(nameof(inspectorHeader));
-
+            
             Label startLabel = new Label(Settings.noGraphLoadedLabel);
             startLabel.AddToClassList(nameof(startLabel));
 
@@ -72,6 +73,13 @@ namespace NewGraph {
 
             SetSelectedNodeInfoActive();
             SetInspectorVisibility(EditorPrefs.GetBool(GraphSettings.isInspectorVisiblePrefsKey, isInspectorVisible));
+            
+#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
+            createButton = commandPanel.Q<Button>(nameof(createButton));
+            createButton.style.display = DisplayStyle.None;
+            loadButton = commandPanel.Q<Button>(nameof(loadButton));
+            loadButton.style.display = DisplayStyle.None;
+#endif
         }
 
         private void SetInspectorVisibility(bool visible=true) {
@@ -164,18 +172,13 @@ namespace NewGraph {
             }
         }
          
+#if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
         /// <summary>
         /// called when the create button was clicked.
         /// </summary>
         private void CreateButtonClicked() {
             OnCreateButtonClicked?.Invoke();
-
-#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
-            GameObject newGraph = new GameObject { name = "New Graph" };
-            T graphData = newGraph.AddComponent<T>();
-            CreateRenameGraphUI(graphData);
-            Clear();
-#else
+        
             string fileEnding = "asset";
 
             // retrieve the last opened folder
@@ -212,9 +215,9 @@ namespace NewGraph {
                 Clear();
                 OnAfterGraphCreated?.Invoke(graphData);
             }
-#endif 
-        }
 
+        }
+#endif 
         /// <summary>
         /// Resets the current insepctor content.
         /// </summary>
@@ -228,7 +231,10 @@ namespace NewGraph {
         /// </summary>
         /// <param name="graph">The graph that renaming should operate on</param>
         public void CreateRenameGraphUI(T graph) {
-
+#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
+            Label graphName = inspectorHeader.Q<Label>();
+            graphName.text = graph.name;
+#else
             // avoid some redudancy when setting string property...
             void SetStringValueAndApply(SerializedProperty prop, string otherValue) {
                 prop.stringValue = otherValue;
@@ -289,6 +295,7 @@ namespace NewGraph {
                     SetStringValueAndApply(tmpNameProperty, originalName);
                 }
             });
+#endif
         }
 
         /// <summary>
@@ -297,7 +304,7 @@ namespace NewGraph {
         private void HomeButtonClicked() {
             OnHomeClicked?.Invoke();
         }
-
+#if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
         /*
         /// <summary>
         /// Called when the save button was clicked.
@@ -316,7 +323,7 @@ namespace NewGraph {
             pickerActive = true;
             OnLoadClicked?.Invoke();
         }
-
+#endif
         /// <summary>
         /// IMGUI draw method to display the object picker popup
         /// </summary>

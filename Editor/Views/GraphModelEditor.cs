@@ -18,7 +18,7 @@ namespace NewGraph {
             inspector.Add(openGraphButton);
             inspector.styleSheets.Add(GraphSettings.graphStylesheetVariables);
             inspector.styleSheets.Add(GraphSettings.graphStylesheet);
-
+#if NEWGRAPH_DEBUG
             listProperty = serializedObject.FindProperty(nameof(GraphModel.nodes));
             ListView listView= new ListView() {
                 showAddRemoveFooter=false,
@@ -31,7 +31,7 @@ namespace NewGraph {
                 makeItem = MakeItem
             };
             inspector.Add(listView);
-
+#endif
             return inspector;
         }
 
@@ -68,7 +68,6 @@ namespace NewGraph {
 #if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
         [OnOpenAsset]
         public static bool OnOpenAsset(int instanceID, int line) {
-            Debug.Log("OnOpenAsset: Graph");
             GraphModel baseGraphModel = EditorUtility.InstanceIDToObject(instanceID) as GraphModel;
             if (baseGraphModel != null) {
                 OpenGraph(baseGraphModel);

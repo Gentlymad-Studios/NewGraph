@@ -410,7 +410,6 @@ namespace NewGraph {
         /// </summary>
         /// <param name="graphData"></param>
         private void Load(GraphModel graphData) {
-
             // return early if we are already in the process of loading a graph...
             if (isLoading) {
                 return;
@@ -431,11 +430,13 @@ namespace NewGraph {
             // offload the actual loading to the next frame...
             graphView.schedule.Execute(() => {
                 this.graphData = graphData;
+
                 this.graphData.CreateSerializedObject();
 
+#if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
                 // remember that this is our currently opened graph...
                 GraphSettings.LastOpenedGraphModel = graphData;
-
+#endif
                 // update the viewport to the last saved location
                 if (graphData.ViewportInitiallySet) {
                     graphView.UpdateViewTransform(graphData.ViewPosition, graphData.ViewScale);

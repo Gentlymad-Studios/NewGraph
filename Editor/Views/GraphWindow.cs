@@ -15,7 +15,6 @@ namespace NewGraph {
         private EventModifiers lastModifiers;
         private EventType eventType;
         private GraphController graphController;
-        private PlayModeStateChange lastState;
 
         public static event System.Action<Event> OnGlobalKeyDown;
 
@@ -64,12 +63,27 @@ namespace NewGraph {
                 }
             }
         }
+        
+#if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
+        private static GraphModel GetGraphModelFromID(int id) {
+            GraphModel[] graphModels = FindObjectsByType<GraphModel>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            foreach (var gm in graphModels) {
+                if (gm.ID == id) {
+                    return gm;
+                }
+            }
+            return null;
+        }
+#endif
 
         public void LogPlayModeState(PlayModeStateChange state) {
-            if (lastState == PlayModeStateChange.ExitingPlayMode && state == PlayModeStateChange.EnteredEditMode) {
+            if (state == PlayModeStateChange.EnteredEditMode) {
+                graphController?.Reload();
+                LoadGraph();
+            }
+            if (state == PlayModeStateChange.EnteredPlayMode) {
                 graphController?.Reload();
             }
-            lastState= state;
         }
 
         private void OnGUI() {
@@ -84,12 +98,20 @@ namespace NewGraph {
         }
 
         public static void LoadGraph(GraphModel graph=null) {
+#if !NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
             if (graph != null) {
                 GraphSettings.LastOpenedGraphModel = graph;
             } else {
                 graph = GraphSettings.LastOpenedGraphModel;
             }
-
+#else
+            if (graph != null) {
+                EditorPrefs.SetInt(GraphSettings.lastOpenedGraphIDEditorPrefsKey, graph.ID);
+            }
+            else {
+                graph = GetGraphModelFromID(EditorPrefs.GetInt(GraphSettings.lastOpenedGraphIDEditorPrefsKey));
+            }
+#endif
             Window.graphController.OpenGraphExternal(graph);
             loadRequested = true;
         }

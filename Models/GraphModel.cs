@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using OdinSerializer.Utilities;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -15,7 +17,23 @@ namespace NewGraph {
     /// Discussion: https://forum.unity.com/threads/serialize-fields-only-in-editor.433422/
     /// </summary>
 #if NEWGRAPH_GRAPHMODEL_MONOBEHAVIOUR
-    public class GraphModel : MonoBehaviour {
+    public class GraphModel : MonoBehaviour
+    {
+#if UNITY_EDITOR
+        [SerializeField]
+        private int _id;
+
+        public int ID {
+            get => _id;
+        }
+
+        private void OnValidate() {
+            if (_id == 0) {
+                _id = Guid.NewGuid().ToString("D").GetHashCode();
+            }
+        }
+#endif
+
 #else
     [CreateAssetMenu(fileName =nameof(GraphModel), menuName = nameof(GraphModel), order = 1)]
     public class GraphModel : ScriptableObject {
