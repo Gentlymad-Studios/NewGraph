@@ -384,7 +384,7 @@ namespace NewGraph {
                 bool didMatchAll = true;
                 bool didMatchStart = false;
 
-                // See if we match ALL the seaarch words.
+                // See if we match ALL the search words.
                 for (int w = 0; w < searchWords.Length; w++) {
                     string search = searchWords[w];
                     if (name.Contains(search)) {
@@ -463,7 +463,7 @@ namespace NewGraph {
             animRect.y = k_HeaderHeight;
             //animRect.height -= k_HeaderHeight;
             animRect.width -= 2;
-
+            animRect.height -= k_HeaderHeight;
             // Start of animated area (the part that moves left and right)
             GUILayout.BeginArea(animRect);
 
@@ -491,6 +491,7 @@ namespace NewGraph {
             ListGUI(tree, parent);
 
             GUILayout.EndArea();
+
         }
 
         private void SelectEntry(SearchTreeEntry e, bool shouldInvokeCallback) {

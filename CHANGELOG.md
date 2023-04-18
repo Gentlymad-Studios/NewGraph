@@ -191,3 +191,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added ability to rename the GraphWindow [#11](https://github.com/Gentlymad-Studios/NewGraph/issues/11)
 ### Fixed
 - Major refactoring and minor bugfixes
+
+## [0.3.3] - 2023-04-18
+### Added
+- Added more stable method to retrieve all attributes for a serialized property. [#14](https://github.com/Gentlymad-Studios/NewGraph/issues/14)
+
+### Fixed
+- Fixed wrong window size for all SearchWindows [#10](https://github.com/Gentlymad-Studios/NewGraph/issues/10)
+- wrapped UnityEditor in #if UNITY_EDITOR preprocessor directives in all graph models

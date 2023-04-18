@@ -202,6 +202,7 @@ namespace NewGraph {
             }
         }
 
+
         /// <summary>
         /// Retrieve attributes for the currently active property
         /// </summary>
@@ -212,7 +213,8 @@ namespace NewGraph {
             currentGraphDisplayAttribute = null;
 
             // retrieve all attributes
-            attributeBag.GetAttributes(nodeType, currentRelativePropertyPath, true);
+            //attributeBag.GetAttributes(nodeType, currentRelativePropertyPath, true);
+            attributeBag.GetAttributes(currentProperty, true);
 
             // remember: we are only on ONE property!
             // and every property can have SEVERAL attributes!
