@@ -7,18 +7,20 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace NewGraph {
+
+    using static GraphSettings;
+
     public class GraphController {
 
-        public GraphModel graphData;
-        public GraphView graphView;
-        private InspectorController<GraphModel> inspector;
-        private ContextMenu contextMenu;
-        private EdgeDropMenu edgeDropMenu;
-
-        private Dictionary<Actions, Action<object>> internalActions;
+        public IGraphModelData graphData = null;
         public CopyPasteHandler copyPasteHandler = new CopyPasteHandler();
+        public GraphView graphView;
 
         private bool isLoading = false;
+        private InspectorControllerBase inspector;
+        private ContextMenu contextMenu;
+        private EdgeDropMenu edgeDropMenu;
+        private Dictionary<Actions, Action<object>> internalActions;
         private Dictionary<object, NodeView> dataToViewLookup = new Dictionary<object, NodeView>();
 
         public Vector2 GetViewScale() {
@@ -29,15 +31,14 @@ namespace NewGraph {
             graphView.ForEachNodeDo(callback);
         }
 
-        public GraphController(VisualElement uxmlRoot, VisualElement root) {
+        public GraphController(VisualElement uxmlRoot, VisualElement root, Type inspectorType) {
             graphView = new GraphView(uxmlRoot, root, OnGraphAction);
             graphView.OnViewTransformChanged -= OnViewportChanged;
             graphView.OnViewTransformChanged += OnViewportChanged;
             graphView.OnMouseDown -= OpenContextMenu;
             graphView.OnMouseDown += OpenContextMenu;
 
-            inspector = new InspectorController<GraphModel>(uxmlRoot);  
-            //inspector.OnSaveClicked = OnSaveClicked;
+            inspector = Activator.CreateInstance(inspectorType, uxmlRoot) as InspectorControllerBase;  
             inspector.OnShouldLoadGraph = OnShouldLoadGraph;
             inspector.OnAfterGraphCreated = OnAfterGraphCreated;
             inspector.OnHomeClicked = OnHomeClicked;
@@ -134,7 +135,7 @@ namespace NewGraph {
         /// Ensure that every change is written to disk.
         /// </summary>
         public void EnsureSerialization() {
-            if (graphData != null && graphData.serializedGraphData != null) {
+            if (graphData != null && graphData.SerializedGraphData != null) {
                 Logger.Log("save");
                 graphData.ForceSerializationUpdate();
                 AssetDatabase.SaveAssets();
@@ -154,7 +155,7 @@ namespace NewGraph {
                 inspector.SetSelectedNodeInfoActive(selectedNodesCount, graphView.GetSelectedEdgesCount(), true);
             } else if(selectedNodesCount > 0) {
                 NodeView selectedNode = graphView.GetFirstSelectedNode() as NodeView;
-                inspector.SetInspectorContent(selectedNode.GetInspectorContent(), graphData.serializedGraphData);
+                inspector.SetInspectorContent(selectedNode.GetInspectorContent(), graphData.SerializedGraphData);
             }
         }
 
@@ -190,7 +191,7 @@ namespace NewGraph {
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
         public void OnPaste(object data = null) {
             copyPasteHandler.Resolve(graphData, (nodes) => {
-                Undo.RecordObject(graphData, "Paste Action");
+                Undo.RecordObject(graphData.BaseObject, "Paste Action");
                 // position node clones relative to the current mouse position & add them to the current graph
                 Vector2 viewPosition = graphView.GetMouseViewPosition();
                 PositionNodesRelative(viewPosition, nodes);
@@ -324,7 +325,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="data">unused</param>
         private void OnViewportChanged(GraphElementContainer contentContainer) {
-            if (graphData != null) {
+            if (graphData != null && graphData.BaseObject != null) {
                 graphData.SetViewport(contentContainer.transform.position, contentContainer.transform.scale);
             }
         }
@@ -334,7 +335,7 @@ namespace NewGraph {
         /// </summary>
         public void Reload() {
             Logger.Log("reload");
-            if (graphData != null) {
+            if (graphData != null && graphData.BaseObject != null) {
                 Load(graphData);
             }
         }
@@ -381,17 +382,16 @@ namespace NewGraph {
         /// Called when a new graph asset was created and should now be loaded...
         /// </summary>
         /// <param name="graphData"></param>
-        private void OnAfterGraphCreated(GraphModel graphData) {
+        private void OnAfterGraphCreated(IGraphModelData graphData) {
             graphView.ClearView();
             this.graphData = graphData;
-            this.graphData.CreateSerializedObject();
         }
 
         /// <summary>
         /// Called when we should load a graph...
         /// </summary>
         /// <param name="graphData"></param>
-        private void OnShouldLoadGraph(GraphModel graphData) {
+        private void OnShouldLoadGraph(IGraphModelData graphData) {
             inspector.CreateRenameGraphUI(graphData);
             inspector.Clear();
             Load(graphData);
@@ -401,7 +401,7 @@ namespace NewGraph {
         /// Opens a new graph from an external resource.
         /// </summary>
         /// <param name="baseGraphModel">The graph data that should get loaded.</param>
-        public void OpenGraphExternal(GraphModel baseGraphModel) {
+        public void OpenGraphExternal(IGraphModelData baseGraphModel) {
             OnShouldLoadGraph(baseGraphModel);
         }
 
@@ -409,7 +409,7 @@ namespace NewGraph {
         /// Called when we actually should load a graph...
         /// </summary>
         /// <param name="graphData"></param>
-        private void Load(GraphModel graphData) {
+        private void Load(IGraphModelData graphData) {
 
             // return early if we are already in the process of loading a graph...
             if (isLoading) {
@@ -431,14 +431,16 @@ namespace NewGraph {
             // offload the actual loading to the next frame...
             graphView.schedule.Execute(() => {
                 this.graphData = graphData;
-                this.graphData.CreateSerializedObject();
+                if (this.graphData.SerializedGraphData == null) {
+                    this.graphData.CreateSerializedObject();
+                }
 
                 // remember that this is our currently opened graph...
-                GraphSettings.LastOpenedGraphModel = graphData;
+                SetLastOpenedGraphData(this.graphData);
 
                 // update the viewport to the last saved location
-                if (graphData.ViewportInitiallySet) {
-                    graphView.UpdateViewTransform(graphData.ViewPosition, graphData.ViewScale);
+                if (this.graphData.ViewportInitiallySet) {
+                    graphView.UpdateViewTransform(this.graphData.ViewPosition, this.graphData.ViewScale);
                 }
 
                 void ForEachNodeProperty(List<NodeModel> nodes, SerializedProperty nodesProperty) {
@@ -464,12 +466,12 @@ namespace NewGraph {
                 }
 
                 // find the nodes property of the loaded graphData
-                SerializedProperty nodesProperty = graphData.GetNodesProperty(false);
-                ForEachNodeProperty(graphData.nodes, nodesProperty);
+                SerializedProperty nodesProperty = this.graphData.GetNodesProperty(false);
+                ForEachNodeProperty(this.graphData.Nodes, nodesProperty);
 
                 // find the nodes property of the loaded graphData
-                SerializedProperty utilitiyNodesProperty = graphData.GetNodesProperty(true);
-                ForEachNodeProperty(graphData.utilityNodes, utilitiyNodesProperty);
+                SerializedProperty utilitiyNodesProperty = this.graphData.GetNodesProperty(true);
+                ForEachNodeProperty(this.graphData.UtilityNodes, utilitiyNodesProperty);
 
                 // draw all port connections...
                 // this does not happen automatically as we need to call ConnectPorts...
@@ -486,7 +488,7 @@ namespace NewGraph {
                             if (dataToViewLookup.ContainsKey(value)) {
                                 // if we found it, we know that the port must be the input port, so we can draw the connection
                                 NodeView otherView = dataToViewLookup[value];
-                                if(otherView.controller.nodeItem.nodeData == value) {
+                                if (otherView.controller.nodeItem.nodeData == value) {
                                     ConnectPorts(port, otherView.inputPort);
                                 }
                             }

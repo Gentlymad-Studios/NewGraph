@@ -182,7 +182,7 @@ namespace NewGraph {
             expansionMoveDelta = -1 * (expansionStartPosition - GetViewScaleAdjustedPosition(evt.mousePosition));
 
             // make changes to the width and height appear in the undo stack
-            Undo.RecordObject(nodeController.graphController.graphData, nameof(GroupCommentNode)+" Dimension change.");
+            Undo.RecordObject(nodeController.graphController.graphData.BaseObject, nameof(GroupCommentNode)+" Dimension change.");
 
             // set our serialized values for width & height
             width = expansionStartWidth + expansionMoveDelta.x;

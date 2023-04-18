@@ -184,3 +184,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed double click on asset not opening graph, when window was already open. [#7](https://github.com/Gentlymad-Studios/NewGraph/issues/7)
 - Some refactoring to opening a graph externally
+
+## [0.3.2] - 2023-04-18
+### Added
+- Graphs can now be created in a scene context and use scene references. To create a graph add the MonoGraphModel component to a gameobject.
+- Added ability to rename the GraphWindow [#11](https://github.com/Gentlymad-Studios/NewGraph/issues/11)
+### Fixed
+- Major refactoring and minor bugfixes

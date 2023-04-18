@@ -1,46 +1,57 @@
+using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
-#if UNITY_EDITOR
-using UnityEditor;
-using System;
-#endif
-
 namespace NewGraph {
-    /// <summary>
-    /// Our graph data model split into are minimalistic runtime part and editor specific extensions.
-    /// See everything under #if UNITY_EDITOR for all editor specific parts of this class.
-    /// The compilation tags allow us to strip away any unwated data for a runtime scenario.
-    /// Source: https://docs.unity3d.com/2022.2/Documentation/Manual/script-Serialization.html
-    /// Discussion: https://forum.unity.com/threads/serialize-fields-only-in-editor.433422/
-    /// </summary>
-    [CreateAssetMenu(fileName =nameof(GraphModel), menuName = nameof(GraphModel), order = 1)]
-    public class GraphModel : ScriptableObject {
+
+    [Serializable]
+    public class GraphModelBase {
+
         /// <summary>
         /// List of all the nodes we want to work on.
         /// </summary>
         [SerializeReference]
         public List<NodeModel> nodes = new List<NodeModel>();
+
 #if UNITY_EDITOR
         // FROM HERE BE DRAGONS...
+        [SerializeReference]
+        public List<NodeModel> utilityNodes = new List<NodeModel>();
+
         [NonSerialized]
         public SerializedObject serializedGraphData;
+
+        [NonSerialized]
+        public UnityEngine.Object baseObject;
+
         [NonSerialized]
         private SerializedProperty nodesProperty = null;
+        
         [NonSerialized]
         private SerializedProperty utilityNodesProperty = null;
 
         [HideInInspector, SerializeField]
-        private string tmpNameProperty;
+        private string tmpName;
+        private SerializedProperty tmpNameProperty = null;
+        private SerializedProperty originalNameProperty = null;
+
+        [NonSerialized]
+        private string basePropertyPath = null;
+
+        private SerializedProperty GetProperty(string propertyToSearch) {
+            return serializedGraphData.FindProperty(basePropertyPath + "." + propertyToSearch);
+        }
 
         [SerializeField]
         private bool viewportInitiallySet = false;
         public bool ViewportInitiallySet => viewportInitiallySet;
+
         private SerializedProperty viewportInitiallySetProperty = null;
         private SerializedProperty ViewportInitiallySetProperty {
             get {
                 if (viewportInitiallySetProperty == null) {
-                    viewportInitiallySetProperty = serializedGraphData.FindProperty(nameof(viewportInitiallySet));
+                    viewportInitiallySetProperty = GetProperty(nameof(viewportInitiallySet));
                 }
                 return viewportInitiallySetProperty;
             }
@@ -49,12 +60,13 @@ namespace NewGraph {
         [SerializeField]
         private Vector3 viewPosition;
         public Vector3 ViewPosition => viewPosition;
+
         [NonSerialized]
         private SerializedProperty viewPositionProperty = null;
         private SerializedProperty ViewPositionProperty {
             get {
                 if (viewPositionProperty == null) {
-                    viewPositionProperty = serializedGraphData.FindProperty(nameof(viewPosition));
+                    viewPositionProperty = GetProperty(nameof(viewPosition));
                 }
                 return viewPositionProperty;
             }
@@ -63,20 +75,17 @@ namespace NewGraph {
         [SerializeField]
         private Vector3 viewScale;
         public Vector3 ViewScale => viewScale;
+
         [NonSerialized]
         private SerializedProperty viewScaleProperty = null;
         private SerializedProperty ViewScaleProperty {
             get {
                 if (viewScaleProperty == null) {
-                    viewScaleProperty = serializedGraphData.FindProperty(nameof(viewScale));
+                    viewScaleProperty = GetProperty(nameof(viewScale));
                 }
                 return viewScaleProperty;
             }
         }
-
-
-        [SerializeReference]
-        public List<NodeModel> utilityNodes = new List<NodeModel>();
 
         public void SetViewport(Vector3 position, Vector3 scale) {
             if (position != viewPosition || scale != viewScale) {
@@ -87,7 +96,7 @@ namespace NewGraph {
             }
         }
 
-        public NodeModel AddNode(INode node, bool isUtilityNode) {
+        public NodeModel AddNode(INode node, bool isUtilityNode, UnityEngine.Object scope) {
             NodeModel baseNodeItem = new NodeModel(node);
             baseNodeItem.isUtilityNode = isUtilityNode;
             if (!isUtilityNode) {
@@ -95,7 +104,7 @@ namespace NewGraph {
             } else {
                 utilityNodes.Add(baseNodeItem);
             }
-            ForceSerializationUpdate();
+            ForceSerializationUpdate(scope);
             return baseNodeItem;
         }
 
@@ -117,23 +126,25 @@ namespace NewGraph {
             }
         }
 
-        public void RemoveNodes(List<NodeModel> nodesToRemove) {
+        public void RemoveNodes(List<NodeModel> nodesToRemove, UnityEngine.Object scope) {
             if (nodesToRemove.Count > 0) {
-                Undo.RecordObject(this, "Remove Nodes");
+                Undo.RecordObject(scope, "Remove Nodes");
                 foreach (NodeModel node in nodesToRemove) {
                     RemoveNode(node);
                 }
             }
         }
 
-        public void ForceSerializationUpdate() {
+        public void ForceSerializationUpdate(UnityEngine.Object scope) {
             serializedGraphData.Update();
-            EditorUtility.SetDirty(this);
+            EditorUtility.SetDirty(scope);
             serializedGraphData.ApplyModifiedProperties();
         }
 
-        public void CreateSerializedObject() {
-            serializedGraphData = new SerializedObject(this);
+        public void CreateSerializedObject(UnityEngine.Object scope, string rootFieldName) {
+            basePropertyPath= rootFieldName;
+            baseObject = scope;
+            serializedGraphData = new SerializedObject(scope);
             nodesProperty = null;
             utilityNodesProperty = null;
             viewPositionProperty = null;
@@ -141,16 +152,30 @@ namespace NewGraph {
             viewportInitiallySetProperty = null;
         }
 
+        public SerializedProperty GetOriginalNameProperty() {
+            if (originalNameProperty == null) {
+                originalNameProperty = serializedGraphData.FindProperty("m_Name");
+            }
+            return originalNameProperty;
+        }
+
+        public SerializedProperty GetTmpNameProperty() {
+            if (tmpNameProperty == null) {
+                tmpNameProperty = GetProperty(nameof(tmpName));
+            }
+            return tmpNameProperty;
+        }
+
         public SerializedProperty GetNodesProperty(bool isUtilityNode) {
             if (!isUtilityNode) {
                 if (nodesProperty == null) {
-                    nodesProperty = serializedGraphData.FindProperty(nameof(nodes));
+                    nodesProperty = GetProperty(nameof(nodes));
                 }
                 return nodesProperty;
             }
 
             if (utilityNodesProperty == null) {
-                utilityNodesProperty = serializedGraphData.FindProperty(nameof(utilityNodes));
+                utilityNodesProperty = GetProperty(nameof(utilityNodes));
             }
             return utilityNodesProperty;
         }
@@ -162,6 +187,6 @@ namespace NewGraph {
             return GetNodesProperty(false).GetArrayElementAtIndex(nodes.Count - 1);
         }
 #endif
-    }
 
+    }
 }

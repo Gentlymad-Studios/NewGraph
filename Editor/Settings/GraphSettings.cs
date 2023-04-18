@@ -11,11 +11,56 @@ namespace NewGraph {
         public const string assetGUID = "015778251503b3c44a2b9dfc3a36ad10";
         public const string menuItemBase = "Tools/";
         public const string debugDefine = "TOOLS_DEBUG";
-        public const string lastOpenedGraphEditorPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedGraphEditorPrefsKey);
+
         public const string lastOpenedDirectoryPrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(lastOpenedDirectoryPrefsKey);
         public const string isInspectorVisiblePrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(isInspectorVisiblePrefsKey);
-
+        public const string lastOpenedGraphKey = nameof(NewGraph) + "." + nameof(lastOpenedGraphKey);
+        public const string lastOpenedGraphTypeKey = nameof(NewGraph) + "." + nameof(lastOpenedGraphTypeKey);
         public StyleSheet customStylesheet;
+
+        public class LastGraphInfo {
+            public string GUID;
+            public Type graphType;
+        }
+
+        public static void SetLastOpenedGraphData(IGraphModelData graphData) {
+            if (graphData == null) {
+                LastOpenedGraphInfo = null;
+            } else {
+                if (graphData.SerializedGraphData == null) {
+                    graphData.CreateSerializedObject();
+                }
+                LastOpenedGraphInfo = new LastGraphInfo() {
+                    graphType = graphData.BaseObject.GetType(),
+                    GUID = graphData.GUID
+                };
+            }
+        }
+
+        public static LastGraphInfo LastOpenedGraphInfo {
+            get {
+                string lastOpenedGraphGUID = EditorPrefs.GetString(lastOpenedGraphKey, null);
+                string lastOpenedGraphType = EditorPrefs.GetString(lastOpenedGraphTypeKey, null);
+
+                if (!string.IsNullOrEmpty(lastOpenedGraphGUID) && !string.IsNullOrEmpty(lastOpenedGraphType)) {
+                    LastGraphInfo lastGraphInfo = new LastGraphInfo();
+                    lastGraphInfo.GUID = lastOpenedGraphGUID;
+                    lastGraphInfo.graphType = System.Type.GetType(lastOpenedGraphType);
+                    return lastGraphInfo;
+                }
+                return null;
+            }
+            set {
+                if (value != null) {
+                    EditorPrefs.SetString(lastOpenedGraphKey, value.GUID);
+                    EditorPrefs.SetString(lastOpenedGraphTypeKey, value.graphType.AssemblyQualifiedName);
+                } else {
+                    EditorPrefs.DeleteKey(lastOpenedGraphKey);
+                    EditorPrefs.DeleteKey(lastOpenedGraphTypeKey);
+                }
+
+            }
+        }
 
         [NonSerialized]
         private static string pathPartialToCategory = null;
@@ -25,27 +70,6 @@ namespace NewGraph {
                     pathPartialToCategory = menuItemBase + nameof(GraphSettings);
                 }
                 return pathPartialToCategory;
-            }
-        }
-
-        public static GraphModel LastOpenedGraphModel {
-            get {
-                if (EditorPrefs.HasKey(lastOpenedGraphEditorPrefsKey)) {
-                    string lastOpenedGraphGUID = EditorPrefs.GetString(lastOpenedGraphEditorPrefsKey, null);
-                    if (!string.IsNullOrWhiteSpace(lastOpenedGraphGUID)) {
-                        string assetPath = AssetDatabase.GUIDToAssetPath(lastOpenedGraphGUID);
-                        if (!string.IsNullOrWhiteSpace(assetPath)) {
-                            return AssetDatabase.LoadAssetAtPath<GraphModel>(assetPath);
-                        }
-                    }
-                }
-                return null;
-            }
-            set {
-                string assetPath = AssetDatabase.GetAssetPath(value);
-                if (!string.IsNullOrWhiteSpace(assetPath)) {
-                    EditorPrefs.SetString(lastOpenedGraphEditorPrefsKey, AssetDatabase.AssetPathToGUID(assetPath));
-                }
             }
         }
 
@@ -79,6 +103,8 @@ namespace NewGraph {
         [SerializeField]
         private string resetButtonIcon = "Refresh@2x";
         public static Image ResetButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.resetButtonIcon).image };
+
+        public string windowName = nameof(GraphWindow);
 
         public string resetButtonTooltip = "Reset this value back to the default value.";
         public string resetAllLabel = "Reset All To Default";

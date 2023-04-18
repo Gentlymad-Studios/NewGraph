@@ -30,7 +30,7 @@ namespace NewGraph {
             this.nodeItem = nodeItem;
             this.nodeDataProperty = nodeItem.GetSpecificSerializedProperty();
             this.propertyBag = PropertyBag.GetCachedOrCreate(nodeItem.nodeAttribute, nodeItem.nodeType, nodeDataProperty);
-            this.serializedObject = graphController.graphData.serializedGraphData;
+            this.serializedObject = graphController.graphData.SerializedGraphData;
             this.nodeView = new NodeView(this, nodeItem.nodeAttribute.color);
 
             string name = nodeItem.GetName();

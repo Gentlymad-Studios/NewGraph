@@ -1,53 +1,91 @@
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+    using static GraphSettings;
+
     /// <summary>
     /// The actual editor window for our graph.
     /// Contains a key down workaround to prevent an issue where key down events are passing through elements instead of bein received.
     /// https://forum.unity.com/threads/capturing-keydownevents-in-editorwindow-and-focus.762155/
     /// </summary>
     public class GraphWindow : EditorWindow {
+
+        private static readonly Dictionary<Type, Type> windowControllerLookup = new Dictionary<Type, Type>() {
+            { typeof(ScriptableGraphModel), typeof(ScriptableInspectorController) },
+            { typeof(MonoGraphModel), typeof(MonoInspectorController) },
+        };
+
+        private static readonly Dictionary<Type, Func<string, IGraphModelData>> lastGraphCreationLookup = new Dictionary<Type, Func<string, IGraphModelData>>() {
+            { typeof(ScriptableGraphModel), ScriptableGraphModel.GetGraphData },
+            { typeof(MonoGraphModel), MonoGraphModel.GetGraphData },
+        };
+
         private KeyCode lastKeyCode;
         private EventModifiers lastModifiers;
         private EventType eventType;
         private GraphController graphController;
-        private PlayModeStateChange lastState;
 
-        public static event System.Action<Event> OnGlobalKeyDown;
+
+        private static Type currentWindowType = null;
+        private static string currentWindowTypeKey = nameof(NewGraph) + "." + nameof(currentWindowType);
+        private static Type CurrentWindowType {
+            get {
+                if (currentWindowType == null) {
+                    string savedType = EditorPrefs.GetString(currentWindowTypeKey, null);
+                    if (savedType != null) {
+                        currentWindowType = Type.GetType(savedType);
+                    } 
+                }
+                return currentWindowType;
+            }
+            set {
+                currentWindowType = value;
+                EditorPrefs.SetString(currentWindowTypeKey, currentWindowType.AssemblyQualifiedName);
+            }
+        }
+
+        public static event Action<Event> OnGlobalKeyDown;
 
         [NonSerialized]
         private static GraphWindow window = null;
+
         [NonSerialized]
         private static bool loadRequested = false;
 
-        private static GraphWindow Window {
-            get {
-                CacheWindow();
-                return window;
-            }
+        [MenuItem(menuItemBase + nameof(GraphWindow))]
+        private static void InitializeScriptableWindow() {
+            InitializeWindowBase(typeof(ScriptableGraphModel));
         }
-        private static void CacheWindow() {
+ 
+        private static void InitializeWindowBase(Type windowType) {
+            if (window != null && CurrentWindowType != windowType) {
+                window.Close();
+            }
             if (window == null) {
-                window = GetWindow<GraphWindow>(nameof(GraphWindow));
+                CurrentWindowType = windowType;
+                window = GetWindow<GraphWindow>(Settings.windowName);
                 window.wantsMouseMove = true;
                 window.Show();
             }
         }
 
-        [MenuItem(GraphSettings.menuItemBase+nameof(GraphWindow))]
-        private static void Initialize() {
-            CacheWindow();
-        }
-
         private void OnEnable() {
+            EditorApplication.update -= EditorUpdate;
             EditorApplication.playModeStateChanged -= LogPlayModeState;
             EditorApplication.playModeStateChanged += LogPlayModeState;
             GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
             GlobalKeyEventHandler.OnKeyEvent += HandleGlobalKeyPressEvents;
+        }
+
+        private void EditorUpdate() {
+            LoadGraph();
+            EditorApplication.update -= EditorUpdate;
         }
 
         private void HandleGlobalKeyPressEvents(Event evt) {
@@ -66,10 +104,19 @@ namespace NewGraph {
         }
 
         public void LogPlayModeState(PlayModeStateChange state) {
-            if (lastState == PlayModeStateChange.ExitingPlayMode && state == PlayModeStateChange.EnteredEditMode) {
+            if (state == PlayModeStateChange.ExitingPlayMode) {
+                graphController?.EnsureSerialization();
+
+            } else if (state == PlayModeStateChange.EnteredEditMode) {
+                EditorApplication.update -= EditorUpdate;
+                EditorApplication.update += EditorUpdate;
+                if (window != null) {
+                    window.Close();
+                }
+
+            }else if (state == PlayModeStateChange.EnteredPlayMode) {
                 graphController?.Reload();
             }
-            lastState= state;
         }
 
         private void OnGUI() {
@@ -77,31 +124,47 @@ namespace NewGraph {
         }
 
         private void OnDisable() {
-            graphController?.Disable();
+            //graphController?.Disable();
             GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
             EditorApplication.playModeStateChanged -= LogPlayModeState;
             loadRequested = false;
         }
 
-        public static void LoadGraph(GraphModel graph=null) {
+        public static void LoadGraph(IGraphModelData graph =null) {
             if (graph != null) {
-                GraphSettings.LastOpenedGraphModel = graph;
+                SetLastOpenedGraphData(graph);
             } else {
-                graph = GraphSettings.LastOpenedGraphModel;
+                LastGraphInfo lastGraphInfo = LastOpenedGraphInfo;
+                if (lastGraphInfo != null) {
+                    graph = lastGraphCreationLookup[lastGraphInfo.graphType](lastGraphInfo.GUID);
+                }
             }
 
-            Window.graphController.OpenGraphExternal(graph);
+            if (graph != null) {
+
+                if(graph.SerializedGraphData == null) {
+                    graph.CreateSerializedObject();
+                }
+
+                Type windowType = graph.BaseObject.GetType();
+                InitializeWindowBase(windowType);
+                window.graphController.OpenGraphExternal(graph);
+
+            } else {
+                LastOpenedGraphInfo = null;
+            }
+
             loadRequested = true;
         }
 
         private void CreateGUI() {
-            VisualElement uxmlRoot = GraphSettings.graphDocument.CloneTree();
+            VisualElement uxmlRoot = graphDocument.CloneTree();
             rootVisualElement.Add(uxmlRoot);
             uxmlRoot.StretchToParentSize();
 
-            graphController = new GraphController(uxmlRoot, rootVisualElement);
-            rootVisualElement.styleSheets.Add(GraphSettings.graphStylesheetVariables);
-            rootVisualElement.styleSheets.Add(GraphSettings.graphStylesheet);
+            graphController = new GraphController(uxmlRoot, rootVisualElement, windowControllerLookup[CurrentWindowType]);
+            rootVisualElement.styleSheets.Add(graphStylesheetVariables);
+            rootVisualElement.styleSheets.Add(graphStylesheet); 
 
             // add potential custom stylesheet
             if (Settings.customStylesheet != null) {

@@ -11,7 +11,7 @@ namespace NewGraph {
         private List<NodeModel> clones = new List<NodeModel>();
         private List<NodeDataInfo> originals = new List<NodeDataInfo>();
         private Dictionary<INode, INode> originalsToClones = new Dictionary<INode, INode>();
-        private GraphModel baseGraphData;
+        private IGraphModelData baseGraphData;
 
         /// <summary>
         /// Do we have nodes for a copy/paste operation present?
@@ -26,7 +26,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="rootData"></param>
-        public void CaptureSelection(List<NodeView> nodes, GraphModel rootData) {
+        public void CaptureSelection(List<NodeView> nodes, IGraphModelData rootData) {
             // Adds a port to the given list of external references
             void AddPortAsExternalReference(NodeDataInfo nodeResolveData, PortView port, NodeView node) {
                 string relativePath = port.boundProperty.propertyPath.Replace(node.controller.nodeItem.GetSerializedProperty().propertyPath, "");
@@ -79,7 +79,7 @@ namespace NewGraph {
         /// <summary>
         /// Resolve the currently captured selection into clones and reconstruct all connections
         /// </summary>
-        public void Resolve(GraphModel rootData, System.Action<List<NodeModel>> onBeforeAdding, System.Action onAfterAdding) {
+        public void Resolve(IGraphModelData rootData, System.Action<List<NodeModel>> onBeforeAdding, System.Action onAfterAdding) {
             List<NodeDataInfo> originalsCopy = new List<NodeDataInfo>(originals);
             Clear();
 
@@ -113,7 +113,7 @@ namespace NewGraph {
 
                     // add node to list of nodes and update serialized object!
                     rootData.AddNode(clone);
-                    rootData.serializedGraphData.ApplyModifiedProperties();
+                    rootData.SerializedGraphData.ApplyModifiedProperties();
 
                     // resolve the list of external references of this node
                     ResolveExternalReferences(ref originalResolveData.internalReferences, ref originalResolveData.externalReferences, ref isSameData, ref rootData);
@@ -131,7 +131,7 @@ namespace NewGraph {
         /// <param name="externalReferences">The list of external references we want to resolve</param>
         /// <param name="isSameData">Are we operating on the same graphData where our selection was captures? Or are we on a foreign graph?</param>
         /// <param name="graphData">The actual graph data</param>
-        private void ResolveExternalReferences(ref List<NodeReference> internalReferences, ref List<NodeReference> externalReferences, ref bool isSameData, ref GraphModel graphData) {
+        private void ResolveExternalReferences(ref List<NodeReference> internalReferences, ref List<NodeReference> externalReferences, ref bool isSameData, ref IGraphModelData graphData) {
             SerializedProperty portReference;
             SerializedProperty node;
 
@@ -140,7 +140,7 @@ namespace NewGraph {
             if (externalReferences.Count > 0 || internalReferences.Count > 0) {
 
                 // make sure we update the serialized object so we can get the serialized property of the lastly added node
-                graphData.serializedGraphData.Update();
+                graphData.SerializedGraphData.Update();
                 node = graphData.GetLastAddedNodeProperty(false);
 
                 foreach (NodeReference internalReference in internalReferences) {
@@ -149,7 +149,7 @@ namespace NewGraph {
                     if (portReference != null) {
                         // set the managedReferenceValue of the serialized property to the original value
                         portReference.managedReferenceValue = originalsToClones[(INode)internalReference.nodeData];
-                        graphData.serializedGraphData.ApplyModifiedProperties();
+                        graphData.SerializedGraphData.ApplyModifiedProperties();
                     }
                 }
 
@@ -167,7 +167,7 @@ namespace NewGraph {
                             // if we are on another graph than the capture was made, we set the value to null as everything outside the capture should not exist here.
                             portReference.managedReferenceValue = null;
                         }
-                        graphData.serializedGraphData.ApplyModifiedProperties();
+                        graphData.SerializedGraphData.ApplyModifiedProperties();
                     }
                 }
             }
