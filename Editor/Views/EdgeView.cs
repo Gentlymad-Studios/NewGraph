@@ -1,8 +1,10 @@
 using GraphViewBase;
 using UnityEngine;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     public class EdgeView : Edge {
         public EdgeView() : base() {
             EdgeWidth = EdgeWidthUnselected;

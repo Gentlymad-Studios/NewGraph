@@ -3,9 +3,11 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     /// <summary>
     /// Inspector window where the main command menu is implemented.
     /// Also handles renaming of a graph, basic asset loading and displaying additional content.

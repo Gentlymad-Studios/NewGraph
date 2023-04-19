@@ -1,8 +1,10 @@
 using System;
 using UnityEditor.UIElements;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     public class ReactiveSettings {
         public ReactiveSettings(Action OnSettingsChanged) {
             this.OnSettingsChanged = OnSettingsChanged;

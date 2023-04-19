@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     /// <summary>
     /// This class is used to build and retrieve a collection of valid properties for the graph to display and operate on.
     /// This allows to autogenerate UIs only with special Attributes without the need for custom inspectors.

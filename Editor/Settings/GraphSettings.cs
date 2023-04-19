@@ -3,9 +3,11 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     [System.Serializable]
     public class GraphSettings {
         public const string assetGUID = "015778251503b3c44a2b9dfc3a36ad10";

@@ -16,7 +16,7 @@ namespace NewGraph {
     /// </summary>
     public class GraphWindow : EditorWindow {
 
-        private static readonly Dictionary<Type, Type> windowControllerLookup = new Dictionary<Type, Type>() {
+        private static readonly Dictionary<Type, Type> inspectorControllerLookup = new Dictionary<Type, Type>() {
             { typeof(ScriptableGraphModel), typeof(ScriptableInspectorController) },
             { typeof(MonoGraphModel), typeof(MonoInspectorController) },
         };
@@ -30,7 +30,6 @@ namespace NewGraph {
         private EventModifiers lastModifiers;
         private EventType eventType;
         private GraphController graphController;
-
 
         private static Type currentWindowType = null;
         private static string currentWindowTypeKey = nameof(NewGraph) + "." + nameof(currentWindowType);
@@ -162,7 +161,7 @@ namespace NewGraph {
             rootVisualElement.Add(uxmlRoot);
             uxmlRoot.StretchToParentSize();
 
-            graphController = new GraphController(uxmlRoot, rootVisualElement, windowControllerLookup[CurrentWindowType]);
+            graphController = new GraphController(uxmlRoot, rootVisualElement, inspectorControllerLookup[CurrentWindowType]);
             rootVisualElement.styleSheets.Add(graphStylesheetVariables);
             rootVisualElement.styleSheets.Add(graphStylesheet); 
 

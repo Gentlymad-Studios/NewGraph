@@ -2,9 +2,11 @@ using GraphViewBase;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     public class PortView : BasePort {
 
         public Type type;
@@ -54,7 +56,6 @@ namespace NewGraph {
         }
 
         public void Reset() {
-            Logger.Log("Reset");
             // set its value to null = remove reference
             boundProperty.managedReferenceValue = null;
             boundProperty.serializedObject.ApplyModifiedProperties();

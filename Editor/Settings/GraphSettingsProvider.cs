@@ -2,9 +2,10 @@ using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
 
     public class GraphSettingsProvider : SettingsProviderBase {
 

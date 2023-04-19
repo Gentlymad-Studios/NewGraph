@@ -3,9 +3,11 @@ using OdinSerializer.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     /// <summary>
     /// Main ContextMenu that is being used when performing a right-click in the graph view.
     /// This can be inherited by a custom class that has the [CustomContextMenu] attribute.

@@ -1,9 +1,11 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     public class GraphModelEditorBase : Editor {
         private SerializedProperty listProperty;
 

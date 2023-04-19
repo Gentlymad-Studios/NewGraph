@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
-using static NewGraph.GraphSettingsSingleton;
+
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     public class PortListView : ListView {
         public List<PortView> ports = new List<PortView>();
         public SerializedProperty listProperty;

@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System.Collections.Generic;
 using GraphViewBase;
-using static NewGraph.GraphSettingsSingleton;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
 
     public class NodeView : BaseNode {
 
