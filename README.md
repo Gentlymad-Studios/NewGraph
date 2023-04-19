@@ -3,7 +3,7 @@
 ![Version](https://img.shields.io/github/package-json/v/Gentlymad-Studios/NewGraph)
 ![GitHub last commit](https://img.shields.io/github/last-commit/Gentlymad-Studios/NewGraph)
 ![GitHub](https://img.shields.io/github/license/Gentlymad-Studios/NewGraph)
-![GitHub issues](https://img.shields.io/github/issues-raw/Gentlymad-Studios/NewGraph)
+[![GitHub issues](https://img.shields.io/github/issues-raw/Gentlymad-Studios/NewGraph)](https://github.com/Gentlymad-Studios/NewGraph/blob/main/CHANGELOG.md)
 ![image](https://user-images.githubusercontent.com/530629/219878506-2a12f872-cf5b-468e-8982-066c742bb8e7.png)
 NewGraph is a data-oriented node graph solution for **Unity** powered by **UIToolkit (UIElements)**. This is based on the idea to visualize complex data structures as graph networks without having to modify already established data classes, except adding `[Node]`, `[Port]`, `[PortList]` and `[SerializeReference]` attributes to all classes that should show in the Graph View.
 
