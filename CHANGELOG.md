@@ -195,7 +195,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.3] - 2023-04-18
 ### Added
 - Added more stable method to retrieve all attributes for a serialized property. [#14](https://github.com/Gentlymad-Studios/NewGraph/issues/14)
-
 ### Fixed
 - Fixed wrong window size for all SearchWindows [#10](https://github.com/Gentlymad-Studios/NewGraph/issues/10)
 - wrapped UnityEditor in #if UNITY_EDITOR preprocessor directives in all graph models
+
+## [0.3.4] - 2023-04-24
+### Added
+- Added integrated Examples (Samples~). To use: Copy contents from  Samples~ folder into you Assets project.
+- Added ability to add new window/ graph types to the graph window lookup
+

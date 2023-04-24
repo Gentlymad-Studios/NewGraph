@@ -21,7 +21,7 @@ namespace NewGraph {
             { typeof(MonoGraphModel), typeof(MonoInspectorController) },
         };
 
-        private static readonly Dictionary<Type, Func<string, IGraphModelData>> lastGraphCreationLookup = new Dictionary<Type, Func<string, IGraphModelData>>() {
+        private static readonly Dictionary<Type, Func<string, IGraphModelData>> lastGraphCreationStrategies = new Dictionary<Type, Func<string, IGraphModelData>>() {
             { typeof(ScriptableGraphModel), ScriptableGraphModel.GetGraphData },
             { typeof(MonoGraphModel), MonoGraphModel.GetGraphData },
         };
@@ -57,12 +57,19 @@ namespace NewGraph {
         [NonSerialized]
         private static bool loadRequested = false;
 
-        [MenuItem(menuItemBase + nameof(GraphWindow))]
-        private static void InitializeScriptableWindow() {
+        //[MenuItem(menuItemBase + nameof(GraphWindow))]
+        /*private static void InitializeScriptableWindow() {
             InitializeWindowBase(typeof(ScriptableGraphModel));
+        }*/
+        
+        public static void AddWindowType(Type windowType, Type inspectorControllerType, Func<string, IGraphModelData> lastGraphCreationStrategy) {
+            if (!inspectorControllerLookup.ContainsKey(windowType)) {
+                inspectorControllerLookup.Add(windowType, inspectorControllerType);
+                lastGraphCreationStrategies.Add(windowType, lastGraphCreationStrategy);
+            }
         }
- 
-        private static void InitializeWindowBase(Type windowType) {
+
+        public static void InitializeWindowBase(Type windowType) {
             if (window != null && CurrentWindowType != windowType) {
                 window.Close();
             }
@@ -135,7 +142,7 @@ namespace NewGraph {
             } else {
                 LastGraphInfo lastGraphInfo = LastOpenedGraphInfo;
                 if (lastGraphInfo != null) {
-                    graph = lastGraphCreationLookup[lastGraphInfo.graphType](lastGraphInfo.GUID);
+                    graph = lastGraphCreationStrategies[lastGraphInfo.graphType](lastGraphInfo.GUID);
                 }
             }
 

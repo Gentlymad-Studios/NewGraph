@@ -20,7 +20,9 @@ namespace NewGraph {
 
 #if UNITY_EDITOR
         private const string lastOpenedMonoGraphPrefsKey = nameof(NewGraph) + "." + nameof(lastOpenedMonoGraphPrefsKey);
+
         public List<NodeModel> UtilityNodes => baseModel.utilityNodes;
+
         public SerializedObject SerializedGraphData {
             get {
                 if (baseModel.serializedGraphData == null) {
@@ -97,13 +99,13 @@ namespace NewGraph {
             return id;
         }
 
-        private void OnValidate() {
+        protected virtual void OnValidate() {
             CreateID();
         }
 
         public static IGraphModelData GetGraphData(string GUID) {
             if (!string.IsNullOrEmpty(GUID)) {
-                MonoGraphModel[] graphModels = UnityEngine.Object.FindObjectsByType<MonoGraphModel>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+                MonoGraphModel[] graphModels = FindObjectsByType<MonoGraphModel>(FindObjectsInactive.Include, FindObjectsSortMode.None);
                 foreach (var gm in graphModels) {
                     if (gm.GUID == GUID) {
                         return gm;
