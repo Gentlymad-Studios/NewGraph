@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -11,12 +11,12 @@ namespace NewGraph {
         /// <summary>
         /// List of all the nodes we want to work on.
         /// </summary>
-        [SerializeReference]
+        [SerializeReference, HideInInspector]
         public List<NodeModel> nodes = new List<NodeModel>();
 
 #if UNITY_EDITOR
         // FROM HERE BE DRAGONS...
-        [SerializeReference]
+        [SerializeReference, HideInInspector]
         public List<NodeModel> utilityNodes = new List<NodeModel>();
 
         [NonSerialized]
@@ -31,8 +31,8 @@ namespace NewGraph {
         [NonSerialized]
         private SerializedProperty utilityNodesProperty = null;
 
-        [HideInInspector, SerializeField]
-        private string tmpName;
+        [SerializeField, HideInInspector]
+		private string tmpName;
         private SerializedProperty tmpNameProperty = null;
         private SerializedProperty originalNameProperty = null;
 
@@ -43,8 +43,8 @@ namespace NewGraph {
             return serializedGraphData.FindProperty(basePropertyPath + "." + propertyToSearch);
         }
 
-        [SerializeField]
-        private bool viewportInitiallySet = false;
+        [SerializeField, HideInInspector]
+		private bool viewportInitiallySet = false;
         public bool ViewportInitiallySet => viewportInitiallySet;
 
         private SerializedProperty viewportInitiallySetProperty = null;
@@ -57,7 +57,7 @@ namespace NewGraph {
             }
         }
 
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private Vector3 viewPosition;
         public Vector3 ViewPosition => viewPosition;
 
@@ -72,7 +72,7 @@ namespace NewGraph {
             }
         }
 
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private Vector3 viewScale;
         public Vector3 ViewScale => viewScale;
 

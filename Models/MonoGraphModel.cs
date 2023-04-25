@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -10,7 +10,7 @@ namespace NewGraph {
     /// Our graph data model for MonoBehaviour based graphs
     /// </summary>
     public class MonoGraphModel : MonoBehaviour, IGraphModelData {
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private GraphModelBase baseModel;
 
         [SerializeField, HideInInspector]

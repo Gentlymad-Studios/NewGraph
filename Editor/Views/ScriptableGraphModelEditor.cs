@@ -1,6 +1,5 @@
-using UnityEditor.Callbacks;
+﻿using UnityEditor.Callbacks;
 using UnityEditor;
-using System;
 
 namespace NewGraph {
     [CustomEditor(typeof(ScriptableGraphModel))]

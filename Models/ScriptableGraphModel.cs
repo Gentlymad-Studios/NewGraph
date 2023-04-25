@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -11,7 +11,7 @@ namespace NewGraph {
     /// </summary>
     [CreateAssetMenu(fileName = nameof(ScriptableGraphModel), menuName = nameof(ScriptableGraphModel), order = 1)]
     public class ScriptableGraphModel : ScriptableObject, IGraphModelData {
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private GraphModelBase baseModel = new GraphModelBase();
 
         public List<NodeModel> Nodes => baseModel.nodes;

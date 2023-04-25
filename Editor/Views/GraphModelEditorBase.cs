@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,8 +8,20 @@ namespace NewGraph {
 
     public class GraphModelEditorBase : Editor {
         private SerializedProperty listProperty;
+		protected IGraphModelData baseGraphModel;
+		protected IGraphModelData BaseGraphModel {
+			get {
+				if (baseGraphModel == null) {
+					baseGraphModel = target as IGraphModelData;
+					if (baseGraphModel.SerializedGraphData == null) {
+						baseGraphModel.CreateSerializedObject();
+					}
+				}
+				return baseGraphModel;
+			}
+		}
 
-        public override VisualElement CreateInspectorGUI() {
+		public override VisualElement CreateInspectorGUI() {
             VisualElement inspector = new VisualElement();
             inspector.AddToClassList("baseGraphEditor");
 
@@ -19,17 +31,13 @@ namespace NewGraph {
             inspector.styleSheets.Add(GraphSettings.graphStylesheetVariables);
             inspector.styleSheets.Add(GraphSettings.graphStylesheet);
 
-            CreateCustomizedListView(inspector);
+            CreateGUI(inspector);
 
             return inspector;
         }
 
-        protected virtual void CreateCustomizedListView(VisualElement inspector) {
-            IGraphModelData baseGraphModel = target as IGraphModelData;
-            if (baseGraphModel.SerializedGraphData == null) {
-                baseGraphModel.CreateSerializedObject();
-            }
-            listProperty = baseGraphModel.GetNodesProperty(false);
+        protected virtual void CreateGUI(VisualElement inspector) {
+            listProperty = BaseGraphModel.GetNodesProperty(false);
 
             VisualElement MakeItem() {
                 VisualElement itemRow = new VisualElement();
