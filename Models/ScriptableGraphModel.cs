@@ -9,7 +9,7 @@ namespace NewGraph {
     /// <summary>
     /// Our graph data model for scriptable object based graphs
     /// </summary>
-    //[CreateAssetMenu(fileName = nameof(ScriptableGraphModel), menuName = nameof(ScriptableGraphModel), order = 1)]
+    [CreateAssetMenu(fileName = nameof(ScriptableGraphModel), menuName = nameof(ScriptableGraphModel), order = 1)]
     public class ScriptableGraphModel : ScriptableObject, IGraphModelData {
         [SerializeField, HideInInspector]
         private GraphModelBase baseModel = new GraphModelBase();

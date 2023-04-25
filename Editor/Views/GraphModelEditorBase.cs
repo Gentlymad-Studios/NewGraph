@@ -7,19 +7,6 @@ namespace NewGraph {
     using static GraphSettingsSingleton;
 
     public class GraphModelEditorBase : Editor {
-        private SerializedProperty listProperty;
-		protected IGraphModelData baseGraphModel;
-		protected IGraphModelData BaseGraphModel {
-			get {
-				if (baseGraphModel == null) {
-					baseGraphModel = target as IGraphModelData;
-					if (baseGraphModel.SerializedGraphData == null) {
-						baseGraphModel.CreateSerializedObject();
-					}
-				}
-				return baseGraphModel;
-			}
-		}
 
 		public override VisualElement CreateInspectorGUI() {
             VisualElement inspector = new VisualElement();
@@ -33,16 +20,19 @@ namespace NewGraph {
             inspector.styleSheets.Add(GraphSettings.graphStylesheetVariables);
             inspector.styleSheets.Add(GraphSettings.graphStylesheet);
 
-            CreateGUI(inspector);
+			CreateGUI(inspector);
 
             return inspector;
         }
 
         protected virtual void CreateGUI(VisualElement inspector) {
-            listProperty = BaseGraphModel.GetNodesProperty(false);
+			IGraphModelData baseGraphModel = target as IGraphModelData;
+			if (baseGraphModel.SerializedGraphData == null) {
+				baseGraphModel.CreateSerializedObject();
+			}
 
-            VisualElement MakeItem() {
-                VisualElement itemRow = new VisualElement();
+			VisualElement MakeItem() {
+				VisualElement itemRow = new VisualElement();
                 Label fieldLabel = new Label();
                 fieldLabel.style.unityTextAlign = TextAnchor.MiddleLeft;
                 itemRow.style.flexDirection = FlexDirection.Row;
@@ -52,15 +42,11 @@ namespace NewGraph {
             }
 
             void BindItem(VisualElement itemRow, int i) {
-                serializedObject.Update();
-                if (i < listProperty.arraySize && i >= 0) {
-                    SerializedProperty prop = listProperty.GetArrayElementAtIndex(i);
-                    Label label = itemRow[0] as Label;
-                    if (prop != null) {
-                        SerializedProperty propRelative = prop.FindPropertyRelative(NodeModel.nameIdentifier);
-                        if (propRelative != null) {
-                            label.text = $"Element {i + 1}: {propRelative.stringValue}";
-                        }
+				if (i < baseGraphModel.Nodes.Count && i >= 0) {
+					NodeModel node = baseGraphModel.Nodes[i];
+					Label label = itemRow[0] as Label;
+                    if (node != null) {
+						label.text = $"Element {i + 1}: {node.GetName()}";
                     }
                 }
             };
@@ -70,9 +56,10 @@ namespace NewGraph {
                 reorderable = false,
                 showFoldoutHeader = false,
                 showBorder = true,
-                showAlternatingRowBackgrounds = AlternatingRowBackground.All,
-                bindingPath = listProperty.propertyPath,
-                bindItem = BindItem,
+				showBoundCollectionSize = false,
+				showAlternatingRowBackgrounds = AlternatingRowBackground.All,
+				itemsSource = baseGraphModel.Nodes,
+				bindItem = BindItem,
                 makeItem = MakeItem
             };
 			listView.AddToClassList("plainNodeList");
