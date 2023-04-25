@@ -204,3 +204,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added integrated Examples (Samples~). To use: Copy contents from  Samples~ folder into you Assets project.
 - Added ability to add new window/ graph types to the graph window lookup
 
+## [0.3.5] - 2023-04-25
+### Fixed
+- Made it easier to derive custom ScriptableGraph models
