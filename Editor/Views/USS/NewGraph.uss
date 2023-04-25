@@ -1,4 +1,4 @@
-GridBackground.grid-background {
+﻿GridBackground.grid-background {
     --grid-spacing: 50;
     --grid-thick-lines: 10;
     --grid-line-color: rgba(0, 0, 0, 0.08);
@@ -178,7 +178,7 @@ PortListView > ScrollView {
     padding-top: 2px;
 }
 
-#commandPanel Button, .baseGraphEditor Button {
+#commandPanel Button, .baseGraphEditor Button.openGraphButton {
     flex-grow: 1;
     padding-left: 5px;
     padding-top: 2px;
@@ -190,7 +190,11 @@ PortListView > ScrollView {
     -unity-text-align: middle-left;
 }
 
-.baseGraphEditor Button {
+.baseGraphEditor ObjectField#unity-input-m_Script {
+	display:none;
+}
+
+.baseGraphEditor Button.openGraphButton {
     border-radius: 3px;
 }
 
@@ -198,23 +202,23 @@ PortListView > ScrollView {
     margin-top: 15px;
 }
 
-.baseGraphEditor ListView{
+.baseGraphEditor ListView.plainNodeList{
     margin-top: 15px;
     margin-left: auto;
     margin-right: auto;
     min-width: 200px;
 }
 
-.baseGraphEditor ListView .unity-collection-view__item{
+.baseGraphEditor ListView.plainNodeList .unity-collection-view__item{
     padding-left: 5px;
 }
 
-.baseGraphEditor Button {
+.baseGraphEditor Button.openGraphButton {
     width: 110px;
     align-self: center;
 }
 
-#commandPanel Button Image, .baseGraphEditor Button Image{
+#commandPanel Button Image, .baseGraphEditor Button.openGraphButton Image{
     width: 20px;
     height: 20px;
     align-self:flex-end;

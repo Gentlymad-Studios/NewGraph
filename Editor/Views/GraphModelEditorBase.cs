@@ -27,7 +27,9 @@ namespace NewGraph {
 
             Button openGraphButton = new Button(OpenGraphClicked) { text = Settings.openGraphButtonText };
             openGraphButton.Add(GraphSettings.LoadButtonIcon);
-            inspector.Add(openGraphButton);
+			openGraphButton.AddToClassList("openGraphButton");
+
+			inspector.Add(openGraphButton);
             inspector.styleSheets.Add(GraphSettings.graphStylesheetVariables);
             inspector.styleSheets.Add(GraphSettings.graphStylesheet);
 
@@ -73,8 +75,9 @@ namespace NewGraph {
                 bindItem = BindItem,
                 makeItem = MakeItem
             };
+			listView.AddToClassList("plainNodeList");
 
-            inspector.Add(listView);
+			inspector.Add(listView);
         }
 
         private void OpenGraphClicked() {
