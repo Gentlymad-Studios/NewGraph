@@ -251,7 +251,6 @@ namespace NewGraph {
         }
 
         private void ItemIndexChanged(int draggedIndex, int dropIndex) {
-			UnityEngine.Debug.Log("ItemIndexChanged");
 
             // get "real" indices
             draggedIndex = viewController.GetIndexForId(draggedIndex);
