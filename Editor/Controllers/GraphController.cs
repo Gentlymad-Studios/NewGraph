@@ -1,4 +1,4 @@
-using GraphViewBase;
+﻿using GraphViewBase;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -335,7 +335,7 @@ namespace NewGraph {
         /// </summary>
         public void Reload() {
             Logger.Log("reload");
-            if (graphData != null && graphData.BaseObject != null) {
+            if (graphData != null /*&& graphData.BaseObject != null*/) {
                 Load(graphData);
             }
         }

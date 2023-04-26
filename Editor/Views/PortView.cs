@@ -1,4 +1,4 @@
-using GraphViewBase;
+﻿using GraphViewBase;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -56,10 +56,12 @@ namespace NewGraph {
         }
 
         public void Reset() {
-            // set its value to null = remove reference
-            boundProperty.managedReferenceValue = null;
-            boundProperty.serializedObject.ApplyModifiedProperties();
-            connectionChangedCallback?.Invoke();
+			// set its value to null = remove reference
+			if (boundProperty != null) {
+				boundProperty.managedReferenceValue = null;
+				boundProperty.serializedObject.ApplyModifiedProperties();
+				connectionChangedCallback?.Invoke();
+			}
         }
 
         public override bool CanConnectTo(BasePort other, bool ignoreCandidateEdges = true) {

@@ -207,3 +207,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.5] - 2023-04-25
 ### Fixed
 - Made it easier to derive custom ScriptableGraph models
+
+## [0.3.6] - 2023-04-28
+### Fixed
+- Fixed issue with undoing changes
+- Fixed port list connections not regenerating when adding a new item

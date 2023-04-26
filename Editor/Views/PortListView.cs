@@ -1,4 +1,5 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -76,12 +77,25 @@ namespace NewGraph {
         private void OnAddClicked() {
             listProperty.arraySize++;
             listProperty.serializedObject.ApplyModifiedProperties();
-
-            nodeView.RebuildPortListView(this);
+			
+			RemoveEdges();
+			nodeView.RebuildPortListView(this);
         }
 
+		private void RemoveEdges() {
+			for (int i = ports.Count - 1; i >= 0; i--) {
+				PortView port = ports[i];
+				GraphViewBase.BaseEdge[] edges = port.Connections.ToArray();
+				for (int j = edges.Length - 1; j >= 0; j--) {
+					edges[j].Disconnect();
+				}
+
+				ports.Remove(port);
+			}
+		}
+
         private void OnItemsRemoved(IEnumerable<int> indices) {
-            /*
+			/*
             foreach (var index in indices) {
                 PortView port = ports[index];
 
@@ -93,18 +107,9 @@ namespace NewGraph {
                 Debug.Log("disconnect");
                 ports.Remove(port);
             }*/
-            
-            for (int i= ports.Count-1; i>=0; i--) {
-                PortView port = ports[i];
-                GraphViewBase.BaseEdge[] edges = port.Connections.ToArray();
-                for (int j = edges.Length - 1; j >= 0; j--) {
-                    edges[j].Disconnect();
-                }
 
-                ports.Remove(port);
-            }
-
-            nodeView.RebuildPortListView(this);
+			RemoveEdges();
+			nodeView.RebuildPortListView(this);
         }
 
         /// <summary>
@@ -116,15 +121,15 @@ namespace NewGraph {
 
             listProperty.serializedObject.Update();
             if (indices.Any()) {
-                for (var i = indices.Count - 1; i >= 0; i--) {
+                for (int i = indices.Count - 1; i >= 0; i--) {
                     int index = indices[i];
                     if (index >= 0 && index < listProperty.arraySize) {
                         listProperty.DeleteArrayElementAtIndex(index);
 
                         if (index < listProperty.arraySize - 1) {
-                            var currentProperty = listProperty.GetArrayElementAtIndex(index);
-                            for (var j = index + 1; j < listProperty.arraySize; j++) {
-                                var nextProperty = listProperty.GetArrayElementAtIndex(j);
+							SerializedProperty currentProperty = listProperty.GetArrayElementAtIndex(index);
+                            for (int j = index + 1; j < listProperty.arraySize; j++) {
+								SerializedProperty nextProperty = listProperty.GetArrayElementAtIndex(j);
                                 if (nextProperty != null) {
                                     currentProperty.isExpanded = nextProperty.isExpanded;
                                     currentProperty = nextProperty;
@@ -135,7 +140,7 @@ namespace NewGraph {
                 }
                 ClearSelection();
             } else if (listProperty.arraySize > 0) {
-                var index = listProperty.arraySize - 1;
+				int index = listProperty.arraySize - 1;
                 viewController.RemoveItem(index);
                 indices.Add(index);
             }
@@ -246,6 +251,8 @@ namespace NewGraph {
         }
 
         private void ItemIndexChanged(int draggedIndex, int dropIndex) {
+			UnityEngine.Debug.Log("ItemIndexChanged");
+
             // get "real" indices
             draggedIndex = viewController.GetIndexForId(draggedIndex);
             dropIndex = viewController.GetIndexForId(dropIndex);
