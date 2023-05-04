@@ -128,12 +128,24 @@ PortListView {
     margin-bottom: 5px;
 }
 
+PortListView Label.staticHeader{
+	overflow: hidden;
+	-unity-overflow-clip-box: content-box;
+}
+
 PortListView .fieldLabel {
     -unity-text-align: middle-left;
     margin-left: 2px;
+	flex-shrink: 1;
 }
 
-PortListView Port {
+PortListView Label.fieldLabel {
+	flex-shrink: 1;
+	overflow: hidden;
+}
+
+PortListView PortView {
+	flex-shrink: 0;
     margin-right: 2px;
 }
 
