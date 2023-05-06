@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -29,9 +29,11 @@ namespace NewGraph {
         private KeyCode lastKeyCode;
         private EventModifiers lastModifiers;
         private EventType eventType;
-        private GraphController graphController;
+        public GraphController graphController;
 
-        private static Type currentWindowType = null;
+		public static VisualElement root => window.rootVisualElement;
+
+		public static Type currentWindowType = null;
         private static string currentWindowTypeKey = nameof(NewGraph) + "." + nameof(currentWindowType);
         private static Type CurrentWindowType {
             get {

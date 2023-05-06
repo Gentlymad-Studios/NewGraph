@@ -12,7 +12,10 @@ namespace NewGraph {
 
     public class GraphController {
 
-        public IGraphModelData graphData = null;
+		public event Action<IGraphModelData> OnGraphLoaded;
+		public event Action<IGraphModelData> OnBeforeGraphLoaded;
+
+		public IGraphModelData graphData = null;
         public CopyPasteHandler copyPasteHandler = new CopyPasteHandler();
         public GraphView graphView;
 
@@ -94,9 +97,15 @@ namespace NewGraph {
             }
         }
 
-        private void OpenContextMenu(MouseDownEvent evt) {
+		private bool IsFocusedElementNullOrNotBindable => graphView.focusController == null || graphView.focusController.focusedElement == null || !(graphView.focusController.focusedElement is IBindable);
+
+		private void OpenContextMenu(MouseDownEvent evt) {
             if (evt.button == 1) {
-                SearchWindow.Open(contextMenu, graphView);
+				graphView.schedule.Execute(() => {
+					if (IsFocusedElementNullOrNotBindable) {
+						SearchWindow.Open(contextMenu, graphView);
+					}
+				});
             } 
         }
 
@@ -173,16 +182,18 @@ namespace NewGraph {
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
         public void OnCopy(object data = null) {
-            List<NodeView> nodesToCapture = new List<NodeView>();
+			if (IsFocusedElementNullOrNotBindable) {
+				List<NodeView> nodesToCapture = new List<NodeView>();
 
-            graphView.ForEachSelectedNodeDo((node) => {
-                NodeView scopedNodeView = node as NodeView;
-                if (scopedNodeView != null) {
-                    nodesToCapture.Add(scopedNodeView);
-                }
-            });
+				graphView.ForEachSelectedNodeDo((node) => {
+					NodeView scopedNodeView = node as NodeView;
+					if (scopedNodeView != null) {
+						nodesToCapture.Add(scopedNodeView);
+					}
+				});
 
-            copyPasteHandler.CaptureSelection(nodesToCapture, graphData);
+				copyPasteHandler.CaptureSelection(nodesToCapture, graphData);
+			}
         }
 
         /// <summary>
@@ -190,12 +201,14 @@ namespace NewGraph {
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
         public void OnPaste(object data = null) {
-            copyPasteHandler.Resolve(graphData, (nodes) => {
-                Undo.RecordObject(graphData.BaseObject, "Paste Action");
-                // position node clones relative to the current mouse position & add them to the current graph
-                Vector2 viewPosition = graphView.GetMouseViewPosition();
-                PositionNodesRelative(viewPosition, nodes);
-            }, Reload);
+			if (IsFocusedElementNullOrNotBindable) {
+				copyPasteHandler.Resolve(graphData, (nodes) => {
+					Undo.RecordObject(graphData.BaseObject, "Paste Action");
+					// position node clones relative to the current mouse position & add them to the current graph
+					Vector2 viewPosition = graphView.GetMouseViewPosition();
+					PositionNodesRelative(viewPosition, nodes);
+				}, Reload);
+			}
         }
 
         /// <summary>
@@ -410,9 +423,10 @@ namespace NewGraph {
         /// </summary>
         /// <param name="graphData"></param>
         private void Load(IGraphModelData graphData) {
+			OnBeforeGraphLoaded?.Invoke(graphData);
 
-            // return early if we are already in the process of loading a graph...
-            if (isLoading) {
+			// return early if we are already in the process of loading a graph...
+			if (isLoading) {
                 return;
             }
 
@@ -497,7 +511,9 @@ namespace NewGraph {
                 });
 
                 isLoading = false;
-                Logger.Log("data loaded");
+				OnGraphLoaded?.Invoke(this.graphData);
+
+				Logger.Log("data loaded");
             });
         }
 

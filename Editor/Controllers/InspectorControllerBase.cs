@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -16,9 +16,9 @@ namespace NewGraph {
         private ReactiveSettings reactiveSettings;
 
         private VisualElement commandPanel;
-        private VisualElement inspectorRoot;
+		protected VisualElement inspectorRoot;
         private Label multipleNodesSelected;
-        private VisualElement inspectorContainer;
+		protected VisualElement inspectorContainer;
         private VisualElement selectedNodeInspector;
         protected VisualElement inspectorHeader;
         private Image inspectorButtonImage;
@@ -139,7 +139,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="content">The content to display</param>
         /// <param name="serializedObject">The Serialized object that should be used for binding.</param>
-        public void SetInspectorContent(VisualElement content, SerializedObject serializedObject=null) {
+        public virtual void SetInspectorContent(VisualElement content, SerializedObject serializedObject=null) {
             // release the previous inspector content into the ether of unknown Unity land...
             if (selectedNodeInspector != null) {
                 selectedNodeInspector.Unbind();

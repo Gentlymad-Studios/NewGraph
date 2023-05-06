@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using GraphViewBase;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
@@ -26,7 +26,6 @@ namespace NewGraph {
 
             this.OnAction = OnAction;
         }
-
 
         private void OnKeyDown(Event evt) {
             ExecuteShortcutHandler(evt.keyCode, evt.modifiers);
