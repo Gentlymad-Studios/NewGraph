@@ -212,3 +212,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed issue with undoing changes
 - Fixed port list connections not regenerating when adding a new item
+
+## [0.3.7] - 2023-05-08
+### Fixed
+- Fixed StackOverflow errors for GroupCommentNodes when they are stacked into each other [#20](https://github.com/Gentlymad-Studios/NewGraph/issues/20)
+- Fixed wrong positioning of Nodes that are part of a GroupCommentNode [#21](https://github.com/Gentlymad-Studios/NewGraph/issues/21)
+### Added
+- Nodes are now only included in a GroupCommentNode if they are fully contained and not just overlapping [#22](https://github.com/Gentlymad-Studios/NewGraph/issues/22)

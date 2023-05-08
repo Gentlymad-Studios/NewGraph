@@ -1,4 +1,4 @@
-using GraphViewBase;
+﻿using GraphViewBase;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -35,11 +35,12 @@ namespace NewGraph {
         private Vector2 nodeStartPosition;
         private Vector2 nodeMoveDelta;
         private List<NodeView> containedNodes = new List<NodeView>();
+		private Vector2 testPoint = new Vector2();
 
-        /// <summary>
-        /// Create some nice vector based dragCaret graphics
-        /// </summary>
-        private static VectorImage dragCaretGraphics = null;
+		/// <summary>
+		/// Create some nice vector based dragCaret graphics
+		/// </summary>
+		private static VectorImage dragCaretGraphics = null;
         private static VectorImage DragCaretGraphics {
             get {
                 if (dragCaretGraphics == null) {
@@ -95,12 +96,20 @@ namespace NewGraph {
             container.style.backgroundColor = evt.changedProperty.colorValue;
         }
 
-        /// <summary>
-        /// If a left click was initiated we start listening on position changes and capture all nodes,
-        /// that should be moved as being part of our group node.
-        /// </summary>
-        /// <param name="evt"></param>
-        private void OnNodeViewMouseDown(MouseDownEvent evt) {
+		private bool IsPointContained(float x, float y) {
+			testPoint.Set(x, y);
+			if (!nodeView.worldBound.Contains(testPoint)) {
+				return false;
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// If a left click was initiated we start listening on position changes and capture all nodes,
+		/// that should be moved as being part of our group node.
+		/// </summary>
+		/// <param name="evt"></param>
+		private void OnNodeViewMouseDown(MouseDownEvent evt) {
             // make sure we have a left click
             if (evt.button == 0) {
                 // clear all previously captured nodes
@@ -108,13 +117,30 @@ namespace NewGraph {
                     containedNodes = new List<NodeView>();
                 }
                 containedNodes.Clear();
-                // go overy all nodes and check which nodes are contained
-                // this is costly, so we do it only once when the movement process starts
-                nodeController.ForEachNode((node) => {
-                    // check via worldbound rect if node is contained in our group
-                    if (node != nodeView && node != null && nodeView.worldBound.Overlaps(node.worldBound)) {
-                        containedNodes.Add(node as NodeView);
-                    }
+				// go overy all nodes and check which nodes are contained
+				// this is costly, so we do it only once when the movement process starts
+
+				nodeController.ForEachNode((node) => {
+					// check via worldbound rect if node is contained in our group
+					if (node != nodeView && node != null) {
+						NodeView nodeView = node as NodeView;
+
+						if (!nodeView.controller.nodeItem.isUtilityNode && !(nodeView.controller.nodeItem.nodeData is GroupCommentNode)) {
+
+							if (!IsPointContained(node.worldBound.xMin, node.worldBound.yMin)) {
+								return;
+							} else if (!IsPointContained(node.worldBound.xMax, node.worldBound.yMin)) {
+								return;
+							} else if (!IsPointContained(node.worldBound.xMin, node.worldBound.yMax)) {
+								return;
+							} else if (!IsPointContained(node.worldBound.xMax, node.worldBound.yMax)) {
+								return;
+							}
+
+							containedNodes.Add(nodeView);
+						}
+					}
+
                 });
                 // capture the initial start position
                 nodeStartPosition = nodeView.GetPosition();
@@ -134,8 +160,10 @@ namespace NewGraph {
 
             // set the position of all nodes that are contained
             foreach (NodeView nodeView in containedNodes) {
-                Vector2 nodePos = nodeView.GetPosition();
-                nodeView.SetPosition(new(nodePos.x+nodeMoveDelta.x, nodePos.y+nodeMoveDelta.y));
+				if (!nodeView.Selected) {
+					Vector2 nodePos = nodeView.GetPosition();
+					nodeView.SetPosition(new(nodePos.x + nodeMoveDelta.x, nodePos.y + nodeMoveDelta.y));
+				}
             }
             // reset move delta immediatly, since we don't want to keep track of the start position ov every node.
             nodeStartPosition = nodeView.GetPosition();
