@@ -143,8 +143,11 @@ namespace NewGraph {
                 SetLastOpenedGraphData(graph);
             } else {
                 LastGraphInfo lastGraphInfo = LastOpenedGraphInfo;
-                if (lastGraphInfo != null) {
-                    graph = lastGraphCreationStrategies[lastGraphInfo.graphType](lastGraphInfo.GUID);
+                if (lastGraphInfo != null && lastGraphInfo.graphType != null && lastGraphInfo.GUID != null) {
+                    string path = AssetDatabase.GUIDToAssetPath(lastGraphInfo.GUID);
+                    if (!string.IsNullOrWhiteSpace(path)) {
+                        graph = lastGraphCreationStrategies[lastGraphInfo.graphType](lastGraphInfo.GUID);
+                    }
                 }
             }
 
