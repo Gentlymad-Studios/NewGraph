@@ -62,7 +62,9 @@ namespace NewGraph {
         }
 
         public void ForceSerializationUpdate() {
-            baseModel.ForceSerializationUpdate(this);
+            if (this != null) {
+                baseModel.ForceSerializationUpdate(this);
+            }
         }
 
         public SerializedProperty GetLastAddedNodeProperty(bool isUtilityNode) {

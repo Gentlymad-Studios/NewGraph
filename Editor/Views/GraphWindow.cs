@@ -84,16 +84,10 @@ namespace NewGraph {
         }
 
         private void OnEnable() {
-            EditorApplication.update -= EditorUpdate;
             EditorApplication.playModeStateChanged -= LogPlayModeState;
             EditorApplication.playModeStateChanged += LogPlayModeState;
             GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
             GlobalKeyEventHandler.OnKeyEvent += HandleGlobalKeyPressEvents;
-        }
-
-        private void EditorUpdate() {
-            LoadGraph();
-            EditorApplication.update -= EditorUpdate;
         }
 
         private void HandleGlobalKeyPressEvents(Event evt) {
@@ -114,15 +108,9 @@ namespace NewGraph {
         public void LogPlayModeState(PlayModeStateChange state) {
             if (state == PlayModeStateChange.ExitingPlayMode) {
                 graphController?.EnsureSerialization();
-
             } else if (state == PlayModeStateChange.EnteredEditMode) {
-                EditorApplication.update -= EditorUpdate;
-                EditorApplication.update += EditorUpdate;
-                if (window != null) {
-                    window.Close();
-                }
-
-            }else if (state == PlayModeStateChange.EnteredPlayMode) {
+                LoadGraph();
+            } else if (state == PlayModeStateChange.EnteredPlayMode) {
                 graphController?.Reload();
             }
         }

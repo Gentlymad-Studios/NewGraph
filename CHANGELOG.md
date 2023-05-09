@@ -219,3 +219,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed wrong positioning of Nodes that are part of a GroupCommentNode [#21](https://github.com/Gentlymad-Studios/NewGraph/issues/21)
 ### Added
 - Nodes are now only included in a GroupCommentNode if they are fully contained and not just overlapping [#22](https://github.com/Gentlymad-Studios/NewGraph/issues/22)
+
+## [0.3.8] - 2023-05-09
+### Fixed
+- Removed janky workaround for re-initializing a graph after playmode in exchange for a better solution. Fixes: [#23](https://github.com/Gentlymad-Studios/NewGraph/issues/23)
