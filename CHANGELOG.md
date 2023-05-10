@@ -223,3 +223,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.3.8] - 2023-05-09
 ### Fixed
 - Removed janky workaround for re-initializing a graph after playmode in exchange for a better solution. Fixes: [#23](https://github.com/Gentlymad-Studios/NewGraph/issues/23)
+
+## [0.3.9] - 2023-05-10
+### Fixed
+- Fixed GroupCommentNode Headline cutting off text. Fixes: [#24](https://github.com/Gentlymad-Studios/NewGraph/issues/24)
+- Fixed Frame action being triggerd while in an editable VisualElement. Fixes: [#27](https://github.com/Gentlymad-Studios/NewGraph/issues/27)
+### Added
+- Added customization of the hierarchical layer for GroupCommentNodes. Fixes: [#25](https://github.com/Gentlymad-Studios/NewGraph/issues/25)

@@ -60,7 +60,7 @@ namespace NewGraph {
                 { Actions.SelectionChanged, OnSelected },
                 { Actions.SelectionCleared, OnDeselected },
                 { Actions.EdgeDrop, OnEdgeDrop },
-                { Actions.Rename, OnRename }
+                { Actions.Rename, OnRename },
             };
 
 
@@ -97,12 +97,10 @@ namespace NewGraph {
             }
         }
 
-		private bool IsFocusedElementNullOrNotBindable => graphView.focusController == null || graphView.focusController.focusedElement == null || !(graphView.focusController.focusedElement is IBindable);
-
 		private void OpenContextMenu(MouseDownEvent evt) {
             if (evt.button == 1) {
 				graphView.schedule.Execute(() => {
-					if (IsFocusedElementNullOrNotBindable) {
+					if (graphView.IsFocusedElementNullOrNotBindable) {
 						SearchWindow.Open(contextMenu, graphView);
 					}
 				});
@@ -182,7 +180,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
         public void OnCopy(object data = null) {
-			if (IsFocusedElementNullOrNotBindable) {
+			if (graphView.IsFocusedElementNullOrNotBindable) {
 				List<NodeView> nodesToCapture = new List<NodeView>();
 
 				graphView.ForEachSelectedNodeDo((node) => {
@@ -201,7 +199,7 @@ namespace NewGraph {
         /// </summary>
         /// <param name="data">currently unused, check selected lists to get the actual selected objects...</param>
         public void OnPaste(object data = null) {
-			if (IsFocusedElementNullOrNotBindable) {
+			if (graphView.IsFocusedElementNullOrNotBindable) {
 				copyPasteHandler.Resolve(graphData, (nodes) => {
 					Undo.RecordObject(graphData.BaseObject, "Paste Action");
 					// position node clones relative to the current mouse position & add them to the current graph

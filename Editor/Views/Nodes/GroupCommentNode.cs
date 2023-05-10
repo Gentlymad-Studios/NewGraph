@@ -6,6 +6,9 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace NewGraph {
+
+    using static GraphSettingsSingleton;
+
     [Node]
     public class GroupCommentNode : INode, IUtilityNode {
 
@@ -64,7 +67,7 @@ namespace NewGraph {
             this.nodeController = nodeController;
             nodeView = nodeController.nodeView;
             // we want our node view to be "behind" all nodes so we give it its own layer
-            nodeView.Layer = -20;
+            nodeView.Layer = Settings.groupCommentNodeLayer;
             nodeView.style.width = width;
             nodeView.style.height = height;
             nodeView.AddToClassList(nameof(CommentNode));

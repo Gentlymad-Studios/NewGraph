@@ -107,6 +107,8 @@ namespace NewGraph {
         public static Image ResetButtonIcon => new Image() { image = EditorGUIUtility.IconContent(Settings.resetButtonIcon).image };
 
         public string windowName = nameof(GraphWindow);
+        
+        public int groupCommentNodeLayer = -20;
 
         public string resetButtonTooltip = "Reset this value back to the default value.";
         public string resetAllLabel = "Reset All To Default";

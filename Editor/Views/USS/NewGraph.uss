@@ -6,6 +6,18 @@
     --grid-background-color: rgba(45, 45, 45, 1);
 }
 
+NodeView.CommentNode VisualElement.node-title {
+    height: auto;
+}
+
+NodeView.CommentNode VisualElement.node-title PropertyField TextField TextInput TextElement {
+    white-space: normal;
+}
+
+NodeView.CommentNode VisualElement.node-title PropertyField TextField TextInput {
+    flex-direction: column;
+}
+
 .EditableLabelElement {
     flex-direction: row;
     padding-right: 3px;
