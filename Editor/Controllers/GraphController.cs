@@ -240,59 +240,60 @@ namespace NewGraph {
         /// </summary>
         /// <param name="data"></param>
         public void OnDelete(object data = null) {
-            bool isDirty = false;
+			if (graphView.IsFocusedElementNullOrNotBindable) {
+				bool isDirty = false;
 
-            // go over every selected edge...
-            graphView.ForEachSelectedEdgeDo((edge) => {
-                isDirty = true;
-                // get the ouput port, this is where the referenced node sits
-                PortView outputPort = edge.GetOutputPort() as PortView;
-                outputPort.Reset();
-            });
+				// go over every selected edge...
+				graphView.ForEachSelectedEdgeDo((edge) => {
+					isDirty = true;
+					// get the ouput port, this is where the referenced node sits
+					PortView outputPort = edge.GetOutputPort() as PortView;
+					outputPort.Reset();
+				});
 
-            // go over every selected node and build a list of nodes that should be deleted....
-            List<NodeModel> nodesToRemove = new List<NodeModel>();
-            graphView.ForEachSelectedNodeDo((node) => {
-                NodeView scopedNodeView = node as NodeView;
-                if (scopedNodeView != null) {
-                    nodesToRemove.Add(scopedNodeView.controller.nodeItem);
-                    isDirty = true;
-                }
-            });
+				// go over every selected node and build a list of nodes that should be deleted....
+				List<NodeModel> nodesToRemove = new List<NodeModel>();
+				graphView.ForEachSelectedNodeDo((node) => {
+					NodeView scopedNodeView = node as NodeView;
+					if (scopedNodeView != null) {
+						nodesToRemove.Add(scopedNodeView.controller.nodeItem);
+						isDirty = true;
+					}
+				});
 
-            // if we have nodes marked for deletion...
-            if (nodesToRemove.Count > 0) {
-                // tidy up all ports before actual deletion...
-                graphView.ForEachPortDo((basePort) => {
-                    // we can ignore input ports, so check that we only operate on output ports...
-                    if (basePort.Direction == Direction.Output) {
-                        PortView port = basePort as PortView;
-                        // check that the port actually is not empty...
-                        if (port.boundProperty != null && port.boundProperty.managedReferenceValue != null) {
-                            // loop over the list of nodes that should be removed...
-                            foreach (NodeModel nodeToRemove in nodesToRemove) {
-                                // if the ports actual object value is equal to a node that should be removed...
-                                if (nodeToRemove.nodeData == port.boundProperty.managedReferenceValue) {
-                                    // reset / nullify the port value to we don't have invisible nodes in our graph...
-                                    port.Reset();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                });
-            }
+				// if we have nodes marked for deletion...
+				if (nodesToRemove.Count > 0) {
+					// tidy up all ports before actual deletion...
+					graphView.ForEachPortDo((basePort) => {
+						// we can ignore input ports, so check that we only operate on output ports...
+						if (basePort.Direction == Direction.Output) {
+							PortView port = basePort as PortView;
+							// check that the port actually is not empty...
+							if (port.boundProperty != null && port.boundProperty.managedReferenceValue != null) {
+								// loop over the list of nodes that should be removed...
+								foreach (NodeModel nodeToRemove in nodesToRemove) {
+									// if the ports actual object value is equal to a node that should be removed...
+									if (nodeToRemove.nodeData == port.boundProperty.managedReferenceValue) {
+										// reset / nullify the port value to we don't have invisible nodes in our graph...
+										port.Reset();
+										break;
+									}
+								}
+							}
+						}
+					});
+				}
 
-            // if we are dirty and objects were changed....
-            if (isDirty) {
-                // unbind and reload this graph to avoid serialization issues...
-                graphView.Unbind();
-                //graphView.schedule.Execute(() => {
-                graphData.RemoveNodes(nodesToRemove);
-                Reload();
-                //});
-            }
-
+				// if we are dirty and objects were changed....
+				if (isDirty) {
+					// unbind and reload this graph to avoid serialization issues...
+					graphView.Unbind();
+					//graphView.schedule.Execute(() => {
+					graphData.RemoveNodes(nodesToRemove);
+					Reload();
+					//});
+				}
+			}
         }
 
         /// <summary>

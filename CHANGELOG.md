@@ -230,3 +230,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed Frame action being triggerd while in an editable VisualElement. Fixes: [#27](https://github.com/Gentlymad-Studios/NewGraph/issues/27)
 ### Added
 - Added customization of the hierarchical layer for GroupCommentNodes. Fixes: [#25](https://github.com/Gentlymad-Studios/NewGraph/issues/25)
+
+## [0.4.0] - 2023-07-10
+### Fixed
+- Fixed removing entire nodes when hitting the delete key while an input field was focussed.
