@@ -240,8 +240,8 @@ namespace NewGraph {
                 if (graphProperty.graphDisplay.displayType != DisplayType.Hide) {
                     // check if we have a generic object, that is not an array.
                     // if this is the case, we need to wrap it in a group and ignore the object itself, as all upcoming child properties will be drawn
-                    if (!IsRealArray(currentProperty) && graphProperty.graphDisplay.createGroup && (currentProperty.propertyType == SerializedPropertyType.Generic || currentProperty.propertyType == SerializedPropertyType.ManagedReference)) {
-                        // create a new group
+                    if (!IsRealArray(currentProperty) && (currentProperty.propertyType == SerializedPropertyType.Generic || currentProperty.propertyType == SerializedPropertyType.ManagedReference)) {
+						// create a new group
                         GroupInfo groupInfo = new GroupInfo(currentProperty.displayName, currentRelativePropertyPath, currentGraphDisplayAttribute);
                         
                         // check if the new group should be part of another group and add it to the group graphPropertiesAndGroups
@@ -306,6 +306,8 @@ namespace NewGraph {
                 }
             } else {
                 graphPropertiesAndGroups.Add(propertyInfo);
+
+
             }
         }
 

@@ -1,4 +1,4 @@
-using GraphViewBase;
+﻿using GraphViewBase;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -80,12 +80,18 @@ namespace NewGraph {
 
         private void DoForEachPropertyOrGroupRecursive(VisualElement[] parents, List<PropertyInfo> propertiesIncludingGroups, Func<GroupInfo, VisualElement[], SerializedProperty, VisualElement[]> groupCreation, Action<VisualElement[], GraphPropertyInfo, SerializedProperty> propCreation) {
             foreach (PropertyInfo groupOrProperty in propertiesIncludingGroups) {
+
                 if (groupOrProperty.GetType() == typeof(GroupInfo)) {
                     GroupInfo groupInfo = (GroupInfo)groupOrProperty;
-                    if (groupInfo.graphProperties.Count > 0) {
-                        VisualElement[] groupParents = groupCreation(groupInfo, parents, nodeDataProperty.FindPropertyRelative(groupOrProperty.relativePropertyPath));
-                        DoForEachPropertyOrGroupRecursive(groupParents, groupInfo.graphProperties, groupCreation, propCreation);
-                    }
+
+					if (!groupInfo.graphDisplay.createGroup) {
+						propCreation(parents, (GraphPropertyInfo)groupOrProperty, nodeDataProperty.FindPropertyRelative(groupOrProperty.relativePropertyPath));
+					} else {
+						if (groupInfo.graphProperties.Count > 0) {
+							VisualElement[] groupParents = groupCreation(groupInfo, parents, nodeDataProperty.FindPropertyRelative(groupOrProperty.relativePropertyPath));
+							DoForEachPropertyOrGroupRecursive(groupParents, groupInfo.graphProperties, groupCreation, propCreation);
+						}
+					}					
                 } else {
                     propCreation(parents, (GraphPropertyInfo)groupOrProperty, nodeDataProperty.FindPropertyRelative(groupOrProperty.relativePropertyPath));
                 }
