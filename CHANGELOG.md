@@ -238,3 +238,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.1] - 2023-08-21
 ### Fixed
 - Fixed GraphDisplayAttribute createGroup behavior
+
+## [0.4.2] - 2023-11-01
+### Added
+- Added new sample project to easily get the graph window up and running
