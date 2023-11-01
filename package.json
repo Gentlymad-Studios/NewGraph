@@ -20,5 +20,17 @@
     "name": "Gentlymad Studios",
     "email": "m.guntrum@gentlymadstudios.com",
     "url": "https://gentlymad.org"
-  }
+  },
+  "samples": [
+        {
+            "displayName": "WindowInitializer",
+            "description": "This sets you up with a menu to open the GraphWindow",
+            "path": "Samples~/WindowInitializer"
+        },
+        {
+            "displayName": "MonoGraphModel",
+            "description": "This showcases how you can create mono graph models",
+            "path": "Samples~/MonoGraphModel"
+        },
+    ]
 }
