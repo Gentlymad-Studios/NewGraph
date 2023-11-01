@@ -31,6 +31,6 @@
             "displayName": "MonoGraphModel",
             "description": "This showcases how you can create mono graph models",
             "path": "Samples~/MonoGraphModel"
-        },
+        }
     ]
 }
