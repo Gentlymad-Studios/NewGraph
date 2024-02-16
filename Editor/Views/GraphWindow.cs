@@ -30,7 +30,9 @@ namespace NewGraph {
         private EventModifiers lastModifiers;
         private EventType eventType;
         public GraphController graphController;
-
+        public Action OnWindowLoaded;
+        public Action OnSelectionChanged;
+        
 		public static VisualElement root => window.rootVisualElement;
 
 		public static Type currentWindowType = null;
@@ -77,7 +79,7 @@ namespace NewGraph {
             }
             if (window == null) {
                 CurrentWindowType = windowType;
-                window = GetWindow<GraphWindow>(Settings.windowName);
+                window = GetWindow<GraphWindow>(Settings.windowName, typeof(SceneView));
                 window.wantsMouseMove = true;
                 window.Show();
             }
@@ -89,6 +91,8 @@ namespace NewGraph {
             GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
             GlobalKeyEventHandler.OnKeyEvent += HandleGlobalKeyPressEvents;
         }
+        
+        public void SetWindowTitle(string title) => titleContent.text = title;
 
         private void HandleGlobalKeyPressEvents(Event evt) {
             if (evt.isKey && mouseOverWindow == this && hasFocus) {
@@ -118,6 +122,12 @@ namespace NewGraph {
         private void OnGUI() {
             graphController?.Draw();
         }
+        
+        public void RedrawSelectedNode() {
+            graphController?.graphView.ForEachSelectedNodeDo(n => 
+                n.MarkDirtyRepaint()
+            );
+        }
 
         private void OnDisable() {
             //graphController?.Disable();
@@ -126,7 +136,7 @@ namespace NewGraph {
             loadRequested = false;
         }
 
-        public static void LoadGraph(IGraphModelData graph =null) {
+        public static GraphWindow LoadGraph(IGraphModelData graph =null) {
             if (graph != null) {
                 SetLastOpenedGraphData(graph);
             } else {
@@ -151,8 +161,14 @@ namespace NewGraph {
             }
 
             loadRequested = true;
+            return window;
         }
 
+        private void OnSelectionChange()
+        {
+            OnSelectionChanged?.Invoke();
+        }
+        
         private void CreateGUI() {
             VisualElement uxmlRoot = graphDocument.CloneTree();
             rootVisualElement.Add(uxmlRoot);
@@ -171,11 +187,14 @@ namespace NewGraph {
             // otherwise this method will be called before loadRequested could be set
             rootVisualElement.schedule.Execute(() =>{
                 if (!loadRequested) {
-                    LoadGraph(); 
-                }
+                    LoadGraph();
+                    OnWindowLoaded?.Invoke();
+                } 
                 loadRequested = false;
             });
-
         }
+
+
+        public static GraphWindow OpenWindow() => GetWindow<GraphWindow>(false);
     }
 }
