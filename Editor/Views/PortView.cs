@@ -49,6 +49,7 @@ namespace NewGraph {
                     outputPort.boundProperty.managedReferenceId = inputPort.boundProperty.managedReferenceId;
                     //EditorUtility.SetDirty(outputPort.boundProperty.serializedObject.targetObject);
                     outputPort.boundProperty.serializedObject.ApplyModifiedProperties();
+                    outputPort.connectionChangedCallback?.Invoke();
                     connectionChangedCallback?.Invoke();
                 }
                 ColorizeEdgeAndPort(edge as EdgeView);
