@@ -156,7 +156,30 @@ namespace NewGraph {
                 if (serializedObject != null) {
                     selectedNodeInspector.Bind(serializedObject);
                 }
-            }
+
+				// auto expand all side inspector elements
+				if (GraphSettings.ExpandAllSideFoldouts) {
+					selectedNodeInspector.schedule.Execute(() => {
+						selectedNodeInspector.Query<Foldout>().ForEach(foldout => {
+
+							void SetOnce(GeometryChangedEvent evt) {
+								foldout.value = true;
+								
+								foldout.schedule.Execute(() => {
+									foldout.Query<Foldout>().ForEach(f => {
+										f.value = true;
+									});
+								});
+
+								foldout.UnregisterCallback<GeometryChangedEvent>(SetOnce);
+							}
+
+							foldout.value = true;
+							foldout.RegisterCallback<GeometryChangedEvent>(SetOnce);
+						});
+					});
+				}
+			}
 
         }
 

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -18,7 +18,8 @@ namespace NewGraph {
         public const string isInspectorVisiblePrefsKey = nameof(NewGraph) + "." + nameof(GraphSettingsAsset) + "." + nameof(isInspectorVisiblePrefsKey);
         public const string lastOpenedGraphKey = nameof(NewGraph) + "." + nameof(lastOpenedGraphKey);
         public const string lastOpenedGraphTypeKey = nameof(NewGraph) + "." + nameof(lastOpenedGraphTypeKey);
-        public StyleSheet customStylesheet;
+		public const string expandAllSideFoldoutsKey = nameof(NewGraph) + "." + nameof(expandAllSideFoldoutsKey);
+		public StyleSheet customStylesheet;
 
         public class LastGraphInfo {
             public string GUID;
@@ -139,6 +140,15 @@ namespace NewGraph {
         private string baseGraphPathPartial = string.Empty;
         [SerializeField]
         private Color loggerColor = Color.green;
+
+		public static bool ExpandAllSideFoldouts {
+			get {
+				return EditorPrefs.GetBool(expandAllSideFoldoutsKey, false);
+			}
+			set {
+				EditorPrefs.SetBool(expandAllSideFoldoutsKey, value);
+			}
+		}
 
         [NonSerialized]
         private string loggerColorHex = null;

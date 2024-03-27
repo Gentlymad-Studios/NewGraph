@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace NewGraph {
@@ -27,7 +28,8 @@ namespace NewGraph {
             return nameof(GraphSettingsAsset.graphSettings);
         }
 
-        public override void OnActivate(string searchContext, VisualElement rootElement) {
+
+		public override void OnActivate(string searchContext, VisualElement rootElement) {
             base.OnActivate(searchContext, rootElement);
             
             // create a button to reset all properties back to the bleuprint value
@@ -38,6 +40,19 @@ namespace NewGraph {
             resetAll.tooltip = Settings.resetAllTooltip;
             resetAll.AddToClassList(nameof(resetAll));
             rootElement[0].Insert(1, resetAll);
+
+			Label userSpecific = new Label("User Specific Settings");
+			userSpecific.style.fontSize = 20;
+			userSpecific.style.unityFontStyleAndWeight = FontStyle.Bold;
+			userSpecific.style.marginBottom = 10;
+			userSpecific.AddToClassList("title");
+			rootElement[0].Add(userSpecific);
+
+			Toggle userEnabledFoldoutExpansion = new Toggle("Expand all Foldouts");
+			userEnabledFoldoutExpansion.value = GraphSettings.ExpandAllSideFoldouts;
+			userEnabledFoldoutExpansion.RegisterValueChangedCallback(value => GraphSettings.ExpandAllSideFoldouts = value.newValue);
+			rootElement[0].Add(userEnabledFoldoutExpansion);
+
             // add a custom stylesheet
             rootElement.styleSheets.Add(GraphSettings.settingsStylesheet);
         }
