@@ -15,6 +15,7 @@ namespace NewGraph {
         private ReactiveSettings reactiveSettings;
         public List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
         public Color nodeColor;
+        public Color labelColor;
         public bool shouldSetBackgroundColor = true;
         private bool hasInspectorProperty = false;
 
@@ -24,9 +25,10 @@ namespace NewGraph {
         public List<PortListView> portLists = new List<PortListView>();
         public List<Foldout> foldouts = new List<Foldout>();
 
-        public NodeView(NodeController controller, Color nodeColor) {
+        public NodeView(NodeController controller, Color nodeColor, Color labelColor) {
             this.controller = controller;
             this.nodeColor = nodeColor;
+            this.labelColor = labelColor;
         }
 
         private void ColorizeBackground() {
@@ -34,6 +36,16 @@ namespace NewGraph {
                 style.backgroundColor = nodeColor;
             } else {
                 style.backgroundColor = Settings.defaultNodeColor;
+            }
+        }
+
+        private void ColorizeLabels()
+        {
+            foreach (var field in controller.nodeView.ExtensionContainer.Children())
+            {
+                Label label = field.Q<Label>(className: "unity-base-field__label");
+                if (label != null)
+                    label.style.color = labelColor;
             }
         }
 
@@ -83,6 +95,8 @@ namespace NewGraph {
             controller.nodeItem.CleanupFoldoutStates();
 
             BindUI(controller.GetSerializedObject());
+
+            ColorizeLabels();
         }
 
         public void RebuildPortListView(PortListView view) {
