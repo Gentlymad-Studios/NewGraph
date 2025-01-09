@@ -16,7 +16,7 @@ namespace NewGraph {
 
         private static Dictionary<ConnectionPolicy, Func<Type, Type, bool>> connectionPolicybehaviors = new Dictionary<ConnectionPolicy, Func<Type, Type, bool>>() {
             { ConnectionPolicy.Identical, (input, output) => input == output },
-            { ConnectionPolicy.IdenticalOrSubclass, (input, output) => input == output || input.IsSubclassOf(output) },
+            { ConnectionPolicy.IdenticalOrSubclass, (input, output) => input == output || input.IsSubclassOf(output) || output.IsAssignableFrom(input) },
         };
 
         /// <summary>
