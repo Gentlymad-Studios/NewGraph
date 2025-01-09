@@ -1,4 +1,4 @@
-using OdinSerializer.Utilities;
+﻿using OdinSerializer.Utilities;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
@@ -85,5 +85,5 @@ namespace NewGraph {
         public virtual bool ShouldSetBackgroundColor() {
             return true;
         }
-    }
+	}
 }

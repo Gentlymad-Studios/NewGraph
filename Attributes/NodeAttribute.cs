@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace NewGraph {
@@ -17,11 +17,16 @@ namespace NewGraph {
         /// Color of the node as a hex string, like #FFFFFFFF. Be aware: The last two characters are for alpha values!
         /// </summary>
         public Color color = default;
+		
+		/// <summary>
+		/// Color of the node label as a hex string, like #FFFFFFFF. Be aware: The last two characters are for alpha values!
+		/// </summary>
+		public Color labelColor = default;
 
-        /// <summary>
-        /// A custom name for the node
-        /// </summary>
-        public string nodeName = null;
+		/// <summary>
+		/// A custom name for the node
+		/// </summary>
+		public string nodeName = null;
 
         /// <summary>
         /// The maximum amount of allowed connections to the input port of this node.
@@ -48,11 +53,14 @@ namespace NewGraph {
         /// <param name="inputPortCapacity">The maximum amount of allowed connections to the input port of this node.</param>
         /// <param name="nodeName">A custom name for the node.</param>
         /// <param name="createInputPort">The maximum amount of allowed connections to the input port of this node.</param>
-        public NodeAttribute(string color = null, string categories = "", string inputPortName = null, Capacity inputPortCapacity = Capacity.Multiple, string nodeName = null, bool createInputPort = true) {
+        public NodeAttribute(string color = null, string categories = "", string inputPortName = null, Capacity inputPortCapacity = Capacity.Multiple, string nodeName = null, bool createInputPort = true, string labelColor = null) {
             if (color != null) {
                 ColorUtility.TryParseHtmlString(color, out this.color);
             }
-            if (nodeName != null) {
+			if (labelColor != null) {
+				ColorUtility.TryParseHtmlString(color, out this.labelColor);
+			}
+			if (nodeName != null) {
                 this.nodeName = nodeName;
             }
             this.inputPortName = inputPortName;

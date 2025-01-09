@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace NewGraph {
@@ -16,8 +16,8 @@ namespace NewGraph {
 
         private static Dictionary<ConnectionPolicy, Func<Type, Type, bool>> connectionPolicybehaviors = new Dictionary<ConnectionPolicy, Func<Type, Type, bool>>() {
             { ConnectionPolicy.Identical, (input, output) => input == output },
-            { ConnectionPolicy.IdenticalOrSubclass, (input, output) => input == output || input.IsSubclassOf(output) },
-        };
+			{ ConnectionPolicy.IdenticalOrSubclass, (input, output) => input == output || input.IsSubclassOf(output) || output.IsAssignableFrom(input) },
+		};
 
         /// <summary>
         /// Port Base attribute. This needs to be added to every SerializeReference field that should show up in the graph as a assignable node.

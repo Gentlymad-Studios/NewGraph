@@ -1,4 +1,4 @@
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,8 +15,9 @@ namespace NewGraph {
         private ReactiveSettings reactiveSettings;
         public List<EditableLabelElement> editableLabels = new List<EditableLabelElement>();
         public Color nodeColor;
-        public bool shouldSetBackgroundColor = true;
-        private bool hasInspectorProperty = false;
+		public Color labelColor;
+		public bool shouldSetBackgroundColor = true;
+		private bool hasInspectorProperty = false;
 
         public NodeController controller;
         public PortView inputPort = null;
@@ -24,9 +25,10 @@ namespace NewGraph {
         public List<PortListView> portLists = new List<PortListView>();
         public List<Foldout> foldouts = new List<Foldout>();
 
-        public NodeView(NodeController controller, Color nodeColor) {
+        public NodeView(NodeController controller, Color nodeColor, Color labelColor) {
             this.controller = controller;
             this.nodeColor = nodeColor;
+			this.labelColor = labelColor;
         }
 
         private void ColorizeBackground() {
@@ -36,8 +38,18 @@ namespace NewGraph {
                 style.backgroundColor = Settings.defaultNodeColor;
             }
         }
+		private void ColorizeLabels() {
+			if (labelColor != default) {
+				foreach (VisualElement field in controller.nodeView.ExtensionContainer.Children()) {
+					Label label = field.Q<Label>(className: "unity-base-field__label");
+					if (label != null) {
+						label.style.color = labelColor;
+					}
+				}
+			}
+		}
 
-        public void InitializeView() {
+		public void InitializeView() {
 
             editableLabels.Clear();
 
@@ -46,9 +58,10 @@ namespace NewGraph {
 
             Vector2 position = controller.GetStartPosition();
             SetPosition(position);
-
-            if (!controller.nodeItem.isUtilityNode) {
+	
+			if (!controller.nodeItem.isUtilityNode) {
                 ColorizeBackground();
+				ColorizeLabels();
 
                 inspectorContent = new VisualElement();
                 controller.DoForNameProperty(CreateLabelUI);

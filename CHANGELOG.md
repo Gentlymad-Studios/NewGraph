@@ -247,6 +247,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added user specific flag and logic to auto expand all foldouts in the side inspector
 
-## [0.4.4] - 2024-03-27
+## [0.4.4] - 2025-01-09
 ### Added
 - Added event callback when nodes were pasted
+
+## [0.4.5] - 2025-01-09
+### Added
+- Added ability to customize label colors (thanks for the pr @LuizMoratelli)
+### Fixed
+- Fixed port connection policies so extended classes can also be used for port connections (thanks for the pr @emrys90)
