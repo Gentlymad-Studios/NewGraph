@@ -12,6 +12,7 @@ namespace NewGraph {
 
     public class GraphController {
 
+		public event Action<List<NodeModel>> OnNodesPasted;
 		public event Action<IGraphModelData> OnGraphLoaded;
 		public event Action<IGraphModelData> OnBeforeGraphLoaded;
 
@@ -205,6 +206,7 @@ namespace NewGraph {
 					// position node clones relative to the current mouse position & add them to the current graph
 					Vector2 viewPosition = graphView.GetMouseViewPosition();
 					PositionNodesRelative(viewPosition, nodes);
+					OnNodesPasted?.Invoke(nodes);
 				}, Reload);
 			}
         }

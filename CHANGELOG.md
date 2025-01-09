@@ -246,3 +246,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.3] - 2024-03-27
 ### Added
 - Added user specific flag and logic to auto expand all foldouts in the side inspector
+
+## [0.4.4] - 2024-03-27
+### Added
+- Added event callback when nodes were pasted
