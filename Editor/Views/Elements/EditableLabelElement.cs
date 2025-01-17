@@ -1,4 +1,4 @@
-using UnityEditor.UIElements;
+﻿using UnityEditor.UIElements;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,8 +21,12 @@ namespace NewGraph {
         private const string inputFieldUSSClass = "unity-base-text-field__input";
         private const string editIcon = "d_editicon.sml";
         private Texture editIconTexture;
-        private const string closeIcon = "d_winbtn_win_close";
-        private Texture closeIconTexture;
+#if UNITY_6000_0_OR_NEWER
+		private const string closeIcon = "CrossIcon";
+#else
+		private const string closeIcon = "d_winbtn_win_close";
+#endif
+		private Texture closeIconTexture;
         private const string editableLabelUSSClass = nameof(EditableLabelElement);
 
         public EditableLabelElement(PropertyField propertyField, System.Action<string> onValueChange = null, System.Action onEditModeLeft = null) {
