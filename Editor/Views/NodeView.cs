@@ -166,7 +166,7 @@ namespace NewGraph {
             }
 
             // workaround for value change disconnection bug, this can only happen if we have an inspector & and a nodeview together
-            if (inspectorPropField != null && nodeViewPropField != null) {
+            /*if (inspectorPropField != null && nodeViewPropField != null) {
                 bool inspectorChanged = false;
                 bool nodeViewChanged = false;
 
@@ -187,7 +187,7 @@ namespace NewGraph {
                     }
                     nodeViewChanged = false;
                 });
-            }
+            }*/
         }
 
 
