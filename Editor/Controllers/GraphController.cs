@@ -37,8 +37,6 @@ namespace NewGraph {
 
         public GraphController(VisualElement uxmlRoot, VisualElement root, Type inspectorType) {
             graphView = new GraphView(uxmlRoot, root, OnGraphAction);
-            graphView.OnViewTransformChanged -= OnViewportChanged;
-            graphView.OnViewTransformChanged += OnViewportChanged;
             graphView.OnMouseDown -= OpenContextMenu;
             graphView.OnMouseDown += OpenContextMenu;
 
@@ -335,12 +333,11 @@ namespace NewGraph {
         }
 
         /// <summary>
-        /// Called when something in the viewport changed...
+        /// Update the Serialized Values of the Viewport (Position and Scale)
         /// </summary>
-        /// <param name="data">unused</param>
-        private void OnViewportChanged(GraphElementContainer contentContainer) {
+        public void UpdateSerializedViewport() {
             if (graphData != null && graphData.BaseObject != null) {
-                graphData.SetViewport(contentContainer.transform.position, contentContainer.transform.scale);
+                graphData.SetViewport(graphView.GetContentContainer().transform.position, graphView.GetContentContainer().transform.scale);
             }
         }
 
@@ -431,8 +428,10 @@ namespace NewGraph {
                 return;
             }
 
-            // make sure to save the old graphs state...
-            EnsureSerialization();
+			UpdateSerializedViewport();
+
+			// make sure to save the old graphs state...
+			EnsureSerialization();
 
             // signal we are in the process of loading...
             isLoading = true;

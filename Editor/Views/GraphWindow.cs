@@ -134,7 +134,8 @@ namespace NewGraph {
             GlobalKeyEventHandler.OnKeyEvent -= HandleGlobalKeyPressEvents;
             EditorApplication.playModeStateChanged -= LogPlayModeState;
             loadRequested = false;
-        }
+			graphController?.UpdateSerializedViewport();
+		}
 
         public static GraphWindow LoadGraph(IGraphModelData graph =null) {
             if (graph != null) {
@@ -193,7 +194,6 @@ namespace NewGraph {
                 loadRequested = false;
             });
         }
-
 
         public static GraphWindow OpenWindow() => GetWindow<GraphWindow>(false);
     }

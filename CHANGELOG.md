@@ -256,3 +256,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added ability to customize label colors (thanks for the pr @LuizMoratelli)
 ### Fixed
 - Fixed port connection policies so extended classes can also be used for port connections (thanks for the pr @emrys90)
+
+## [0.4.6] - 2025-01-25
+### Changed
+- Remove OnViewChangedCallback for better performance
