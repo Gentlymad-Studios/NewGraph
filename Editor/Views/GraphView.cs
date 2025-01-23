@@ -52,14 +52,6 @@ namespace NewGraph {
             return LocalToViewTransformPosition(this.WorldToLocal(mousePosition));
         }
 
-        /// <summary>
-        /// Empty override to prevent defualt logic due to keydown event bugs.
-        /// </summary>
-        /// <param name="baseEvent"></param>
-        protected override void ExecuteDefaultAction(EventBase baseEvent) {
-            //base.ExecuteDefaultAction(baseEvent);
-        }
-
         public void SetSelected(GraphElement graphElement, bool selected = true, bool clear = true) {
             if (clear) {
                 ClearSelection();

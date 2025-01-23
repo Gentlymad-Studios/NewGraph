@@ -264,3 +264,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.7] - 2025-01-25
 ### Changed
 - Proper unregister Events
+
+## [0.4.8] - 2025-01-25
+### Fixed
+- removed unneeded ExecuteDefaultAction from graph view
