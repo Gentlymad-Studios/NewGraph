@@ -204,11 +204,20 @@ namespace NewGraph {
                     if (foldout != null) {
                         // make sure to force the foldoutvalue to stay open
                         foldout.value = true;
-                        foldout.RegisterValueChangedCallback((evt) => {
-                            if (evt.newValue != true) {
-                                foldout.value = true;
-                            }
-                        });
+
+						void RegisterValueChangedCallback(ChangeEvent<bool> evt) {
+							if (evt.newValue != true) {
+								foldout.value = true;
+							}
+						}
+                        foldout.RegisterValueChangedCallback(RegisterValueChangedCallback);
+
+						void DetachFromPanelEvent(DetachFromPanelEvent evt) {
+							foldout.UnregisterValueChangedCallback(RegisterValueChangedCallback);
+							foldout.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+						}
+						foldout.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+
                         // get the toggle
                         Toggle toggle = foldout.Q<Toggle>();
                         if (toggle != null) {
@@ -226,11 +235,21 @@ namespace NewGraph {
                 NodeModel.FoldoutState foldOutState = controller.nodeItem.GetOrCreateFoldout(propertyPathHash);
                 foldOutState.used = true;
                 newGroup.value = foldOutState.isExpanded;
-                newGroup.RegisterValueChangedCallback((evt) => {
-                    foldOutState.isExpanded = evt.newValue;
-                    controller.GetSerializedObject().ApplyModifiedPropertiesWithoutUndo();
-                });
-                newGroups[index] = newGroup;
+
+				void RegisterValueChangedCallback(ChangeEvent<bool> evt) {
+					foldOutState.isExpanded = evt.newValue;
+					controller.GetSerializedObject().ApplyModifiedPropertiesWithoutUndo();
+				}
+
+				newGroup.RegisterValueChangedCallback(RegisterValueChangedCallback);
+
+				void DetachFromPanelEvent(DetachFromPanelEvent evt) {
+					newGroup.UnregisterValueChangedCallback(RegisterValueChangedCallback);
+					newGroup.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+				}
+				newGroup.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+
+				newGroups[index] = newGroup;
                 foldouts.Add(newGroup);
             }
 

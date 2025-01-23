@@ -260,3 +260,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.6] - 2025-01-25
 ### Changed
 - Remove OnViewChangedCallback for better performance
+
+## [0.4.7] - 2025-01-25
+### Changed
+- Proper unregister Events

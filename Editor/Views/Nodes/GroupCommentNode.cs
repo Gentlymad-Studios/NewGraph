@@ -77,6 +77,14 @@ namespace NewGraph {
             nodeView.RegisterCallback<MouseDownEvent>(OnNodeViewMouseDown);
             nodeView.RegisterCallback<MouseUpEvent>(OnMouseUp);
 
+			void DetachFromPanelEventNodeView(DetachFromPanelEvent evt) {
+				nodeView.UnregisterCallback<MouseDownEvent>(OnNodeViewMouseDown);
+				nodeView.UnregisterCallback<MouseUpEvent>(OnMouseUp);
+				nodeView.UnregisterCallback<MouseMoveEvent>(OnMouseMove);
+				nodeView.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEventNodeView);
+			}
+			nodeView.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEventNodeView);
+
             // create a custom container
             container = new VisualElement();
             container.AddToClassList(nameof(GroupCommentNode)+"Container");
@@ -88,11 +96,27 @@ namespace NewGraph {
             PropertyField colorfield = nodeView.inspectorContent.Q<PropertyField>(nameof(groupColor));
             colorfield.RegisterValueChangeCallback(OnColorChanged);
             container.pickingMode = PickingMode.Ignore;
-            
-            // the element that is initially clicked to "expand" the node
-            dragElement = new Image() { vectorImage = DragCaretGraphics };
+
+			void DetachFromPanelEventColorfield(DetachFromPanelEvent evt) {
+				colorfield.UnregisterCallback<SerializedPropertyChangeEvent>(OnColorChanged);
+				colorfield.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEventColorfield);
+			}
+			colorfield.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEventColorfield);
+
+
+
+			// the element that is initially clicked to "expand" the node
+			dragElement = new Image() { vectorImage = DragCaretGraphics };
             dragElement.RegisterCallback<MouseDownEvent>(OnMouseDown);
-            container.Add(dragElement);
+
+
+			void DetachFromPanelEventDragElement(DetachFromPanelEvent evt) {
+				dragElement.UnregisterCallback<MouseDownEvent>(OnMouseDown);
+				dragElement.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEventDragElement);
+			}
+			dragElement.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEventDragElement);
+
+			container.Add(dragElement);
         }
 
         private void OnColorChanged(SerializedPropertyChangeEvent evt) {

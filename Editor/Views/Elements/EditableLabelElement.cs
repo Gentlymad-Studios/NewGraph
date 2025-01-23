@@ -39,14 +39,22 @@ namespace NewGraph {
             this.onValueChange = onValueChange;
             this.onEditModeLeft = onEditModeLeft;
 
+			void ChangeEvent(ChangeEvent<string> evt) {
+				this.onValueChange?.Invoke(evt.newValue);
+			}
+
             // check if the propertyfield value changed
-            propertyField.RegisterCallback<ChangeEvent<string>>((value) => {
-                this.onValueChange?.Invoke(value.newValue);
-            });
+            propertyField.RegisterCallback<ChangeEvent<string>>(ChangeEvent);
             propertyField.AddToClassList(editableLabelUSSClass);
 
-            // wait until the visualtree of the property has been built
-            propertyField.RegisterCallback<GeometryChangedEvent>(InitializeAfterVisualTreeReady);
+			void DetachFromPanelEvent(DetachFromPanelEvent evt) {
+				propertyField.UnregisterCallback<ChangeEvent<string>>(ChangeEvent);
+				propertyField.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+			}
+			propertyField.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+
+			// wait until the visualtree of the property has been built
+			propertyField.RegisterCallback<GeometryChangedEvent>(InitializeAfterVisualTreeReady);
         }
 
         /// <summary>
@@ -58,13 +66,27 @@ namespace NewGraph {
                 textField = propertyField[0] as TextField;
                 textField.RegisterCallback<KeyDownEvent>(OnKeyDown);
 
-                inputField = textField[1];
+				void DetachFromPanelEventTxtFld(DetachFromPanelEvent evt) {
+					textField.UnregisterCallback<KeyDownEvent>(OnKeyDown);
+					textField.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEventTxtFld);
+				}
+				textField.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEventTxtFld);
+
+
+				inputField = textField[1];
 
                 textElement = inputField[0];
                 editButton = new Image() { image = editIconTexture };
 
                 editButton.RegisterCallback<ClickEvent>(OnEditButtonClick);
-                propertyField.Add(editButton);
+
+				void DetachFromPanelEventEditBtn(DetachFromPanelEvent evt) {
+					editButton.UnregisterCallback<ClickEvent>(OnEditButtonClick);
+					editButton.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEventEditBtn);
+				}
+				editButton.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEventEditBtn);
+
+				propertyField.Add(editButton);
                 isInitialized = true;
                 EnableInput(false);
                 propertyField.UnregisterCallback<GeometryChangedEvent>(InitializeAfterVisualTreeReady);

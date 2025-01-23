@@ -18,9 +18,18 @@ namespace NewGraph {
         public GraphView(VisualElement parent, VisualElement root, Action<Actions, object> OnAction) {
             GraphWindow.OnGlobalKeyDown -= OnKeyDown;
             GraphWindow.OnGlobalKeyDown += OnKeyDown;
-            root.RegisterCallback<MouseDownEvent>((evt) => { OnMouseDown(evt); });
+			void MouseDownEvent(MouseDownEvent evt) {
+				OnMouseDown(evt);
+			}
+            root.RegisterCallback<MouseDownEvent>(MouseDownEvent);
 
-            graphViewRoot = parent.Q<VisualElement>(nameof(graphViewRoot));
+			void DetachFromPanelEvent(DetachFromPanelEvent evt) {
+				root.UnregisterCallback<MouseDownEvent>(MouseDownEvent);
+				root.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+			}
+			root.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEvent);
+
+			graphViewRoot = parent.Q<VisualElement>(nameof(graphViewRoot));
             graphViewRoot.Add(this);
             this.StretchToParentSize();
 
