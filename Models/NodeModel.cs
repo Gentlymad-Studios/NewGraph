@@ -167,16 +167,8 @@ namespace NewGraph {
         }
 
         public void SetPosition(float positionX, float positionY) {
-            if (dataIsSet) {
-                if (positionX != nodeX || positionY != nodeY) {
-                    nodeXProperty.floatValue = positionX;
-                    nodeYProperty.floatValue = positionY;
-                    nodeXProperty.serializedObject.ApplyModifiedProperties();
-                }
-            } else {
-                nodeX = positionX;
-                nodeY = positionY;
-            }
+            nodeX = positionX;
+            nodeY = positionY;
         }
 
         public SerializedProperty GetSerializedProperty() {

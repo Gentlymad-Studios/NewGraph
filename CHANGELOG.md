@@ -257,14 +257,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed port connection policies so extended classes can also be used for port connections (thanks for the pr @emrys90)
 
-## [0.4.6] - 2025-01-25
+## [0.4.6] - 2025-01-23
 ### Changed
 - Remove OnViewChangedCallback for better performance
 
-## [0.4.7] - 2025-01-25
+## [0.4.7] - 2025-01-23
 ### Changed
 - Proper unregister Events
 
-## [0.4.8] - 2025-01-25
+## [0.4.8] - 2025-01-23
 ### Fixed
 - removed unneeded ExecuteDefaultAction from graph view
+
+## [0.4.9] - 2025-01-24
+### Changed
+- node SetPosition will now edit the variable instead of the property
