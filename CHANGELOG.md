@@ -272,3 +272,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.4.9] - 2025-01-24
 ### Changed
 - node SetPosition will now edit the variable instead of the property
+
+## [0.5.0] - 2025-02-07
+### Changed
+- edit button is now a real button instead of an image due to unity 6000 issues
+- edit button in inspector is now working correctly after open the inspector again (removed unregister in detach event)

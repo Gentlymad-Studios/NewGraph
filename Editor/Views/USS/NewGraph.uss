@@ -336,3 +336,9 @@ NodeView.CommentNode VisualElement.GroupCommentNodeContainer *{
     opacity: 0.5;
     cursor: pan;
 }
+
+.editButton {
+    border-width: 0;
+    background-color: rgba(0,0,0,0);
+    align-self: Center;
+}

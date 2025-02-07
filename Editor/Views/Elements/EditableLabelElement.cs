@@ -9,7 +9,8 @@ namespace NewGraph {
     /// This is a converter for PropertyField elements, to convert a default Text/ string field into an editable label
     /// </summary>
     public class EditableLabelElement {
-        private Image editButton;
+        private Button editButton;
+        private Image editButtonImg;
         private VisualElement inputField;
         private TextField textField;
         private VisualElement textElement;
@@ -19,6 +20,7 @@ namespace NewGraph {
         private System.Action<string> onValueChange;
         private System.Action onEditModeLeft;
         private const string inputFieldUSSClass = "unity-base-text-field__input";
+        private const string editButtonUSSClass = "editButton";
         private const string editIcon = "d_editicon.sml";
         private Texture editIconTexture;
 #if UNITY_6000_0_OR_NEWER
@@ -76,12 +78,16 @@ namespace NewGraph {
 				inputField = textField[1];
 
                 textElement = inputField[0];
-                editButton = new Image() { image = editIconTexture };
+                editButtonImg = new Image() { image = editIconTexture };
+                editButton = new Button();
+                editButton.AddToClassList(editButtonUSSClass);
+                editButton.Add(editButtonImg);
 
                 editButton.RegisterCallback<ClickEvent>(OnEditButtonClick);
 
 				void DetachFromPanelEventEditBtn(DetachFromPanelEvent evt) {
-					editButton.UnregisterCallback<ClickEvent>(OnEditButtonClick);
+					//removed this, because the editor button in inspector isnt called anymore after the second time opening it
+                    //editButton.UnregisterCallback<ClickEvent>(OnEditButtonClick);
 					editButton.UnregisterCallback<DetachFromPanelEvent>(DetachFromPanelEventEditBtn);
 				}
 				editButton.RegisterCallback<DetachFromPanelEvent>(DetachFromPanelEventEditBtn);
@@ -123,7 +129,7 @@ namespace NewGraph {
             if (isInitialized) {
                 if (enable != isInEditMode) {
                     isInEditMode = enable;
-                    editButton.image = isInEditMode ? closeIconTexture : editIconTexture;
+                    editButtonImg.image = isInEditMode ? closeIconTexture : editIconTexture;
                 }
 
                 // prevent selection if the field is currently disabled
